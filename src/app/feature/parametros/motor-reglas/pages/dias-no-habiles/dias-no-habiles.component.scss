@@ -1,0 +1,37 @@
+@import "src/assets/scss/colors";
+
+mat-checkbox {
+    ::ng-deep .mat-checkbox-inner-container {
+        width: 20px;
+        height: 20px;
+
+        .mat-checkbox-frame {
+            border-color: $azul-200;
+        }
+    }
+}
+
+article {
+    span {
+        margin-bottom: 5px;
+    }
+
+    .days-container {
+        padding-left: 17px;
+        width: 70%;
+    }
+}
+
+h2 {
+    span {
+        font-size: 13px;
+        margin-bottom: 0px;
+    }
+}
+
+.text-end {
+    button {
+        margin-right: 10px;
+    }
+}
+

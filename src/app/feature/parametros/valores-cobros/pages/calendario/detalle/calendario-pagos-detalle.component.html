@@ -1,0 +1,61 @@
+<app-spinner *ngIf="showSpinner"></app-spinner>
+
+<article class="calendario-detalle" *ngIf="!showSpinner">
+    <div class="title">
+        <label>Nombre: </label> 
+        <span>{{info?.nombre |titlecase}}</span>
+    </div>
+
+    <table>
+      <tr>
+        <th>Concepto de débito</th>
+        <td>{{info?.conceptoDebito}}</td>
+      </tr>
+      <tr>
+        <th>Mes</th>
+        <td>{{info?.mes}}</td>
+      </tr>
+      <tr>
+        <th>Placas</th>
+        <td>
+            <span *ngFor="let placa of info?.placas; let last = last">
+                {{placa}}{{last ? '':', '}}
+            </span>
+        </td>
+      </tr>
+      <tr>
+        <th>Clase de placa</th>
+        <td>
+          <span *ngFor="let clase of info?.clasePlaca; let last = last">
+            {{clase.trim()}}{{last ? '':', '}}
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>Fecha de pago</th>
+        <td>{{info?.pagoOportuno.split('T')[0] | date:'yyyy/MM/dd'}} - 
+          {{info?.pagoLimite.split('T')[0] | date:'yyyy/MM/dd'}}</td>
+      </tr>
+      <tr>
+        <th>Estado</th>
+        <td>{{info?.estado}}</td>
+      </tr>
+    </table>
+
+    <div class="footer">
+        <p class="last-change">Último cambio</p>
+        <p class="created"> 
+            <label>{{info?.usuarioActualiza? 'Modificado por' : 'Creado por'}}</label>
+            <span>{{info?.usuarioActualiza ? info?.usuarioActualiza : info?.usuarioCreacion}}</span>
+
+            <label>el</label>
+            <span>{{info?.fechaActualiza ? (info?.fechaActualiza.split('T')[0] |date:'yyyy/MM/dd') : 
+              (info?.fechaCreacion.split('T')[0] |date:'yyyy/MM/dd')}}</span>
+        </p>
+        <p class="change-detail">{{info?.descripcionCambio}}</p>
+    </div>
+
+    <footer class="d-flex justify-content-end mt-4">
+      <button mat-raised-button color="primary" (click)="closeModalEvent()">Editar</button>
+  </footer>
+</article>

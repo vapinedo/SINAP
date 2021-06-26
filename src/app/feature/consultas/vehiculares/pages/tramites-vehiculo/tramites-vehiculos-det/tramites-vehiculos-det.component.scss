@@ -1,0 +1,45 @@
+@import "src/assets/scss/colors";
+
+.subtitle-filter {
+    font-size: 13px;
+    color: $azul-500;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    font-style: normal;
+    font-family: 'keep_calmbook', sans-serif;
+}
+
+.volver {
+    font-size: 17px;
+    color: $azul-200;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+  
+
+.tabla {
+    table {
+        width: 100%;
+        margin: 2em auto;
+        margin-top: 0;
+
+        tr {
+
+            &:nth-child(odd) { background: $azul-100 }
+            &:nth-child(even) { background: $blanco-500 }
+            td {
+                padding: .7em;
+
+                &:first-child {
+                    color: $azul-400;
+                }
+                &:last-child {
+                    font-size: 14px;
+                    color: $gris-500;
+                    text-align: right;
+                    font-family: 'keep_calmlight', sans-serif;
+                }
+            }
+        }
+    }
+}

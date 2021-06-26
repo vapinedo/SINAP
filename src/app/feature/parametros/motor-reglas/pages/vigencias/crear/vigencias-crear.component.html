@@ -1,0 +1,112 @@
+<app-spinner *ngIf="showSpinner"></app-spinner>
+
+
+<section class="modal-content custom-scrollbar">
+<form [formGroup]="form" autocomplete="off" *ngIf="!showSpinner">
+    <article class="row">
+        <mat-form-field cdkFocusInitial class="col">
+            <mat-label>Nombre del período *</mat-label>
+            <input matInput type="text" formControlName="nombrePeriodo" >
+            <mat-error *ngIf="formControls.nombrePeriodo?.invalid && (formControls.nombrePeriodo?.dirty || formControls.nombrePeriodo?.touched)">
+                <span *ngIf="formControls.nombrePeriodo?.errors?.required">Nombre del período es requerido</span>
+                <span *ngIf="formControls.nombrePeriodo?.errors?.pattern">Nombre del período incorrecto</span>
+                <span *ngIf="formControls.nombrePeriodo?.errors?.maxlength?.requiredLength">Máximo {{form.controls.nombrePeriodo.errors.maxlength.requiredLength}} caracteres</span>
+            </mat-error>
+        </mat-form-field>    
+    </article>
+
+    <article class = "row">
+        <h2>Período</h2>
+        <div class="col-12 col-md-6">
+            <mat-form-field >
+                <mat-label>Fecha inicial *</mat-label>
+                <input
+                matInput
+                [matDatepicker]="fechaInicial"
+                type="text"
+                formControlName="fechaInicial"
+                [max]="form.controls.fechaFinal?.value"
+                readonly
+                />
+            <mat-datepicker-toggle matSuffix [for]="fechaInicial"></mat-datepicker-toggle>
+            <mat-datepicker #fechaInicial></mat-datepicker>
+                <mat-error *ngIf="form.controls.fechaInicial.errors?.pattern"
+                    >Fecha inválida</mat-error
+                >
+                <mat-error *ngIf="form.controls.fechaInicial.errors?.required"
+                    >Fecha incial es requerido</mat-error
+                >
+            </mat-form-field>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <mat-form-field class="col">
+                <mat-label>Fecha final *</mat-label>
+                <input
+                matInput
+                [matDatepicker]="fechaFinal"
+                type="text"
+                formControlName="fechaFinal"
+                [min]="form.controls.fechaInicial?.value"
+                readonly
+            />
+            <mat-datepicker-toggle matSuffix [for]="fechaFinal"></mat-datepicker-toggle>
+            <mat-datepicker #fechaFinal></mat-datepicker>
+                <mat-error *ngIf="form.controls.fechaFinal.errors?.pattern"
+                    >Fecha inválida</mat-error
+                >
+                <mat-error *ngIf="form.controls.fechaFinal.errors?.required"
+                    >Fecha final es requerido</mat-error
+                >
+            </mat-form-field>
+        </div>
+
+    </article>
+
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Tipo de periodo *</mat-label>
+            <mat-select (selectionChange)="changes($event.value)" formControlName="tipoPeriodo" >
+                <mat-option value="" selected>Seleccione una..</mat-option>
+                <mat-option *ngFor="let periodo of lstPeriodos" [value]="periodo.id">{{periodo.label}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="formControls.tipoPeriodo?.invalid && (formControls.tipoPeriodo?.dirty || formControls.tipoPeriodo?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControls.tipoPeriodo?.errors?.required">Tipo del periodo es requerido</span>
+            </mat-error>
+        </mat-form-field>
+
+        <div class="col" >
+            <mat-form-field [hidden]="formControls.tipoPeriodo.value !== 'PERAMNIS'">
+                <mat-label>Concepto de débito *</mat-label>
+                <mat-select formControlName="concepto" >
+                    <mat-option value="" selected>Seleccione una..</mat-option>
+                    <mat-option *ngFor="let concepto of lstConceptos" [value]="concepto.id">{{concepto.label}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControls.concepto?.invalid && (formControls.concepto?.dirty || formControls.concepto?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.concepto?.errors?.required">Concepto es requerido</span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+    </article>
+
+
+    <mat-checkbox class="remember" formControlName="anual" color ="primary">Se repite anualmente</mat-checkbox>
+  
+
+    <article class="row">
+        <div class="form-group col">
+            <mat-label>Estado</mat-label>
+            <mat-slide-toggle formControlName="estado" color ="primary"></mat-slide-toggle>
+        </div>
+    </article>
+
+    <footer align="end">
+        <button mat-raised-button color="warn" (click)="confirmarSalir()">Cancelar</button>
+        <button style="margin-left: 3px;" [disabled]="form.invalid" mat-raised-button color="primary" (click)="onSubmit()">Crear</button>
+    </footer>
+</form>
+</section>
+
+
+

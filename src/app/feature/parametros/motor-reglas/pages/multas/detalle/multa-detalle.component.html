@@ -1,0 +1,135 @@
+<app-spinner *ngIf="showSpinner"></app-spinner>
+
+<article class="detail" *ngIf="!showSpinner">
+    <!--<header>
+        <span>{{ dataSource.nombreMulta }}</span>
+    </header>-->
+    <div class="row mb-4">
+        <span>{{ multa.descripcion }}</span>
+    </div>
+    
+    <div class="row">
+        <div class="col tabla">
+            <h3>Detalles</h3>
+            <table>
+                <tr>
+                    <td>Concepto de débito</td>
+                    <td>{{multa.idParConcepto?.codigo + '-' + multa.idParConcepto?.nombre }}</td>
+                </tr>
+                <tr>
+                    <td>Normativa</td>
+                    <td>{{ multa.idParConcepto?.normativa?.nombre }}</td>
+                </tr>
+                <tr>
+                    <td>Tarifa aplicable</td>
+                    <td>{{ multa.detalleMultaList[index]?.tarifa?.nombre }}</td>
+                </tr>
+                <tr>
+                    <td>Modo de cobro</td>
+                    <td>{{multa.detalleMultaList[index]?.descModoCobro}}</td>
+                </tr>
+                <tr>
+                    <td>Valor mínimo por cuota</td>
+                    <td>{{ multa.detalleMultaList[index]?.valorMinimo |currency:'L ' }}</td>
+                </tr>
+                <tr>
+                    <td>Valor máximo de la multa</td>
+                    <td> {{ multa.detalleMultaList[index]?.valorMaximo |currency:'L ' }} </td>
+                </tr>
+                <tr>
+                    <td>Periodicidad</td>
+                    <td> {{ multa.detalleMultaList[index]?.descPeriodicidad }} </td>
+                </tr>
+                <tr>
+                    <td>Número de pagos</td>
+                    <td>
+                        {{ multa.detalleMultaList[index]?.numeroCuotas }} 
+                        <i (click)="verDetallePagos()" matTooltip="Ver detalle" class="material-icons-outlined azul-300 icon">remove_red_eye</i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Vigencia</td>
+                    <td>{{ multa.detalleMultaList[index]?.fechaInicioVigencia }} / 
+                        {{ multa.detalleMultaList[index]?.fechaFinVigencia }}</td>
+                </tr>
+                <tr>
+                    <td>Estado</td>
+                    <td>{{ multa.estado == 'A' ? 'Activo' : 'Inactivo'}} </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col tabla">
+            <h3>Parámetros</h3>
+            <table>
+                <tr *ngIf="paramTipoPlaca">
+                    <td>Clase de placa</td>
+                    <td>{{paramTipoPlaca.valorDominio }}</td>
+                </tr>
+                <tr *ngIf="paramTipoCombustible">
+                    <td>Tipo de combustible</td>
+                    <td>{{ paramTipoCombustible.valorDominio }}</td>
+                </tr>
+                <tr *ngIf="paramTipoVehiculo">
+                    <td>Tipo de vehículo</td>
+                    <td>{{  paramTipoVehiculo.valorDominio }}</td>
+                </tr>
+                <tr *ngIf="paramCilindraje">
+                    <td>Cilindraje</td>
+                    <td>{{  (paramCilindraje.operadorMin + paramCilindraje.valorMin) +
+                        (paramCilindraje.operadorMax ? (' ' + paramCilindraje.operadorMax + paramCilindraje.valorMax) : '')
+                        }}</td>
+                </tr>
+                <tr *ngIf="paramAnioVehiculo">
+                    <td>Año del vehículo</td>
+                    <td>{{ (paramAnioVehiculo.operadorMin + paramAnioVehiculo.valorMin) +
+                        (paramAnioVehiculo.operadorMax ? (' ' + paramAnioVehiculo.operadorMax + paramAnioVehiculo.valorMax) : '')
+                        }}</td>
+                </tr>
+                <tr *ngIf="paramAnioInscripcion">
+                    <td>Año de inscripción</td>
+                    <td>{{(paramAnioInscripcion.operadorMin + paramAnioInscripcion.valorMin) +
+                        (paramAnioInscripcion.operadorMax ? (' ' + paramAnioInscripcion.operadorMax + paramAnioInscripcion.valorMax) : '')
+                        }}</td>
+                </tr>
+                <tr *ngIf="paramAnioCirculacion">
+                    <td>Año de circulación</td>
+                    <td>{{ (paramAnioCirculacion.operadorMin + paramAnioCirculacion.valorMin) +
+                        (paramAnioCirculacion.operadorMax ? (' ' + paramAnioCirculacion.operadorMax + paramAnioCirculacion.valorMax) : '')
+                        }}</td>
+                </tr>
+                <tr *ngIf="paramAniosCirculacion">
+                    <td>Años de circulación</td>
+                    <td>{{ (paramAniosCirculacion.operadorMin + paramAniosCirculacion.valorMin) +
+                        (paramAniosCirculacion.operadorMax ? (' ' + paramAniosCirculacion.operadorMax + paramAniosCirculacion.valorMax) : '')
+                        }}</td>
+                </tr>
+            </table>
+        </div>
+
+
+    </div>
+
+    <h3>Municipios</h3>
+    <span *ngIf="municipiosList?.length == 0">No se econtraron municipios asociados</span>
+    <div class="row">
+        <mat-chip-list aria-label="Fish selection">
+            <mat-chip *ngFor="let muni of municipiosList | slice:0:4; let i=index"
+                       selected>{{muni.nombreMunicipio}}</mat-chip>
+            <h3 (click)="verDetalleMunicipios()" *ngIf="municipiosList?.length >= 5">Ver más</h3>
+        </mat-chip-list>
+    </div>
+
+    <div class="footer mt-4">
+        <p class="last-change">Último cambio</p>
+        <p class="created"> 
+            <label *ngIf="multa.fechaActualiza == null">Creado por</label>
+            <label *ngIf="multa.fechaActualiza != null">Modificado por</label>
+            <span>{{ multa.usuarioActualiza == null ? multa.usuarioCreacion == null ? ' usuario SINAP' : multa.usuarioCreacion : multa.usuarioActualiza }}</span>
+            <label>el</label>
+            <span>{{ multa.fechaActualiza == null ? (multa.fechaCreacion | date: 'yyyy/MM/dd') : (multa.fechaActualiza | date: 'yyyy/MM/dd') }}</span>
+        </p>
+        <p class="change-detail">{{ multa.observaciones }}</p>
+    </div>
+
+</article>

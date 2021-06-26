@@ -1,0 +1,123 @@
+.mat-error > span {
+	display: block;
+}
+@import "src/assets/scss/colors";
+@import "src/assets/scss/custom_material";
+
+.subtitle-filter {
+  font-size: 13px;
+  color: $azul-500;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  font-style: normal;
+  font-family: 'keep_calmbook', sans-serif;
+}
+
+
+::ng-deep .mat-paginator-container {
+  justify-content: space-between !important;
+}
+
+.text-align-rigth {
+  text-align: right;
+}
+
+.size-input{
+  width: 100%;
+}
+
+.container-heard{
+  display: flex;  
+  align-items: flex-end;
+}
+
+.container-detail{
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #acadac;
+  margin-right: auto;
+}
+
+.align-heard{
+  width: 100%;    
+}
+
+.table-encabezado {
+  width: 100%;
+  margin: 0.5em auto;
+  th {
+    font-size: 13px;
+    font-family: "keep_calmbook", sans-serif;
+    padding-left: 3rem;
+  }
+  td {
+    font-size: 13px;
+    font-family: "keep_calmbook", sans-serif;
+    padding-right: 3rem;
+    text-align: end;
+  }
+
+}
+
+.margin-filtro{
+  margin-bottom: 1rem;
+}
+
+.mat-table-sticky-border-elem-right {
+    border-left: 1px solid #e0e0e0;
+  }
+
+  .mat-table-sticky-border-elem-left {
+    border-right: 1px solid #e0e0e0;
+  }
+
+  .example-container {
+    width: 70vw;
+    max-width: 100%;
+    overflow: auto;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  td.mat-column-star {
+    width: 20px;
+    padding-right: 8px;
+  }
+
+.bg-color {
+    background-color: $blanco-500;
+}
+
+.col-spacing {
+    padding-right: 50px;
+}
+
+.cursor{
+  cursor: pointer;
+}
+
+/* Custom Scrollbar using CSS */
+.custom-scrollbar-css {
+  scrollbar-color: none;
+  scrollbar-width: thin;
+}
+
+/* scrollbar width */
+.custom-scrollbar-css::-webkit-scrollbar {
+  height: 5px;
+}
+
+/* scrollbar track */
+.custom-scrollbar-css::-webkit-scrollbar-track {
+  background: none;
+  border-radius: 15px;
+}
+
+/* scrollbar handle */
+.custom-scrollbar-css::-webkit-scrollbar-thumb {
+  border-radius: 15px;
+  background-color: $azul-500;
+}

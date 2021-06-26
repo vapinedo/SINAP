@@ -1,0 +1,119 @@
+<div class="row">
+	<div class="col-md-3">
+		<app-sub-menu-consultas
+			[iduVehiculo]="iduVehiculo"
+			[periodo]="periodo"
+			[selected]="'novedades-banco'"
+		></app-sub-menu-consultas>
+	</div>
+	<div class="col-md-9">
+		<div
+			class="asw-box animate__animated animate__fadeIn animate_faster bg-color"
+		>
+			<div align="start">
+				<button mat-button color="primary" (click)="goBack()">
+					<mat-icon>arrow_back_ios</mat-icon>
+					Volver
+				</button>
+			</div>
+			<div class="row mb-3">
+				<div class="col-auto">
+					<h2 class="title mb-1">DETALLE NOVEDADES EN EL BANCO</h2>
+				</div>
+				<div class="col boton-pulbicar">
+					<button type="button" mat-raised-button color="primary">
+						Publicar al banco
+					</button>
+				</div>
+			</div>
+
+			<article
+				class="row asw-box animate__animated animate__fadeIn animate_faster"
+			>
+				<div *ngIf="!showSpinner" class="table-search">
+					<div class="input-search">
+						<mat-icon>search</mat-icon>
+						<input
+							matInput
+							#inputSearch
+							placeholder="Buscar ..."
+							autocomplete="off"
+							(keyup)="applyFilter($event)"
+						/>
+					</div>
+				</div>
+
+				<app-progressbar *ngIf="showProgressBar"></app-progressbar>
+				<app-spinner *ngIf="showSpinner"></app-spinner>
+
+				<table
+					mat-table
+					[dataSource]="dataSource"
+					[hidden]="showSpinner"
+					matSort
+					class="animate__animated animate__fadeIn animate__faster"
+				>
+					<ng-container matColumnDef="nroComprobante">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>
+							No. de Comprobante
+						</th>
+						<td mat-cell *matCellDef="let item">{{ item?.nroComprobante }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="placa">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Placa</th>
+						<td mat-cell *matCellDef="let item">{{ item?.placa }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="descripcion">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Trámite</th>
+						<td mat-cell *matCellDef="let item">{{ item?.descripcion }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="periodo">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Periodo</th>
+						<td mat-cell *matCellDef="let item">{{ item?.periodo }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="fechaTransaccion">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
+						<td mat-cell *matCellDef="let item">
+							{{ item?.fechaTransaccion | date: "yyyy-MM-dd" }}
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="estadoPublicacion">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+						<td mat-cell *matCellDef="let item" class="estado">
+							{{ item?.estadoPublicacion }}
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="acciones">
+						<th mat-header-cell *matHeaderCellDef class="text-center">Acciones</th>
+						<td mat-cell *matCellDef="let item" class="tools text-center">
+							<i matTooltip="Ver detalle" class="material-icons-outlined azul-300"
+								>remove_red_eye</i
+							>
+						</td>
+					</ng-container>
+
+					<tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
+
+					<ng-container>
+						<tr class="mat-row" *matNoDataRow>
+							<td class="mat-cell" colspan="4">{{ mensaje }}</td>
+						</tr>
+					</ng-container>
+				</table>
+
+				<mat-paginator
+					showFirstLastButtons
+					[pageSizeOptions]="[1, 5, 10, 25, 50, 100]"
+				>
+				</mat-paginator>
+			</article>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,33 @@
+@import "src/assets/scss/colors";
+
+header {
+    width: 100%;
+    position: fixed;
+    padding: 1.2em 2em;
+    
+    nav {
+        display: flex;
+        justify-content: space-between;
+
+        ul {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            list-style: none;
+
+            img {
+                width: 25px;
+                margin-right: 15px;
+            }
+
+            a {
+                font-size: 14px;
+                color: $azul-500;
+                margin-right: 2em;
+                text-decoration: none;
+
+            }
+            .create-account { color: $azul-200; }
+        }
+    }
+}

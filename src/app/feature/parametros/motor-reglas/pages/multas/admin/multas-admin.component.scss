@@ -1,0 +1,130 @@
+@import "src/assets/scss/colors";
+@import "src/assets/scss/typography";
+
+table {
+  td {
+  padding: 0 1em;
+  }
+  
+  tr.example-detail-row {
+  height: 0;
+  }
+  
+  tr.example-expanded-row {
+  background-color: $azul-100;
+  }
+  
+  .detail {
+  overflow: hidden;
+  
+  .body {
+  h3 {
+  font-size: 14px;
+  color: $negro-500;
+  margin-bottom: .7em;
+  font-family: 'keep_calm_medregular';
+  }
+  .description {
+  font-size: 12px;
+  color: $gris-500;
+  line-height: 20px;
+  margin-bottom: 2.5em;
+  }
+  
+  .tabla {
+    table {
+    width: 100%;
+    margin: 2em auto;
+    margin-top: 0;
+    
+    .first-col { margin-right: 3em !important; }
+    
+    tr {
+      &:nth-child(odd) { background: $azul-100 }
+      &:nth-child(even) { background: $blanco-500 }
+      
+      td {
+        padding: .7em;
+        
+        &:first-child {
+        color: $azul-400;
+        }
+        &:last-child {
+        font-size: 14px;
+        color: $gris-500;
+        text-align: right;
+        font-family: 'keep_calmlight', sans-serif;
+        }
+      }
+    }
+    } 
+  }
+  
+  .mat-chip-list {
+  margin-top: 1em;
+  
+  .mat-chip {
+  background-color: $azul-100;
+  color: $azul-400;
+  }
+  }
+  }
+  }
+ }
+
+tr.example-detail-row {
+  height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.example-element-diagram {
+  min-width: 80px;
+  border: 2px solid black;
+  padding: 8px;
+  font-weight: lighter;
+  margin: 8px 0;
+  height: 104px;
+}
+
+.example-element-symbol {
+  font-weight: bold;
+  font-size: 40px;
+  line-height: normal;
+}
+
+.example-element-description {
+  padding: 16px;
+  width: 100%;
+}
+
+.example-element-description-attribution {
+  opacity: 0.5;
+}
+
+.arrow {
+  font-size: 22px;
+  color: $azul-300;
+}
+
+.title-container {
+  font-size: 15px;
+  color: $azul-500;
+  font-family: 'keep_calm_medregular';
+  font-weight: 100;
+}

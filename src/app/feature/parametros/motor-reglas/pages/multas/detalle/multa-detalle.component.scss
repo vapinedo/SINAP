@@ -1,0 +1,77 @@
+@import "src/assets/scss/colors";
+@import "src/assets/scss/typography";
+
+.icon{
+    vertical-align: bottom;
+    font-size: 20px;
+}
+
+h3 {
+    font-size: 14px;
+    color: $negro-500;
+    margin-bottom: .7em;
+    font-family: 'keep_calm_medregular';
+  }
+
+.mat-chip-list {
+    h3 {
+        color: $azul-400;
+        margin: 0px !important;
+    }
+}
+
+.detail {
+    .title {
+        label {
+            font-size: 16px;
+            color: $azul-400;
+            font-weight: bold;
+            margin-right: 1em;
+        }
+        span {
+            color: $azul-300;
+        }
+    }
+
+    .tabla {
+        table {
+            width: 100%;
+            margin: 2em auto;
+            margin-top: 0;
+
+            tr {
+
+                &:nth-child(odd) { background: $azul-100 }
+                &:nth-child(even) { background: $blanco-500 }
+                td {
+                    padding: .7em;
+
+                    &:first-child {
+                        color: $azul-400;
+                    }
+                    &:last-child {
+                        font-size: 14px;
+                        color: $gris-500;
+                        text-align: right;
+                        font-family: 'keep_calmlight', sans-serif;
+                    }
+                }
+            }
+        }
+    }
+
+    .footer {
+        padding: .7em;
+        background-color: $azul-100;
+
+        .last-change { color: $azul-300; }
+        .change-detail { color: $azul-500; }
+        .created {
+            label { color: $gris-500; }
+            span {
+                margin: 0 .5em;
+                color: $azul-300;
+            }
+        }
+    }
+}

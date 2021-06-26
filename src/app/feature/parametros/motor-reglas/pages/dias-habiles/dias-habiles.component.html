@@ -1,0 +1,159 @@
+<section class="tabla-con-filtro animate__animated animate__fadeIn animate_faster">
+    <article class="row asw-box animate__animated animate__fadeIn animate_faster">
+        <h2 class="title">Días calendario</h2>
+        <h1 class="subtitle">Configuración de eventos</h1>
+
+        <article class="row asw-box animate__animated animate__fadeIn animate_faster">
+            <div class="col-5">
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>
+                            <h1 class="subtitle">Tarjetas</h1>
+                        </mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <div class="table-search">
+                            <div class="input-search">
+                                <mat-icon>search</mat-icon>
+                                <input matInput #inputSearch placeholder="Buscar una tarjeta" autocomplete="off"
+                                    (input)="filterChanged($event.target.value)">
+                            </div>
+                        </div>
+                        <section class="container-places custom-scrollbar-css">
+                            <mat-tree class="mat-tree-container" [dataSource]="dataSource" [treeControl]="treeControl" #treeComponent>
+
+                                <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+                                    <mat-checkbox class="checklist-leaf-node" color="primary"
+                                        [checked]="checklistSelection.isSelected(node)"
+                                        (change)="seleccionarNodoPadre(node, $event)">
+                                        {{node.name}}({{node.numeroEventos}})
+                                    </mat-checkbox>
+                                    <button mat-icon-button disabled></button>
+                                </mat-tree-node>
+
+                                <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                                    <mat-checkbox class="checklist-leaf-node" color="primary"
+                                        (change)="seleccionarNodoHijo(node,$event)"
+                                        [checked]="checklistSelection.isSelected(node)">
+                                        {{node.name}}({{node.numeroEventos}})
+                                    </mat-checkbox>
+                                    <button mat-icon-button class="mat-icon-button-position" matTreeNodeToggle
+                                        [attr.aria-label]="'toggle ' + node.name">
+                                        <mat-icon class="mat-icon-rtl-mirror">
+                                            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                                        </mat-icon>
+                                    </button>
+                                </mat-tree-node>
+
+                            </mat-tree>
+                        </section>
+                    </mat-card-content>
+                    <mat-card-actions>
+                        <div class="buttonRight">
+                            <button (click)="openCreateEvent()" mat-raised-button color="primary"
+                                [disabled]="selectNode == null">Asignar evento</button>
+                        </div>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+
+            <div class="col-7">
+                <mat-label class="detail">Seleccione una tarjeta de la columna izquierda y de click en el botón “Asignar
+                    evento”.
+                    Para <b>consultar eventos existentes</b> seleccione la tarjeta que desea consultar y verá los
+                    resultados en el calendario.
+                    Puede <b>editar/eliminar un evento en el calendario</b> dando click izquierdo con el mouse.
+                </mat-label>
+                <form [formGroup]="formulario" autocomplete="off">
+                    <article class="row mt-3">
+                        <mat-form-field class="col">
+                            <mat-label>Filtrar por</mat-label>
+                            <mat-select formControlName="filtroCalendar">
+                                <mat-option *ngFor="let item of opcionesFiltro" [value]="item" (click)="changeFilter()">
+                                    {{
+                                    item
+                                    }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <div class="col filterSearch">
+                            <div class="table-search">
+                                <div class="input-search">
+                                    <mat-icon>search</mat-icon>
+                                    <input matInput #inputSearchCalendar formControlName="inputSearchCalendar"
+                                        placeholder="{{placeholder}}" autocomplete="off"
+                                        (input)="filterCalendar($event.target.value)">
+                                </div>
+                            </div>
+                            <mat-error
+                                *ngIf="formulario.get('inputSearchCalendar')?.invalid && (formulario.get('inputSearchCalendar')?.dirty || formulario.get('inputSearchCalendar')?.touched)">
+                                <p *ngIf="formulario.get('inputSearchCalendar').errors?.pattern">Formato de fecha
+                                    incorrecto. YYYY/MM/DD</p>
+                            </mat-error>
+                        </div>
+                    </article>
+                </form>
+
+                <article class="row custom-scrollbar-css contenedor-calendario">
+                    <div class="col-3">
+
+                        <article class="row">
+                            <div class="col-7 alingRight">
+                                <mat-label class="diaCalendario">
+                                    {{ viewDate | calendarDate: view + 'ViewTitle':locale }}
+                                </mat-label>
+                            </div>
+                            <div class="col-5">
+                                <div class="icono" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate">
+                                    <mat-icon class="mat-icon-rtl-mirror" color="primary">expand_less</mat-icon>
+                                </div>
+                                <div class="icono" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate">
+                                    <mat-icon class="mat-icon-rtl-mirror" color="primary">expand_more</mat-icon>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="row mt-3">
+                            <div class="col-7 alingRight">
+                                <mat-label class="diaCalendario">{{ viewDate |date:'yyyy'}}</mat-label>
+                            </div>
+                            <div class="col-5">
+                                <div class="icono">
+                                    <mat-icon class="mat-icon-rtl-mirror" (click)="calendarNextYear()" color="primary">
+                                        expand_less</mat-icon>
+                                </div>
+                                <div class="icono" (click)="calendarPreviusYear()">
+                                    <mat-icon class="mat-icon-rtl-mirror" color="primary">expand_more</mat-icon>
+                                </div>
+                            </div>
+
+                        </article>
+                    </div>
+                    <div class="col-9">
+                        <div class="contentCalendar" [ngSwitch]="view">
+                            <mwl-calendar-month-view [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+                                [locale]="locale" (dayClicked)="dayClicked($event.day)"
+                                (eventClicked)="handleEvent('Clicked', $event.event)"
+                                (eventTimesChanged)="eventTimesChanged($event)" [cellTemplate]="customCellTemplate">
+                            </mwl-calendar-month-view>
+                            <ng-template #customCellTemplate let-day="day" let-locale="locale">
+                                <div class="cal-cell-top">
+                                    <span class="cal-month-view cal-day-number" *ngIf="day.badgeTotal <= 0">{{ day.date
+                                        | calendarDate:'monthViewDayNumber':locale }}</span>
+                                    <span class="cal-month-view cal-day-number existEvent" #trigger=matMenuTrigger
+                                        [matMenuTriggerFor]="menu" *ngIf="day.badgeTotal > 0">{{ day.date |
+                                        calendarDate:'monthViewDayNumber':locale }}</span>
+                                    <mat-menu #menu="matMenu">
+                                        <button mat-menu-item class="buttonItem"
+                                            (click)="editEvent(day.events)">Editar</button>
+                                        <button mat-menu-item class="buttonItemEliminar"
+                                            (click)="deleteEvent(day.events)">Eliminar</button>
+                                    </mat-menu>
+                                </div>
+                            </ng-template>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </article>
+    </article>
+</section>

@@ -1,0 +1,283 @@
+<div id="contenedor-filtro" class="custom-scrollbar-css">
+<form [formGroup]="form">
+<section class="filtro asw-box">
+    <header>
+        <h2>Filtros</h2>
+    </header>
+    
+    <mat-form-field appearance="fill">
+        <mat-label>Concepto débito</mat-label>
+        <mat-select (selectionChange)="filter()" formControlName="conceptoFilter">
+            <mat-option value="">Seleccionar...</mat-option>
+            <mat-option *ngFor="let concepto of lstConceptos | async; let i=index" [value]="concepto.id">
+                {{ concepto.codigo + '-' + concepto.nombre }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Normativa</mat-label>
+        <mat-select (selectionChange)="filter()" formControlName="normativaFilter">
+            <mat-option value="">Seleccionar...</mat-option>
+            <mat-option *ngFor="let normativa of lstNormativas | async; let i=index" [value]="normativa.idNormativa">
+                {{ normativa.nombre }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Tarifa aplicable</mat-label>
+        <mat-select  (selectionChange)="filter()" formControlName="tarifaFilter">
+            <mat-option value="">Seleccionar...</mat-option>
+            <mat-option *ngFor="let tarifa of lstTarifas | async; let i=index" [value]="tarifa.id">
+                {{ tarifa.nombre }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Modo de cobro</mat-label>
+        <mat-select  (selectionChange)="filter()" formControlName="modoCobroFilter">
+            <mat-option value="">Seleccionar...</mat-option>
+            <mat-option *ngFor="let monto of lstModosCobro | async" 
+                [value]="monto.id">{{monto.label | capitalizar}}
+           </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Valor mínimo por cuota</mat-label>
+            <input matInput type="number" formControlName="cuotaMinFilter" 
+            (keypress)="onlyNumberMonto($event)" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Valor máximo de la multa</mat-label>
+            <input matInput type="number" formControlName="multaMaxFilter" 
+            (keypress)="onlyNumberMonto($event)" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Periodicidad</mat-label>
+        <mat-select (selectionChange)="filter()" formControlName="periodicidadFilter">
+            <mat-option value="">Seleccionar...</mat-option>
+            <mat-option *ngFor="let perio of lstPeriodicidad | async; let i=index" [value]="perio.id">
+                {{ perio.label }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Número de pagos</mat-label>
+            <input matInput type="number" formControlName="numeroPagosFilter" 
+            (keypress)="onlyNumber($event)"/>
+    </mat-form-field>
+
+    <div id="divFiltro">
+        <mat-label>Vigencia</mat-label>
+        <div class ="row">
+            <div class="col-6">
+                <mat-form-field >
+                    <mat-label>Inicio</mat-label>
+                    <input
+                    matInput
+                    [matDatepicker]="fechaInicial"
+                    [max]="formControls?.fechaFinal?.value"
+                    type="text"
+                    formControlName="fechaInicial"
+                    readonly
+                    />
+                    <mat-datepicker-toggle (click)="clearDate(formControls?.fechaInicial)" matSuffix [for]="fechaInicial"></mat-datepicker-toggle>
+                    <mat-datepicker #fechaInicial></mat-datepicker>
+                </mat-form-field>
+            </div>
+
+            <div class="col-6">
+                <mat-form-field >
+                    <mat-label>Fin</mat-label>
+                    <input
+                    matInput
+                    [matDatepicker]="fechaFinal"
+                    type="text"
+                    formControlName="fechaFinal"
+                    [min]="formControls?.fechaInicial?.value"
+                    readonly
+                />
+                    <mat-datepicker-toggle (click)="clearDate(formControls?.fechaFinal)" matSuffix [for]="fechaFinal"></mat-datepicker-toggle>
+                    <mat-datepicker #fechaFinal></mat-datepicker>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+    <div id="divFiltro">
+        <mat-label>Cilindraje</mat-label>
+        <div class ="row">
+            <div class="col-6">
+                <mat-form-field>
+                    <mat-label>Mínimo</mat-label>
+                    <input matInput type="number" formControlName="cilindrajeMinFilter"
+                    (keypress)="onlyNumber($event)"/>
+                </mat-form-field>
+            </div>
+
+            <div class="col-6">
+                <mat-form-field >
+                    <mat-label>Máximo</mat-label>
+                    <input matInput type="number" formControlName="cilindrajeMaxFilter"
+                    (keypress)="onlyNumber($event)"/>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+    <div id="divFiltro">
+        <mat-label>Año del vehículo</mat-label>
+        <div class ="row">
+            <div class="col-6">
+                <mat-form-field>
+                    <mat-label>Año mínimo</mat-label>
+                    <input matInput type="number" formControlName="anioVehiculoMinFilter"
+                    (keypress)="onlyNumber($event)"/>
+                </mat-form-field>
+            </div>
+
+            <div class="col-6">
+                <mat-form-field >
+                    <mat-label>Año máximo</mat-label>
+                    <input matInput type="number" formControlName="anioVehiculoMaxFilter"
+                    (keypress)="onlyNumber($event)"/>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+    <div id="divFiltro">
+        <mat-label>Año de inscripción</mat-label>
+        <div class ="row">
+            <div class="col-6">
+                <mat-form-field>
+                    <mat-label>Año mínimo</mat-label>
+                    <input matInput type="number" formControlName="anioInscripMinFilter"
+                    (keypress)="onlyNumber($event)"/>
+                </mat-form-field>
+            </div>
+
+            <div class="col-6">
+                <mat-form-field >
+                    <mat-label>Año máximo</mat-label>
+                    <input matInput type="number" formControlName="anioInscripMaxFilter"
+                    (keypress)="onlyNumber($event)"/>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+    <div id="divFiltro">
+        <mat-label>Año de circulación</mat-label>
+        <div class ="row">
+            <div class="col-6">
+                <mat-form-field>
+                    <mat-label>Año mínimo</mat-label>
+                    <input matInput type="number" formControlName="anioCirculaMinFilter"
+                    (keypress)="onlyNumber($event)"/>
+                </mat-form-field>
+            </div>
+
+            <div class="col-6">
+                <mat-form-field >
+                    <mat-label>Año máximo</mat-label>
+                    <input matInput type="number" formControlName="anioCirculaMaxFilter"
+                    (keypress)="onlyNumber($event)"/>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+    <div id="divFiltro">
+        <mat-label>Años de circulación</mat-label>
+        <div class ="row">
+            <div class="col-6">
+                <mat-form-field>
+                    <mat-label>Año mínimo</mat-label>
+                    <input matInput type="number" formControlName="aniosCirculaMinFilter"
+                    (keypress)="onlyNumber($event)"/>
+                </mat-form-field>
+            </div>
+
+            <div class="col-6">
+                <mat-form-field >
+                    <mat-label>Año máximo</mat-label>
+                    <input matInput type="number" formControlName="anioCirculaMaxFilter"
+                    (keypress)="onlyNumber($event)"/>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Tipo Placa</mat-label>
+        <mat-select (selectionChange)="filter()" formControlName="tipoPlacaFilter">
+            <mat-option value="">Seleccionar...</mat-option>
+            <mat-option *ngFor="let tipoPlaca of lstTiposPlaca | async; let i=index" [value]="tipoPlaca.clase">
+                {{ tipoPlaca.descripcion }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Tipo de Combustible</mat-label>
+        <mat-select (selectionChange)="filter()" formControlName="tipoCombustibleFilter">
+            <mat-option value="">Seleccionar...</mat-option>
+            <mat-option *ngFor="let combustible of lstTiposCombustible | async; let i=index" [value]="combustible.id">
+                {{ combustible.label | capitalizar }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Tipo de vehículo</mat-label>
+        <mat-select (selectionChange)="filter()" formControlName="tipoVehiculoFilter">
+            <mat-option value="">Seleccionar...</mat-option>
+            <mat-option *ngFor="let tipoVehiculo of lstTiposVehiculo | async; let i=index" [value]="tipoVehiculo.id">
+                {{ tipoVehiculo.label }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Departamento</mat-label>
+        <mat-select (selectionChange)="filter()" formControlName="departamentoFilter">
+            <mat-option value="">Seleccionar...</mat-option>
+            <mat-option *ngFor="let depto of lstDepartamentos | async; let i=index" [value]="depto.departamento">
+                {{ depto.descripcion }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Municipio</mat-label>
+        <mat-select (selectionChange)="filter()" formControlName="municipioFilter">
+            <mat-option value="">Seleccionar...</mat-option>
+            <mat-option *ngFor="let muni of lstMunicipios ; let i=index" [value]="muni">
+                {{ muni.descripcion }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Estado</mat-label>
+        <mat-select (selectionChange)="filter()" formControlName="estadoFilter">
+            <mat-option value="">Seleccionar...</mat-option>
+            <mat-option value="A">Activo</mat-option>
+            <mat-option value="I">Inactivo</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+
+    <div class="text-align-rigth">
+        <button type="button" (click)="cleanFilters()" mat-raised-button color="primary">Limpiar</button>
+    </div>
+</section>
+</form>
+</div>

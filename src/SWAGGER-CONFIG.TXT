@@ -1,0 +1,17 @@
+
+    1. Se instala la libreria corriendo el siguiente comando:
+    
+        npm install ng-swagger-gen -g --save
+
+    2. Configuración de Swagger
+
+        Se reemplaza el contenido del swagger,json con el obtenido del back, y luego estando
+        en la carpeta raiz del proyecto, se corre el siguiente comando:
+
+        ng-swagger-gen --config ng-swagger-gen.json
+
+
+    Nota: POr si esta inactivas las politicas (En el PowerShell como administrador)
+
+    Get-ExecutionPolicy -list 
+    Set-ExecutionPolicy RemoteSigned -Force

@@ -1,0 +1,248 @@
+<header mat-dialog-title>
+	<h2>Crear prescripción</h2>
+	<button mat-button  [disabled]="disableButton" (click)="onCloseDialog()">
+					<i class="material-icons-outlined">clear</i>
+	</button>
+</header>
+
+<section class="modal-content custom-scrollbar">
+	<mat-dialog-content *ngIf="!showSpinner">
+		<div class="mb-3">
+			<small>	CREADO POR USER
+				EL {{ today | date : 'yyyy/MM/dd'}} </small>
+				</div>
+		<form [formGroup]="formulario" autocomplete="off">
+			<article class="row">
+				<mat-form-field cdkFocusInitial class="col">
+						<mat-label>Nombre</mat-label>
+						<input matInput formControlName="nombre" required />
+						<mat-error
+							*ngIf="
+								formularioControls.nombre?.invalid &&
+								(formularioControls.nombre?.dirty || formularioControls.nombre?.touched)
+							"
+						>
+							<span *ngIf="formularioControls.nombre?.errors?.required"
+								>Nombre es requerido</span
+							>
+							<span *ngIf="formularioControls.nombre?.errors?.minlength"
+								>Mínimo
+								{{
+									formularioControls.nombre.errors.minlength.requiredLength
+								}}
+								caracteres</span
+							>
+							<span *ngIf="formularioControls.nombre?.errors?.maxlength"
+								>Máximo
+								{{
+									formularioControls.nombre.errors.maxlength.requiredLength
+								}}
+								caracteres</span
+							>
+							<span *ngIf="formularioControls.nombre.errors?.pattern"
+							>No puede ser vacio</span
+						>
+						</mat-error>
+					</mat-form-field>
+
+
+			</article>
+			<article class="row">
+				<mat-form-field class="col">
+					<mat-label>Descripción</mat-label>
+					<textarea matInput formControlName="descripcion" ></textarea>
+					<mat-error
+						*ngIf="
+							formularioControls.descripcion?.invalid &&
+							(formularioControls.descripcion?.dirty || formularioControls.descripcion?.touched)
+						"
+					>
+						<span *ngIf="formularioControls.descripcion?.errors?.minlength"
+							>Máximo
+							{{
+								formularioControls.descripcion.errors.minlength.requiredLength
+							}}
+							caracteres</span
+						>
+						<span *ngIf="formularioControls.descripcion?.errors?.maxlength"
+							>Máximo
+							{{
+								formularioControls.descripcion.errors.maxlength.requiredLength
+							}}
+							caracteres</span
+						>
+						<span *ngIf="formularioControls.descripcion.errors?.pattern"
+						>No puede ser vacio</span
+					>
+					</mat-error>
+				</mat-form-field>
+			</article>
+			<article class="row">
+				<mat-form-field class="col">
+					<mat-label>Tipo de concepto</mat-label>
+					<mat-select formControlName="tipoConcepto" (selectionChange) = "getConceptos($event.value)" required>
+						<mat-option value = "">Seleccione una...</mat-option>
+						<mat-option *ngFor="let item of dominioTipoConceptos" [value]="item.id">{{
+							item.label
+						}}</mat-option>
+					</mat-select>
+					<mat-error *ngIf="formularioControls.tipoConcepto.errors?.required"
+						>Tipo de concepto es requerido</mat-error
+					>
+				</mat-form-field>
+				<mat-form-field class="col">
+					<mat-label>Concepto</mat-label>
+					<mat-select formControlName="concepto"  required [disabled] = "conceptosCobrar.length == 0">
+						<mat-option value = "">Seleccione una...</mat-option>
+						<mat-option *ngFor="let item of conceptosCobrar" [value]="item.id">{{
+							item.label
+						}}</mat-option>
+					</mat-select>
+					<mat-error *ngIf="formularioControls.concepto.errors?.required"
+						>Concepto es requerido</mat-error
+					>
+				</mat-form-field>
+			</article>
+			<article class="row">
+
+				<h2>Periodicidad</h2>
+				<mat-form-field class="col">
+						<mat-label>Periodos vigentes</mat-label>
+						<input
+							matInput
+							type="number"
+							formControlName="periodosVigentes"
+							required
+							(blur) = "validarFechas()"
+						/>
+						<mat-error
+						*ngIf="
+							formularioControls.periodosVigentes?.invalid &&
+							(formularioControls.periodosVigentes?.dirty || formularioControls.periodosVigentes?.touched)
+						"
+					>
+					<span *ngIf="formularioControls.periodosVigentes?.errors?.required"
+					>Periodos vigentes es requerido</span
+				>
+				<span *ngIf="formularioControls.periodosVigentes?.errors?.min"
+					>El valor mínimo es 1</span
+				>
+				<span *ngIf="formularioControls.periodosVigentes?.errors?.max"
+					>El valor máximo es 99</span
+				>
+				<span *ngIf="formularioControls.periodosVigentes.errors?.pattern"
+				>Solo se permite números enteros</span
+			>
+				</mat-error>
+
+
+					</mat-form-field>
+
+					<mat-form-field class="col">
+						<mat-label>Periodo</mat-label>
+						<mat-select formControlName="idTiempo" required (blur) = "validarFechas()">
+							<mat-option value = "">Seleccione una...</mat-option>
+							<mat-option *ngFor="let item of dominioTiempo" [value]="item.id">{{
+								item.label
+							}}</mat-option>
+						</mat-select>
+						<mat-error *ngIf="formularioControls.idTiempo.errors?.required"
+							>Periodos es requerido</mat-error
+						>
+					</mat-form-field>
+					<div class="col"></div>
+			</article>
+			<article class="row">
+				<h2>Vigencia</h2>
+				<mat-form-field class="col">
+						<mat-label>Inicio de vigencia</mat-label>
+						<input
+							matInput
+							[matDatepicker]="inicioVigencia"
+							type="text"
+							formControlName="inicioVigencia"
+							placeholder="AAAA/MM/DD"
+							required
+							(blur) = "validarFechas()"
+							(dateInput)="eventDates('input', $event)"
+							(dateChange)="eventDates('change', $event)"
+						/>
+						<mat-datepicker-toggle matSuffix [for]="inicioVigencia"></mat-datepicker-toggle>
+						<mat-datepicker #inicioVigencia></mat-datepicker>
+						<mat-error *ngIf="formularioControls.inicioVigencia.errors?.pattern"
+							>Fecha inválida</mat-error
+						>
+						<mat-error *ngIf="formularioControls.inicioVigencia.errors?.required"
+							>Inicio de vigencia es requerido</mat-error
+						>
+						<mat-error *ngIf="formularioControls.inicioVigencia.errors?.outRange1"
+							>{{ formularioControls.inicioVigencia.errors?.outRange1 }}</mat-error
+						>
+
+					</mat-form-field>
+					<mat-form-field class="col">
+						<mat-label>Fin de vigencia</mat-label>
+						<input
+							matInput
+							type="text"
+							formControlName="finVigencia"
+							placeholder="AAAA/MM/DD"
+							(blur) = "validarFechas()"
+							[matDatepicker]="finVigencia"
+							(dateInput)="eventDates('input', $event)"
+							(dateChange)="eventDates('change', $event)"
+
+						/>
+						<mat-datepicker-toggle matSuffix [for]="finVigencia"></mat-datepicker-toggle>
+            <mat-datepicker #finVigencia></mat-datepicker>
+						<mat-error *ngIf="formularioControls.finVigencia.errors?.pattern"
+							>Fecha inválida</mat-error
+						>
+						<mat-error *ngIf="formularioControls.finVigencia.errors?.outRange1"
+							>{{ formularioControls.finVigencia.errors?.outRange1 }}</mat-error
+						>
+						<mat-error *ngIf="formularioControls.finVigencia.errors?.validatePeriodos"
+							>{{ formularioControls.finVigencia.errors?.validatePeriodos }}</mat-error
+						>
+					</mat-form-field>
+					<mat-form-field class="col">
+						<mat-label>Fecha de aplicación</mat-label>
+						<input
+							matInput
+							type="text"
+							formControlName="fechaAplicacion"
+							placeholder="MM/DD"
+							required
+						/>
+						<mat-error *ngIf="formularioControls.fechaAplicacion.errors?.pattern"
+							>Fecha inválida</mat-error
+						>
+						<mat-error *ngIf="formularioControls.fechaAplicacion.errors?.required"
+							>Fecha de aplicación es requerido</mat-error
+						>
+					</mat-form-field>
+
+			</article>
+
+			<article class="row">
+				<div class="col">
+					<mat-slide-toggle 		color="primary" formControlName="estado">Estado</mat-slide-toggle>
+				</div>
+			</article>
+		</form>
+	</mat-dialog-content>
+	<app-spinner *ngIf="showSpinner"></app-spinner>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="warn" (click)="onCloseDialog()" [disabled]="disableButton">
+			Cancelar
+		</button>
+		<button
+			mat-raised-button
+			color="primary"
+			[disabled]="formulario.invalid || disableButton"
+			(click)="showConfirmarCrear()"
+		>
+			Crear prescripción
+		</button>
+	</mat-dialog-actions>
+</section>

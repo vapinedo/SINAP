@@ -1,0 +1,33 @@
+@import "src/assets/scss/colors";
+
+footer {
+    background-color: $azul-300;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0em 2.5em;
+    position: absolute;
+    bottom: 0;
+    left:0;
+    height: 40px;
+
+    span {
+        mat-icon {
+            vertical-align: bottom;
+            color: white;
+            margin-right: 20px;
+            font-size: 33px;
+        }
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    a, p, strong  {
+        margin: 0;
+        font-size: 12px;
+        color: #fff;
+    }
+}

@@ -1,0 +1,19 @@
+<aside id="notifications-menu" [ngClass]="{'expanded': showNotificationMenu }">
+    <nav>
+        <header>
+            <div class="title">
+                <i class="material-icons-outlined">notifications</i>
+                <h2>Notificaciones</h2>
+            </div>
+            <span (click)="showNotificationMenu = !showNotificationMenu" class="close-menu">
+                <i class="material-icons-outlined">clear</i>
+            </span>
+        </header>
+
+        <a href="#">Notificación</a>
+        <a href="#">Notificación</a>
+        <a href="#">Notificación</a>
+        <a href="#">Notificación</a>
+        <a href="#">Notificación</a>
+    </nav>
+</aside>

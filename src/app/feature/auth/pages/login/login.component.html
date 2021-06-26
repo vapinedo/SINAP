@@ -1,0 +1,45 @@
+<section class="container-login">
+    <img [src]="bgImage" class="bg-image">
+
+    <app-navbar></app-navbar>
+
+    <div class="asw-box login animate__animated animate__fadeIn">
+        <header>
+            <img [src]="logo">
+        </header>
+
+        <p *ngIf="authError" class="auth-error">Usuario o contraseña incorrectos</p>
+        
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" autocomplete="off">
+            <mat-form-field>
+                <mat-label>Usuario</mat-label>
+                <input matInput type="text" formControlName="email">
+                <mat-error *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+                    <span *ngIf="email?.errors?.required">Email es requerido</span>
+                    <span *ngIf="email?.errors?.pattern">Email incorrecto</span>
+                </mat-error>
+            </mat-form-field>       
+    
+            <mat-form-field class="mb-3">
+                <mat-label>Contraseña</mat-label>
+                <input matInput type="password" formControlName="password">
+                <mat-error *ngIf="password?.invalid && (password?.dirty || password?.touched)">
+                    <span *ngIf="password?.errors?.required">Contraseña es requerida</span>
+                </mat-error>            
+            </mat-form-field>       
+
+            <mat-checkbox class="remember">Recordar contraseña</mat-checkbox>
+
+            <div class="footer">
+                <button 
+                    type="submit" 
+                    color="primary"
+                    mat-raised-button>
+                    <span>Ingresar</span>
+                </button>
+                <a [routerLink]="['/reestablecer-password']">¿Olvidó su contraseña?</a>
+            </div>
+        </form>
+    </div>
+
+</section>

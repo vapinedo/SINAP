@@ -1,0 +1,225 @@
+@import "src/assets/scss/colors";
+@import "src/assets/scss/typography";
+@import "src/assets/scss/custom_material";
+
+body { background-color: $gris-100; }
+
+/* -------------------------------------------
+    Vista Detalle ( Ventana Modal )
+------------------------------------------- */  
+.vista-detalle {
+    header {
+        label {
+            font-size: 16px;
+            color: $azul-400;
+            font-weight: bold;
+            margin-right: 1em;
+        }
+        span {
+            color: $azul-300;
+        }
+    }
+
+    table {
+        width: 100%;
+        margin: 2em auto;
+    
+        tr {
+            &:nth-child(odd) { background: $azul-100 }
+            &:nth-child(even) { background: $blanco-500 }
+    
+            td {
+                padding: .7em;
+    
+                &:first-child {
+                    width: 200px;
+                    color: $azul-400;
+                }
+                &:last-child {
+                    font-size: 14px;
+                    color: $azul-300;
+                    text-align: right;
+                    font-family: 'keep_calmlight', sans-serif;
+                }
+            }
+        }
+    }
+
+    .footer {
+        padding: .7em;
+        background-color: $azul-100;
+
+        .last-change { color: $azul-300; }
+        .change-detail { color: $azul-500; }
+        .created {
+            label { color: $gris-500; }
+            span {
+                margin: 0 .5em;
+                color: $azul-300;
+            }
+        }
+    }
+}
+
+/* -------------------------------------------
+    Sweet Alert 2
+------------------------------------------- */ 
+
+.swal2-popup.swal2-modal.swal2-show {
+    padding: 0 !important;
+
+    .swal2-header {
+        padding: .5em;
+        display: inline;
+        position: relative;
+        background-color: $azul-100;
+        
+        .swal2-title {
+            margin: 0;
+            font-size: 14px;
+            text-align: left;
+            color: $azul-300;
+        }
+        .swal2-close {
+            height: 100%;
+            border-radius: 0;
+            background-color: $azul-400;
+            border-top-right-radius: 5px;
+        }
+    }
+    .swal2-content {
+        padding: 2em;
+        display: flex;
+        justify-content: center;
+
+        #swal2-content {
+            font-size: 14px;
+            color: $gris-300;
+        }
+    }
+    .swal2-actions {
+        margin: 0;
+        gap: 1em;
+        padding: 1em;
+        display: flex;
+        flex-direction: row-reverse;
+
+        button {
+            color: $blanco-500;
+            font-size: 14px;
+            line-height: 18px;
+            font-family: 'keep_calmbook';
+            margin: 0;
+            transition: .3s !important;
+            box-shadow: none!important;
+            line-height: 30px !important;
+            padding: 0 3.2em !important;
+            border: 1px solid transparent !important;
+            transition-property: background-color !important;
+
+            &.swal2-cancel {
+                color: $rojo-500 !important;
+                border-color: $rojo-500 !important;
+                background-color: $blanco-500 !important;
+        
+                &:focus,
+                &:hover {
+                    outline: none !important;
+                    border-color: $rojo-500 !important;
+                    background-color: $blanco-500 !important;
+                    box-shadow: 0 0 0 1px $rojo-500 !important;
+                }
+            }
+
+            &.swal2-confirm {
+                color: $blanco-500 !important;
+                border-color: transparent !important;
+                background-color: $azul-200 !important;
+        
+                &:focus {
+                    outline: none !important;
+                    border-color: $blanco-500 !important;
+                    background-color: $azul-200 !important;
+                    box-shadow: 0 0 0 1px $azul-200 !important;
+                }
+                &:hover {
+                    outline: none !important;
+                    box-shadow: none!important;
+                    border-color: transparent !important;
+                    background-color: $azul-400 !important;
+                }
+            }
+        }
+    }
+}
+
+.swal2-container.swal2-noanimation,
+.swal2-container.swal2-backdrop-show { 
+    background: rgba(255,255,255,.8) !important;
+}
+.swal2-show {
+    box-shadow: rgb(149 157 165 / 20%) 0px 8px 24px;
+}
+#swal2-content {
+    font-size: 16px;
+    color: $azul-300;
+
+}
+.swal2-styled.swal2-confirm {
+    transition: .3s !important;
+    box-shadow: none!important;
+    line-height: 30px !important;
+    padding: 0 3.2em !important; 
+    border: 1px solid transparent !important;
+    transition-property: background-color !important;   
+    color: $blanco-500 !important;
+    border-color: transparent !important;
+    background-color: $azul-200 !important;
+
+    &:focus {
+        outline: none !important;
+        border-color: $blanco-500 !important;
+        background-color: $azul-200 !important;
+        box-shadow: 0 0 0 1px $azul-200 !important;
+    }
+    &:hover {
+        outline: none !important;
+        box-shadow: none!important;
+        border-color: transparent !important;
+        background-color: $azul-400 !important;
+    }
+}
+
+/* -------------------------------------------
+    Spinner overlay
+------------------------------------------- */ 
+.transparent .mat-dialog-container {
+    box-shadow: none !important;
+    background: transparent;
+}
+
+/* -------------------------------------------
+    Custom scrollbar
+------------------------------------------- */ 
+.custom-scrollbar-css {
+    scrollbar-color: none;
+    scrollbar-width: thin;
+  }
+  
+  /* scrollbar width */
+  .custom-scrollbar-css::-webkit-scrollbar {
+    height: 5px;
+    width: 5px;
+  }
+  
+  /* scrollbar track */
+  .custom-scrollbar-css::-webkit-scrollbar-track {
+    background: none;
+    border-radius: 15px;
+  }
+  
+  /* scrollbar handle */
+  .custom-scrollbar-css::-webkit-scrollbar-thumb {
+    border-radius: 15px;
+    background-color: $azul-500;
+  }

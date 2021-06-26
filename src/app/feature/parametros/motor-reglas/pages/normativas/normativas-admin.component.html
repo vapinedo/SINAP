@@ -1,0 +1,138 @@
+<section class="row">
+    <app-progressbar *ngIf="showProgressBar"></app-progressbar>
+    <app-spinner *ngIf="showSpinner"></app-spinner>
+    <div class="col-lg-3 col-spacing">
+
+        <div class="row mb-3">
+            <section class="filtro row asw-box animate__animated animate__fadeIn animate_faster">
+
+                <h2>Filtros</h2>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Documento</mat-label>
+                    <mat-select [(ngModel)]="filterDocumento"  (selectionChange)="applyCustomFilter()">
+                        <mat-option *ngFor="let item of documentos" [value]="item.id">{{
+                            item.label
+                            }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Vigencia</mat-label>
+                    <input matInput 
+                    [(ngModel)]="filterVigencia"
+                     placeholder="AAAA/MM/DD"
+                     (blur) = "applyCustomFilter()" />
+                   
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Fecha publicación</mat-label>
+                    <input matInput 
+                    [(ngModel)]="filterPublicacion"
+                     placeholder="AAAA/MM/DD"
+                     (blur) = "applyCustomFilter()" />
+                   
+                </mat-form-field>
+                  
+               
+                <mat-form-field appearance="fill">
+                    <mat-label>Estado</mat-label>
+                    <mat-select [(ngModel)]="filterEstado" (selectionChange)="applyCustomFilter()">
+                        <mat-option value="A">Activo</mat-option>
+                        <mat-option value="I">Inactivo</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+
+
+                <div class="text-align-rigth">
+                    <button type="button" mat-raised-button color="primary" (click)="clearFilter()">Limpiar</button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <article class="col-lg-9 asw-box animate__animated animate__fadeIn animate_faster bg-color">
+    <h2>Normativas</h2>
+    <div *ngIf="!showSpinner" class="table-search">
+        <div class="input-search">
+            <mat-icon>search</mat-icon>
+            <input matInput #inputSearch placeholder="Buscar ..." autocomplete="off" (keyup)="applyFilter($event)">
+        </div>
+        <button  mat-raised-button color="primary" (click)="onCreate()">Crear Normativa</button>
+    </div>
+
+    <app-progressbar *ngIf="showProgressBar"></app-progressbar>
+
+    <table mat-table [dataSource]="dataSource" [hidden]="showSpinner" matSort 
+        class="animate__animated animate__fadeIn animate__faster">
+        <ng-container matColumnDef="documento">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Documento</th>
+            <td mat-cell *matCellDef="let item">{{ item.documentoDesc }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Número y/o nombre</th>
+            <td mat-cell *matCellDef="let item">{{ item.nombre }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="publicacion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Fecha de publicación 
+            </th>
+            <td mat-cell *matCellDef="let item">
+                  {{ item.publicacion?.slice(0,10) | date: "yyyy/MM/dd" }}
+            </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="inicioVigencia">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Fecha inicio de vigencia
+            </th>
+            <td mat-cell *matCellDef="let item">
+                  {{ item.inicioVigencia?.slice(0,10) | date: "yyyy/MM/dd" }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="finVigencia">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Fecha fin de vigencia
+            </th>
+            <td mat-cell *matCellDef="let item">
+                        {{ item.finVigencia?.slice(0,10) | date: "yyyy/MM/dd" }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+            <td mat-cell *matCellDef="let item">
+                {{ item.estado === "A" ? "Activo" : "Inactivo" }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Acciones</th>
+            <td mat-cell *matCellDef="let item" class="tools text-center">
+                <i matTooltip="Ver detalle" (click)="openDetail(item)" class="material-icons-outlined azul-300">remove_red_eye</i>
+                <i matTooltip="Modificar" (click)="onEdit(item.idNormativa)" class="material-icons-outlined azul-300">edit</i>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No se encontraron registros</td>
+        </tr>
+    </table>
+
+    <mat-paginator  showFirstLastButtons [pageSizeOptions]="[5,10, 20, 50, 100]">
+    </mat-paginator>
+
+  
+    </article>
+
+</section>

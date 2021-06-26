@@ -1,0 +1,92 @@
+.mat-error > span {
+	display: block;
+}
+@import "src/assets/scss/colors";
+@import "src/assets/scss/custom_material";
+
+.subtitle-filter {
+  font-size: 13px;
+  color: $azul-500;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  font-style: normal;
+  font-family: 'keep_calmbook', sans-serif;
+}
+
+
+::ng-deep .mat-paginator-container {
+  justify-content: space-between !important;
+}
+
+.text-align-rigth {
+  text-align: right;
+}
+
+
+
+
+
+.mat-table-sticky-border-elem-right {
+    border-left: 1px solid #e0e0e0;
+  }
+
+  .mat-table-sticky-border-elem-left {
+    border-right: 1px solid #e0e0e0;
+  }
+
+  .example-container {
+    width: 70vw;
+    max-width: 100%;
+    overflow: auto;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  td.mat-column-star {
+    width: 20px;
+    padding-right: 8px;
+  }
+
+.bg-color {
+    background-color: $blanco-500;
+}
+
+.col-spacing {
+    padding-right: 50px;
+}
+
+
+
+/* Custom Scrollbar using CSS */
+.custom-scrollbar-css {
+  scrollbar-color: none;
+  scrollbar-width: thin;
+}
+
+/* scrollbar width */
+.custom-scrollbar-css::-webkit-scrollbar {
+  height: 5px;
+}
+
+/* scrollbar track */
+.custom-scrollbar-css::-webkit-scrollbar-track {
+  background: none;
+  border-radius: 15px;
+}
+
+/* scrollbar handle */
+.custom-scrollbar-css::-webkit-scrollbar-thumb {
+  border-radius: 15px;
+  background-color: $azul-500;
+}
+
+.mat-header-cell {
+	background-color: #f5f8fa;
+	color: #adadad;
+}
+
+.mat-cell {
+	color:black;
+}

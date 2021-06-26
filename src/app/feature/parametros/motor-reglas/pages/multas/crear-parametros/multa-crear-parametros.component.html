@@ -1,0 +1,14 @@
+<ul>
+  <li *ngFor="let param of parametros; let i = index"  class="mb-2">
+      <mat-checkbox *ngIf="param.nombre != 'CLASE_PLACA' && param.nombre != 'TIPO_VEHICULO'"
+          color="primary"
+          labelPosition="before"
+          [(checked)]="param.estado"
+          [(value)]="param.estado"
+          (change)="changeCheckbox($event, i)">
+          {{param.descNombre  | capitalizar }}
+      </mat-checkbox>
+  </li>
+</ul>
+
+

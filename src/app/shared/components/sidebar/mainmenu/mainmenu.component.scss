@@ -1,0 +1,63 @@
+@import "src/assets/scss/colors";
+@import "src/assets/scss/typography";
+
+#sidebar {
+    height: 100%;
+    min-width: 94px;
+    max-width: 94px;
+    transition: all 0.3s;
+    background-color: $blanco-500;
+    box-shadow: 0 2px 5px 1px rgba(64,60,67,.16);
+
+    .submenu { width: 100%; }
+
+    &.expanded {
+        display: flex;
+        justify-content: flex-start;
+        min-width: 280px;
+        max-width: 280px;
+        text-align: center;
+    }
+
+    .main-menu {
+        background-color: $azul-500;
+        display: block;
+        height: 100%;
+        width: 94px;
+
+        header { 
+            cursor: pointer;
+            text-align: center;
+            padding: 10px; 
+
+            mat-icon {
+                color: $blanco-500;
+            }
+        }
+        a {
+            font-size: 12px;
+            font-family: 'keep_calmlight', sans-serif;
+            align-items: center;
+            border-left: 3px solid transparent;
+            color: $blanco-500;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 10px;
+            transition: 0.4s;
+            text-decoration: none;
+            transition-property: background-color;
+    
+            mat-icon {
+                color: $blanco-500;
+            }
+            span {
+                margin-top: 12px;
+            }
+            &.active {
+                border-left-color: $blanco-500;
+                background-color: $azul-300;
+            }
+            &:hover { background-color: $azul-300; }
+        }
+    }
+}

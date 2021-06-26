@@ -1,0 +1,129 @@
+<app-spinner *ngIf="showSpinner"></app-spinner>
+
+
+<section class="modal-content custom-scrollbar">
+<form [formGroup]="form" autocomplete="off" *ngIf="!showSpinner">
+    <article class="row">
+        <mat-form-field cdkFocusInitial class="col">
+            <mat-label>Nombre del período *</mat-label>
+            <input matInput type="text" formControlName="periodo" >
+            <mat-error *ngIf="formControls.periodo?.invalid && (formControls.periodo?.dirty || formControls.periodo?.touched)">
+                <span *ngIf="formControls.periodo?.errors?.required">Nombre del período es requerido</span>
+                <span *ngIf="formControls.periodo?.errors?.pattern">Nombre del período incorrecto</span>
+                <span *ngIf="formControls.periodo?.errors?.maxlength?.requiredLength">Máximo {{form.controls.periodo.errors.maxlength.requiredLength}} caracteres</span>
+            </mat-error>
+        </mat-form-field>    
+    </article>
+
+    <article class = "row">
+        <h2>Período</h2>
+        <div class="col-12 col-md-6">
+            <mat-form-field>
+                <mat-label>Fecha inicial *</mat-label>
+                <input
+                matInput
+                [matDatepicker]="fechaInicial"
+                type="text"
+                formControlName="fechaInicial"
+                [max]="form.controls.fechaFinal?.value"
+                readonly
+            />
+            <mat-datepicker-toggle matSuffix [for]="fechaInicial"></mat-datepicker-toggle>
+            <mat-datepicker #fechaInicial></mat-datepicker>
+                <mat-error *ngIf="form.controls.fechaInicial.errors?.pattern"
+                    >Fecha inválida</mat-error
+                >
+                <mat-error *ngIf="form.controls.fechaInicial.errors?.required"
+                    >Fecha incial es requerido</mat-error
+                >
+            </mat-form-field>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <mat-form-field >
+                <mat-label>Fecha final *</mat-label>
+                <input
+                matInput
+                [matDatepicker]="fechaFinal"
+                type="text"
+                formControlName="fechaFinal"
+                [min]="form.controls.fechaInicial?.value"
+                readonly
+            />
+            <mat-datepicker-toggle matSuffix [for]="fechaFinal"></mat-datepicker-toggle>
+            <mat-datepicker #fechaFinal></mat-datepicker>
+                <mat-error *ngIf="form.controls.fechaFinal.errors?.pattern"
+                    >Fecha inválida</mat-error
+                >
+                <mat-error *ngIf="form.controls.fechaFinal.errors?.required"
+                    >Fecha final es requerido</mat-error
+                >
+            </mat-form-field>
+        </div>
+    </article>
+
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Tipo de periodo *</mat-label>
+            <mat-select (selectionChange)="changes($event.value)"  formControlName="tipoPeriodo">
+                <mat-option selected>Seleccione una..</mat-option>
+                <mat-option *ngFor="let periodo of lstPeriodos" [value]="periodo.id">{{periodo.label}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="formControls.tipoPeriodo?.invalid && (formControls.tipoPeriodo?.dirty || formControls.tipoPeriodo?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControls.tipoPeriodo?.errors?.required">Tipo del periodo es requerido</span>
+            </mat-error>
+        </mat-form-field>
+
+        <div class="col" >
+            <mat-form-field [hidden]="formControls.tipoPeriodo.value !== 'PERAMNIS'">
+                <mat-label>Concepto de débito *</mat-label>
+                <mat-select formControlName="conceptoId">
+                    <mat-option value="" selected>Seleccione una..</mat-option>
+                    <mat-option *ngFor="let concepto of lstConceptos" [value]="concepto.id">{{concepto.label}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControls.conceptoId?.invalid && (formControls.conceptoId?.dirty || formControls.conceptoId?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.conceptoId?.errors?.required">Concepto es requerido</span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+    </article>
+
+
+    <mat-checkbox class="remember" formControlName="seRepite" color ="primary">Se repite anualmente</mat-checkbox>
+  
+
+    <article class="row">
+        <div class="form-group col">
+            <mat-label>Estado</mat-label>
+            <mat-slide-toggle formControlName="estado" color ="primary"></mat-slide-toggle>
+        </div>
+    </article>
+
+    <article class="row">
+        <div class="form-group col">
+             <button mat-raised-button color="warn" (click)="onDelete()">Eliminar</button>
+        </div>
+    </article>
+
+    <article class="row">
+        <div class="form-group col">
+            <mat-form-field cdkFocusInitial>
+                <mat-label>Observaciones *</mat-label>
+                <textarea  matInput formControlName="observaciones" ></textarea>
+                <mat-error *ngIf="formControls.observaciones?.invalid && (formControls.observaciones?.dirty || formControls.observaciones?.touched)">
+                    <span *ngIf="formControls.observaciones?.errors?.required">Observación del concepto es requerido</span>
+                    <span *ngIf="formControls.observaciones?.errors?.pattern">Observación del concepto incorrecto</span>
+                    <span *ngIf="formControls.observaciones?.errors?.maxlength?.requiredLength">Máximo {{form.controls.observaciones.errors.maxlength.requiredLength}} caracteres</span>
+                </mat-error>
+            </mat-form-field>  
+        </div>
+    </article>
+
+    <footer align="end">
+        <button (click)="confirmarSalir()" class="m-3" mat-raised-button color="warn">Cancelar</button>
+        <button (click)="onSubmit()" [disabled]="form.invalid || !this.form.dirty " 
+        mat-raised-button color="primary">Guardar Cambios</button>
+    </footer>
+</form>
+</section>

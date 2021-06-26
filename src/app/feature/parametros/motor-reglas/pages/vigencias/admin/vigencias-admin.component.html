@@ -1,0 +1,81 @@
+
+    <article class="row asw-box animate__animated animate__fadeIn animate_faster">
+        <h2>Vigencias</h2>
+
+        <div *ngIf="!showSpinner" class="table-search">
+            <div class="input-search">
+                <mat-icon>search</mat-icon>
+                <input matInput 
+                    #inputSearch
+                    placeholder="Buscar ..." 
+                    autocomplete="off" 
+                    (keyup)="applyFilter($event)">
+            </div>
+            <button mat-raised-button color="primary" (click)="onCreate()">Crear vigencia</button>
+        </div>
+
+        <app-progressbar *ngIf="showProgressBar"></app-progressbar>
+        <app-spinner *ngIf="showSpinner"></app-spinner>
+
+        <table mat-table [dataSource]="dataSource" [hidden]="showSpinner" matSort class="animate__animated animate__fadeIn animate__faster">
+            <ng-container matColumnDef="periodo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre del período</th>
+                <td mat-cell *matCellDef="let item">{{ item.periodo }}</td>
+            </ng-container>
+    
+            <ng-container matColumnDef="fechaInicial">
+                <th mat-header-cell *matHeaderCellDef  mat-sort-header>Fecha inicio</th>
+                <td mat-cell *matCellDef="let item">{{ item.fechaInicial | date:'yyyy/MM/dd' }}</td>
+            </ng-container>
+    
+            <ng-container matColumnDef="fechaFinal">
+                <th mat-header-cell *matHeaderCellDef  mat-sort-header>Fecha fin</th>
+                <td mat-cell *matCellDef="let item">{{ item.fechaFinal | date:'yyyy/MM/dd' }}</td>
+            </ng-container>
+    
+            <ng-container matColumnDef="descTipoPeriodo">
+                <th mat-header-cell *matHeaderCellDef  mat-sort-header>Tipo</th>
+                <td mat-cell *matCellDef="let item">{{ item.descTipoPeriodo }}</td>
+            </ng-container>
+
+                
+            <ng-container matColumnDef="conceptoNombre">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Concepto de débito</th>
+                <td mat-cell *matCellDef="let item">{{ item.conceptoNombre }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="seRepiteDesc">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Repite anualmente</th>
+                <td mat-cell *matCellDef="let item">{{ item.seRepiteDesc }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="estadoDesc">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+                <td mat-cell *matCellDef="let item" 
+                    [ngClass]="{'estadoActivo': item.estadoDesc == 'Activo' }" 
+                >{{ item.estadoDesc }}</td>
+            </ng-container>
+    
+            <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Acciones</th>
+                <td mat-cell *matCellDef="let item" class="tools text-center">
+                    <i  (click)="onEdit(item)" matTooltip="Modificar" class="material-icons-outlined azul-300">edit</i>
+                    <i (click)="onViewDetail(item)" matTooltip="Ver detalle" class="material-icons-outlined azul-300">remove_red_eye</i>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No se encontraron registros</td>
+            </tr>
+        </table>
+
+        <mat-paginator
+        showFirstLastButtons
+        [pageSizeOptions]="[5, 10, 25, 100]">
+        </mat-paginator>
+
+
+    </article>

@@ -1,0 +1,281 @@
+@import "src/assets/scss/colors";
+@import "src/assets/scss/typography";
+
+/* -------------------------------------------
+    Botones
+------------------------------------------- */
+.mat-raised-button {
+    transition: .3s !important;
+    box-shadow: none!important;
+    line-height: 30px !important;
+    padding: 0 3.2em !important;
+    border: 1px solid transparent !important;
+    transition-property: background-color !important;
+
+    &[color="primary"] {
+        color: $blanco-500 !important;
+        border-color: transparent !important;
+        background-color: $azul-200 !important;
+
+        &:focus {
+            outline: none !important;
+            border-color: $blanco-500 !important;
+            background-color: $azul-200 !important;
+            box-shadow: 0 0 0 1px $azul-200 !important;
+        }
+        &:hover {
+            outline: none !important;
+            box-shadow: none!important;
+            border-color: transparent !important;
+            background-color: $azul-400 !important;
+        }
+    }
+
+    &[color="accent"] {
+        color: $azul-200 !important;
+        background-color: $blanco-500 !important;
+        border-color: $azul-400 !important;
+
+        &:focus,
+        &:hover {
+            outline: none !important;
+            color: $azul-400 !important;
+            box-shadow: 0 0 0 .4px $azul-400 !important;
+        }
+    }
+
+    &[color="warn"] {
+        color: $rojo-500 !important;
+        border-color: $rojo-500 !important;
+        background-color: $blanco-500 !important;
+
+        &:focus,
+        &:hover {
+            outline: none !important;
+            border-color: $rojo-500 !important;
+            background-color: $blanco-500 !important;
+            box-shadow: 0 0 0 1px $rojo-500 !important;
+        }
+    }
+
+    &[disabled] {
+        color: $blanco-500 !important;
+        background-color: #a8a8a8 !important;
+
+        &:focus,
+        &:hover {
+            background-color: #a8a8a8 !important;
+        }
+    }
+}
+
+/* -------------------------------------------
+    Formularios
+------------------------------------------- */
+.form-group,
+.input-group,
+.mat-form-field {
+    width: 100%;
+    margin-bottom: 2em;
+
+    .mat-radio-group {
+        gap: 3em;
+        display: flex;
+    }
+}
+
+.form-group {
+    gap: 1.5em;
+    display: flex;
+    padding-top: 1.5em;
+
+    mat-label {
+        color: $gris-500;
+    }
+}
+
+/* -------------------------------------------
+    Ventanas Modales
+------------------------------------------- */
+.cdk-overlay-dark-backdrop {
+    background: rgba(255,255,255,.8) !important;
+}
+
+.mat-dialog-container {
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px !important;
+
+    .mat-dialog-title {
+        display: flex;
+        align-items: center;
+        margin-left: -24px;
+        padding-left: 1em;
+        margin-top: -24px;
+        margin-right: -24px;
+        background-color: $azul-100;
+        justify-content: space-between;
+
+        h2 {
+            margin: 0;
+            font-size: 16px;
+            color: $azul-400;
+            text-transform: uppercase;
+        }
+
+        button {
+            border-radius: 0;
+            color: $blanco-400;
+            background-color: $azul-400;
+        }
+    }
+
+    .mat-dialog-content {
+        padding: 1em 4em;
+
+        &::-webkit-scrollbar { width: 5px; }
+        &::-webkit-scrollbar-thumb {
+            background: $azul-500;
+            border-radius: 5px;
+        }
+        &::-webkit-scrollbar-thumb:hover { background: $azul-300; }
+    }
+}
+
+/* -------------------------------------------
+    Tablas
+------------------------------------------- */
+.table-search {
+    padding: 0;
+    display: flex;
+    margin-bottom: .7em;
+    align-items: center;
+    justify-content: space-between;
+
+    .input-search {
+        display: flex;
+        padding-left: 1em;
+        align-items: center;
+        justify-content: flex-start;
+
+        mat-icon {
+            color: $gris-400;
+        }
+        input {
+            color: $gris-400;
+            margin-left: .7em;
+            padding-left: .7em;
+            border-left: 1px solid $gris-400;
+        }
+    }
+}
+
+.mat-table {
+    thead {
+        background-color: #f5f8fa;
+
+        th {
+            color: #9e9b9b;
+            padding: 1.2em 1em;
+        }
+    }
+    tbody {
+        .tools {
+            text-align: right;
+
+            i {
+                cursor: pointer;
+                margin-right: 15px;
+
+                &:last-child { margin-right: 0; }
+            }
+        }
+        tr, td {
+            padding-left: 0;
+            text-align: left;
+            padding: 1.2em 1em;
+            border-bottom: 1px solid #f5f8fa;
+        }
+    }
+}
+/* -------------------------------------------
+    Mat Slide Toggle
+------------------------------------------- */
+.mat-slide-toggle {
+    .mat-slide-toggle-bar {
+        width: 50px;
+        height: 25px;
+        border-radius: 15px;
+        background-color: $gris-300;
+    }
+
+    .mat-slide-toggle-thumb-container {
+        position: absolute;
+        z-index: 1;
+        width: 20px;
+        height: 25px;
+        top: 2px;
+        left: 2px;
+        transform: translate3d(0, 0, 0);
+        transition: all 80ms linear;
+        transition-property: transform;
+    }
+
+    &.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+        background-color: $azul-200;
+
+        .mat-slide-toggle-thumb-container { left: 12px; }
+    }
+
+    &.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+        background-color: $blanco-500;
+    }
+}
+/* -------------------------------------------
+    Utilidades
+------------------------------------------- */
+.asw-box {
+    padding: 24px;
+    border-radius: 5px;
+    background-color: $blanco-500;
+}
+
+.tabla-con-filtro {
+    gap: 5em;
+    display: flex;
+}
+
+.azul-500 { color: $azul-500; }
+.azul-400 { color: $azul-400; }
+.azul-300 { color: $azul-300; }
+.azul-200 { color: $azul-200; }
+
+.verde-500 { color: $verde-500; }
+.rojo-500 {color : $rojo-500}
+.verde-600 {color : $verde-600}
+
+#toast-container >.toast-success {
+	background-image: url(../img/check.png)!important;
+	color: #2b2b2b;
+  border-radius: 1px;
+  background-color: #9adecb;
+
+}
+
+.remove-line .mat-form-field-underline {
+	height: 0 !important;
+	display: none;
+}
+
+.remove-line .mat-focused .mat-form-field-label {
+	font-weight: bold !important;
+}
+
+.negro-500 { color: $negro-500; }
+
+.mat-header-cell {
+	background-color: #f5f8fa;
+	color: #adadad;
+}
+
+.mat-cell {
+	color:black;
+}

@@ -1,0 +1,134 @@
+
+<header mat-dialog-title>
+	<h2>Crear Normativa</h2>
+	<button mat-button  (click)="onCloseDialog()">
+		<i class="material-icons-outlined">clear</i>
+	</button>
+</header>
+
+<section class="modal-content custom-scrollbar">
+<mat-dialog-content *ngIf="!showSpinner">
+<form [formGroup]="form" autocomplete="off" >
+    <article class="row">
+        <mat-form-field  class="col">
+            <mat-label>Documento</mat-label>
+            <mat-select formControlName="documento" required>
+                <mat-option *ngFor="let documento of documentos" [value]="documento.id">
+                    {{ documento.label }}
+                </mat-option>
+            </mat-select>
+            
+            <mat-error *ngIf="documento?.invalid && (documento?.dirty || documento?.touched)">
+                <span *ngIf="documento?.errors?.required">Documento es requerido</span>
+            </mat-error>
+        </mat-form-field>    
+
+        <mat-form-field class="col" >
+            <mat-label>Número y/o nombre</mat-label>
+            <input matInput type="text" formControlName="nombre" required>
+            <mat-error *ngIf="nombre?.invalid && (nombre?.dirty || nombre?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="nombre?.errors?.required">Número y/o nombre es requerido</span>
+                <span *ngIf="nombre?.errors?.maxlength"
+								>Máximo
+								{{
+									nombre.errors.maxlength.requiredLength
+								}}
+								caracteres</span
+							>
+            </mat-error>
+        </mat-form-field>
+    </article>
+
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Descripción</mat-label>
+            <textarea matInput formControlName="descripcion" ></textarea>
+            <mat-error *ngIf="descripcion?.invalid && (descripcion?.dirty || descripcion?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="descripcion?.errors?.maxlength"
+                >Máximo
+                {{
+                    descripcion.errors.maxlength.requiredLength
+                }}
+                caracteres</span
+            > 
+            </mat-error>
+        </mat-form-field>
+    </article>
+
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Fecha publicación</mat-label>
+            <input matInput readonly
+            [matDatepicker]="publicacion" formControlName="publicacion"
+            formControlName="publicacion"
+            placeholder="AAAA/MM/DD"
+            required
+           
+        >
+        <mat-datepicker-toggle matSuffix [for]="publicacion"></mat-datepicker-toggle>
+            <mat-datepicker #publicacion></mat-datepicker>
+        <mat-error *ngIf="publicacion?.invalid && (publicacion?.dirty || publicacion?.touched)">
+            <span *ngIf="publicacion?.errors?.required">publicacion es requerido</span>
+        </mat-error>
+        
+
+
+        </mat-form-field>
+
+        <div class="form-group col">
+            <mat-label>Estado</mat-label>
+            <mat-slide-toggle color="primary" formControlName="estado"></mat-slide-toggle>
+        </div>
+    </article>
+
+
+    <article class="row">
+        <h2>Vigencia</h2>
+        <mat-form-field class="col">
+            <mat-label>Fecha inicio de vigencia</mat-label>
+            <input matInput [matDatepicker]="inicioVigencia" formControlName="inicioVigencia"
+                placeholder="AAAA/MM/DD" 
+                required 
+                readonly
+                (blur)="validateDates()"
+                (dateInput)="eventDates('input', $event)"
+                (dateChange)="eventDates('input', $event)" />
+            <mat-datepicker-toggle matSuffix [for]="inicioVigencia"></mat-datepicker-toggle>
+            <mat-datepicker #inicioVigencia></mat-datepicker>
+            <mat-error *ngIf="inicioVigencia?.invalid && (inicioVigencia?.dirty || inicioVigencia?.touched)"
+                class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="inicioVigencia?.errors?.required">Fecha inicio de vigencia es requerido</span>
+            </mat-error>
+            <mat-error *ngIf="form.get('inicioVigencia').errors?.outRange1">{{ form.get('inicioVigencia').errors?.outRange1 }}
+            </mat-error>
+        
+        </mat-form-field>
+            <mat-form-field class="col">
+                <mat-label>Fecha fin de vigencia</mat-label>
+                <input matInput formControlName="finVigencia"  readonly
+                    [min]="form.controls.inicioVigencia.value"
+                    placeholder="AAAA/MM/DD" 
+                    (blur)="validateDates()"
+                    [matDatepicker]="finVigencia" 
+                    (dateInput)="eventDates('input', $event)" 
+                    (dateChange)="eventDates('input', $event)" />
+                <mat-datepicker-toggle matSuffix [for]="finVigencia"></mat-datepicker-toggle>
+                <mat-datepicker #finVigencia></mat-datepicker>
+                <mat-error *ngIf="finVigencia?.invalid && (finVigencia?.dirty || finVigencia?.touched)"
+                    class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="finVigencia?.errors?.required">Fecha fin de vigencia es requerido</span>
+                </mat-error>
+                <mat-error *ngIf="form.get('finVigencia').errors?.outRange1">{{ form.get('finVigencia').errors?.outRange1 }}
+                </mat-error>
+            </mat-form-field>
+            
+
+    </article>
+
+    <footer class="text-center mt-4">
+        <button class="m-3" mat-raised-button color="warn" (click)="onCloseDialog()">Cancelar</button>
+        <button [disabled]="form.invalid" mat-raised-button (click)="onSubmit()" color="primary">Crear</button>
+    </footer>
+</form>
+</mat-dialog-content>
+</section>

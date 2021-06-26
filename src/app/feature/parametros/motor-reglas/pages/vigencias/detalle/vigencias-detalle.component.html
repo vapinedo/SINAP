@@ -1,0 +1,43 @@
+<app-spinner *ngIf="showSpinner"></app-spinner>
+
+<article class="detail" *ngIf="!showSpinner">
+    <div class="title">
+        <label>Nombre período:</label> 
+        <span>{{ dataSource.periodo | titlecase }}</span>
+    </div>
+
+    <table>
+        <tr>
+            <td>Período</td>
+            <td>{{ dataSource.fechaInicial | date:"yyyy/MM/dd" }} - {{ dataSource.fechaFinal | date:"yyyy/MM/dd" }}</td>
+        </tr>
+        <tr>
+            <td>Tipo</td>
+            <td>{{ dataSource.descTipoPeriodo }}</td>
+        </tr>
+        <tr>
+            <td>Repite</td>
+            <td>{{ dataSource.seRepiteDesc == '' ? 'No' : 'Si' }}</td>
+        </tr>
+        <tr>
+            <td>Estado</td>
+            <td>{{ dataSource.estadoDesc }}</td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        <p class="last-change">Último cambio</p>
+        <p class="created"> 
+            <label *ngIf="dataSource.fechaActualiza == null">Creado por</label>
+            <label *ngIf="dataSource.fechaActualiza != null">Modificado por</label>
+            <span>{{ dataSource.usuarioActualiza == null ? dataSource.usuarioCreacion == null ? 'usuario SINAP' : dataSource.usuarioCreacion : dataSource.usuarioActualiza }}</span>
+            <label>el</label>
+            <span>{{ dataSource.fechaActualiza == null ? (dataSource.fechaCreacion | date: 'yyyy/MM/dd') : (dataSource.fechaActualiza | date: 'yyyy/MM/dd') }}</span>
+        </p>
+        <p class="change-detail">{{ dataSource.observaciones }}</p>
+    </div>
+
+    <footer class="d-flex justify-content-end mt-4">
+        <button mat-raised-button color="primary" (click)="closeModalEvent()">Editar</button>
+    </footer>
+</article>

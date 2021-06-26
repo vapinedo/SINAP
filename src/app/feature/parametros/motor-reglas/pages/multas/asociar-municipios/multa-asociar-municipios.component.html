@@ -1,0 +1,60 @@
+<section class="modal-content custom-scrollbar">
+
+  <mat-form-field>
+    <mat-label>Departamentos</mat-label>
+    <mat-chip-list #chipListDepto>
+      <mat-chip
+        *ngFor="let depto of departamentos"
+        [selectable]="selectable"
+        [removable]="removable"
+        (removed)="remove(depto)">
+        {{ depto.descripcion | capitalizar }}
+        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+      </mat-chip>
+      <input
+        placeholder="Buscar..."
+        #deptoInput
+        [formControl]="deptoCtrl"
+        [matAutocomplete]="matAutocompleteDepto"
+        [matChipInputFor]="chipListDepto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+    </mat-chip-list>
+    <mat-autocomplete #matAutocompleteDepto="matAutocomplete" (optionSelected)="selected($event)">
+      <mat-option *ngFor="let depto of departamentosFiltrados$ | async" [value]="depto">
+        {{ depto.descripcion | capitalizar }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Municipios</mat-label>
+    <mat-chip-list #chipListMpio>
+      <mat-chip
+        *ngFor="let mpio of municipios"
+        [selectable]="selectable"
+        [removable]="removable"
+        (removed)="removeMunicipio(mpio)">
+        {{ mpio.descripcion | capitalizar }}
+        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+      </mat-chip>
+      <input
+        placeholder="Buscar..."
+        #mpioInput
+        [formControl]="mpioCtrl"
+        [matAutocomplete]="matAutocompleteMpio"
+        [matChipInputFor]="chipListMpio"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+    </mat-chip-list>
+    <mat-autocomplete #matAutocompleteMpio="matAutocomplete" (optionSelected)="selectedMunicipio($event)">
+      <mat-option *ngFor="let mpio of municipiosFiltrados$ | async" [value]="mpio">
+        {{ mpio.descripcion | capitalizar }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <footer class="text-center mt-5">
+    <button class="m-3" mat-raised-button color="warn" [mat-dialog-close]="true">Cancelar</button>
+    <button mat-raised-button (click)="enviarMunicipios()" color="primary" [mat-dialog-close]="true">Asociar</button>
+  </footer>
+
+</section>

@@ -1,0 +1,39 @@
+<article class="row justify-content-center animate__animated animate__fadeIn animate_faster">
+    <div class="col-8 asw-box">
+        <h2>Valor salario mínimo</h2>
+    
+        <form [formGroup]="form" autocomplete="off">
+            <section class="row">
+                <mat-form-field class="col">
+                    <mat-label>Tipo de periodo</mat-label>
+                    <mat-select  formControlName="periodo" (selectionChange)="get($event.value)" required>
+                        <mat-option *ngFor="let year of years" [value]="year">{{year}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="formControl.periodo?.invalid && (formControl.periodo?.dirty || formControl.periodo?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                        <span *ngIf="formControl.periodo?.errors?.required">El periodo es requerido</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="col">
+                    <mat-label>valor salario mínimo</mat-label>
+                    <input matInput type="number" formControlName="valor" min="0" (keypress)="onlyNumber($event)"  required/>
+                    <mat-error *ngIf="formControl.valor?.invalid && (formControl.valor?.dirty || formControl.valor?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                        <span *ngIf="formControl.valor?.errors?.required">El valor del salario mínimo es requerido <br></span>
+                        <span *ngIf="formControl.valor?.errors?.pattern">El valor ingresado no es valido <br></span>
+                        <span *ngIf="formControl.valor?.errors?.min">Ingrese un valor positivo</span>
+                        <span *ngIf="formControl.valor?.errors?.max">El valor ingresado no puede tener mas de 23 digitos enteros</span>
+                    </mat-error>
+                </mat-form-field>
+
+            </section>
+
+            <div class="text-end">
+                <button mat-raised-button class="mr-5" (click)="cancel()" color="warn">Cancelar</button>
+                <button mat-raised-button (click)="openDialog()" 
+                    [disabled]="!validForm()" color="primary">Actualizar</button>
+            </div>
+        </form>
+
+    </div>
+
+</article>

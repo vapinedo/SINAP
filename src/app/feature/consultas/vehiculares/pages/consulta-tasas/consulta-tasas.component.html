@@ -1,0 +1,151 @@
+<div class="row">
+	<div class="col-md-3">
+		<app-sub-menu-consultas
+			[iduVehiculo]="iduVehiculo"
+			[periodo]="periodo"
+			[selected]="'consulta-tasa'"
+		></app-sub-menu-consultas>
+	</div>
+	<div class="col-md-9">
+		<div
+			class="asw-box animate__animated animate__fadeIn animate_faster bg-color"
+		>
+			<div align="start">
+				<button mat-button color="primary" (click)="goBack()">
+					<mat-icon>arrow_back_ios</mat-icon>
+					Volver
+				</button>
+			</div>
+			<div class="row mb-3">
+				<h2 class="title mb-1">Consulta de tasas</h2>
+			</div>
+
+			<div class="row">
+				<span class="subtitle">Caracteristicas propietario</span>
+				<div class="col">
+					<article class="multa-detalle">
+						<table>
+							<tr>
+								<td>Nombre</td>
+								<td>{{ detalle?.nombrePropietario | uppercase }}</td>
+							</tr>
+							<tr>
+								<td>RTN</td>
+								<td>{{ detalle?.rtn | uppercase }}</td>
+							</tr>
+							<tr *ngIf = "detalle.tipoPropietario">
+								<td>RUC</td>
+								<td>{{ detalle?.ruc | uppercase }}</td>
+							</tr>
+						</table>
+					</article>
+				</div>
+				<div class="col">
+					<article class="multa-detalle">
+						<table>
+							<tr *ngIf = "!detalle.tipoPropietario">
+								<td>RUC</td>
+								<td>{{ detalle?.ruc }}</td>
+							</tr>
+							<tr *ngIf = "detalle.tipoPropietario">
+								<td>Tipo de propietario</td>
+								<td>{{ detalle?.tipoPropietario }}</td>
+							</tr>
+							<tr *ngIf = "detalle.tipoPropietario">
+								<td>Exento desde</td>
+								<td>{{ detalle?.exentoDesde  | date: "yyyy/MM/dd"}}</td>
+							</tr>
+						</table>
+					</article>
+				</div>
+			</div>
+
+			<div class="row">
+				<span class="subtitle">Datos del vehículo</span>
+				<div class="col">
+					<article class="multa-detalle">
+						<table>
+							<tr>
+								<td>Placa</td>
+								<td>{{ detalle?.placa }}</td>
+							</tr>
+						</table>
+					</article>
+				</div>
+				<div class="col"></div>
+			</div>
+
+			<div class="row">
+				<span class="subtitle">Caracteristicas</span>
+				<div class="col">
+					<article class="multa-detalle">
+						<table>
+							<tr>
+								<td>Año</td>
+								<td>{{ detalle?.annio }}</td>
+							</tr>
+							<tr>
+								<td>Motor</td>
+								<td>{{ detalle?.motor }}</td>
+							</tr>
+							<tr>
+								<td>Inscripción</td>
+								<td>{{ detalle?.fechaInscripcion | date: "yyyy/MM/dd" }}</td>
+							</tr>
+							<tr>
+								<td>Modelo</td>
+								<td>{{ detalle?.modelo }}</td>
+							</tr>
+							<tr>
+								<td>VIN</td>
+								<td>{{ detalle?.vin }}</td>
+							</tr>
+							<tr>
+								<td>Tipo de vehículo</td>
+								<td>{{ detalle?.tipoVehiculo }}</td>
+							</tr>
+							<tr>
+								<td>Color</td>
+								<td>{{ detalle?.color }}</td>
+							</tr>
+						</table>
+					</article>
+				</div>
+				<div class="col">
+					<article class="multa-detalle">
+						<table>
+							<tr>
+								<td>Circulación</td>
+								<td>{{ detalle?.fechaCirculacion | date: "yyyy/MM/dd" }}</td>
+							</tr>
+							<tr>
+								<td>Marca</td>
+								<td>{{ detalle?.marca }}</td>
+							</tr>
+							<tr>
+								<td>Chasis</td>
+								<td>{{ detalle?.chasis }}</td>
+							</tr>
+							<tr>
+								<td>Departamento</td>
+								<td>{{ detalle?.departamento }}</td>
+							</tr>
+							<tr>
+								<td>Municipio</td>
+								<td>{{ detalle?.municipio }}</td>
+							</tr>
+							<tr>
+								<td>Cilindraje</td>
+								<td>{{ detalle?.cilindraje }}</td>
+							</tr>
+							<tr>
+								<td>Tipo de placa</td>
+								<td>{{ detalle?.clasePlaca }}</td>
+							</tr>
+						</table>
+					</article>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,137 @@
+<header mat-dialog-title>
+    <h2>CREAR CALENDARIO DE PAGO</h2>
+    <button mat-button (click)="onCloseDialog()">
+        <i class="material-icons-outlined">clear</i>
+    </button>
+</header>
+<section class="modal-content custom-scrollbar">
+    <app-spinner *ngIf="showSpinner"></app-spinner>
+    <mat-dialog-content *ngIf="!showSpinner">
+        <form [formGroup]="form" autocomplete="off" *ngIf="!showSpinner">
+            <article class="row">
+                <div class="col-md-6 col-sm-12">
+                    <mat-form-field class="col">
+                        <mat-label>Nombre *</mat-label>
+                        <input matInput formControlName="nombre" />
+                        <mat-error *ngIf="
+								form.get('nombre')?.invalid &&
+								(form.get('nombre')?.dirty)
+							">
+                            <span *ngIf="form.get('nombre')?.errors?.required">Nombre es requerido</span>
+                            <span *ngIf="form.get('nombre')?.errors?.minlength">Mínimo
+                                {{
+                                form.get('nombre').errors.minlength.requiredLength
+                                }}
+                                caracteres</span>
+                            <span *ngIf="form.get('nombre')?.errors?.maxlength">Máximo
+                                {{
+                                form.get('nombre').errors.maxlength.requiredLength
+                                }}
+                                caracteres</span>
+                            <span *ngIf="form.get('nombre').errors?.pattern">No puede ser vacío</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </article>            
+            <article class="row">
+                <mat-form-field class="col">
+                    <mat-label>Concepto de débito *</mat-label>
+                    <mat-select formControlName="conceptoCobro">
+                        <mat-option value="">Seleccione una...</mat-option>
+                        <mat-option [value]="0">Todos</mat-option>
+                        <mat-option *ngFor="let conceptoCobro of concepts" [value]="conceptoCobro.id">
+                            {{conceptoCobro.label}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="conceptoCobro?.invalid && (conceptoCobro?.dirty || conceptoCobro?.touched)"
+                        class="animate__animated animate__fadeIn animate_faster">
+                        <span *ngIf="conceptoCobro?.errors?.required">Concepto de cobro es requerido</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="col">
+                    <mat-label>Mes *</mat-label>
+                    <mat-select formControlName="mes">
+                        <mat-option *ngFor="let mes of mesesList" [value]="mes">{{mes}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="mes?.invalid && (mes?.dirty || mes?.touched)"
+                        class="animate__animated animate__fadeIn animate_faster">
+                        <span *ngIf="mes?.errors?.required">El mes es requerido</span>
+                    </mat-error>
+                </mat-form-field>
+            </article>
+
+            <article class="row">
+                <h2>Fecha de pago</h2>
+                <mat-form-field class="col">
+                    <mat-label>Fecha inicio *</mat-label>
+                    <input readonly matInput [matDatepicker]="fechaInicio" formControlName="fechaInicio" placeholder="AAAA/MM/DD"
+                        (blur)="validateDates()" (dateInput)="validateDates()" (dateChange)="validateDates()" />
+                    <mat-datepicker-toggle matSuffix [for]="fechaInicio"></mat-datepicker-toggle>
+                    <mat-datepicker #fechaInicio></mat-datepicker>
+                    <mat-error *ngIf="fechaInicio?.invalid && (fechaInicio?.dirty || fechaInicio?.touched)"
+                        class="animate__animated animate__fadeIn animate_faster">
+                        <span *ngIf="fechaInicio?.errors?.required">Fecha inicio es requerido</span>
+                    </mat-error>
+                    <mat-error *ngIf="form.get('fechaInicio').errors?.outRange1">{{
+                        form.get('fechaInicio').errors?.outRange1 }}
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field class="col">
+                    <mat-label>Fecha fin *</mat-label>
+                    <input readonly matInput [matDatepicker]="fechaFin" formControlName="fechaFin" placeholder="AAAA/MM/DD"
+                        (blur)="validateDates()" (dateInput)="validateDates()" (dateChange)="validateDates()" />
+                    <mat-datepicker-toggle matSuffix [for]="fechaFin"></mat-datepicker-toggle>
+                    <mat-datepicker #fechaFin></mat-datepicker>
+                    <mat-error *ngIf="fechaFin?.invalid && (fechaFin?.dirty || fechaFin?.touched)"
+                        class="animate__animated animate__fadeIn animate_faster">
+                        <span *ngIf="fechaFin?.errors?.required">Fecha inicio es requerido</span>
+                    </mat-error>
+                    <mat-error *ngIf="form.get('fechaFin').errors?.outRange1">{{form.get('fechaFin').errors?.outRange1
+                        }}
+                    </mat-error>
+                </mat-form-field>
+            </article>
+
+            <article class="row">
+                <div class="col-md-6 col-sm-12">
+                    <mat-form-field class="col">
+                        <mat-label>Clase placa *</mat-label>
+                        <mat-select formControlName="tipoPlacas" multiple>
+                            <mat-option #defaultClass value="">Seleccione una...</mat-option>
+                            <mat-option #allSelected (click)="toggleAllSelection()" [value]="0">TODAS</mat-option>
+                            <mat-option *ngFor="let tipoPlacas of plateClass" [value]="tipoPlacas.clase"
+                                (click)="tosslePerOne(allSelected.viewValue)">
+                                {{tipoPlacas.clase}}:{{tipoPlacas.corto}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="mes?.invalid && (mes?.dirty || mes?.touched)"
+                            class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="mes?.errors?.required">El mes es requerido</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </article>
+            <article class="row">
+                <h2>Asignar placas terminadas en</h2>
+                <div class="form-group">
+                    <ng-container *ngFor="let item of numbers, let i = index " class="form-check form-check-inline">
+                        <mat-checkbox color="primary" (change)="selectPlaca($event, i)"
+                            [checked]="form.get('placas').value.includes(item)">{{item}}</mat-checkbox>
+                    </ng-container>
+                </div>
+            </article>
+            <article class="row">
+                <div class="col">
+                    <mat-slide-toggle formControlName="estado" color="primary">Estado</mat-slide-toggle>
+                </div>
+            </article>
+
+            <footer class="text-center mt-4">
+                <button class="m-3" mat-raised-button color="warn" (click)="onCloseDialog()">Cancelar</button>
+                <button mat-raised-button [disabled]="form.invalid" color="primary"
+                    (click)="showConfirmarCrear()">Crear</button>
+            </footer>
+        </form>
+    </mat-dialog-content>
+</section>

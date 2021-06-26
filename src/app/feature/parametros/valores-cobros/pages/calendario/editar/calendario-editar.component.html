@@ -1,0 +1,125 @@
+<app-spinner *ngIf="mostrarSpinner"></app-spinner>
+
+<form [formGroup]="form" *ngIf="!mostrarSpinner"  autocomplete="off">
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Nombre*</mat-label>
+            <input matInput type="text" formControlName="nombre">
+            <mat-error *ngIf="formControl.nombre?.invalid && (formControl.nombre?.dirty || formControl.nombre?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControl.nombre?.errors?.required">Nombre es requerido</span>
+                <span *ngIf="formControl.nombre?.errors?.maxlength">Máximo 100 caracteres</span>
+                <span *ngIf="formControl.nombre?.errors?.pattern">No puede ser vacío</span>
+            </mat-error>
+        </mat-form-field>
+    </article>
+
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Concepto de débito*</mat-label>
+            <mat-select [(value)]="formControl.conceptosCobro.value">
+                <mat-option value="">Seleccione una...</mat-option>
+                <mat-option [value]="0">Todos</mat-option>
+                <mat-option *ngFor="let concepto of conceptosCobroArr" [value]="concepto.id">
+                    {{ concepto.nombre }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formControl.conceptosCobro?.invalid && (formControl.conceptosCobro?.dirty || formControl.conceptosCobro?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControl.conceptosCobro?.errors?.required">Concepto de cobro es requerido</span>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="col">
+            <mat-label>Mes*</mat-label>
+            <mat-select formControlName="mes">
+                <mat-option *ngFor="let mes of arregloDeMeses" [value]="mes">{{ mes }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="formControl.mes?.invalid && (formControl.mes?.dirty || formControl.mes?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControl.mes?.errors?.required">El mes es requerido</span>
+            </mat-error>
+        </mat-form-field>
+    </article>
+
+    <article class="row">
+        <h2>Fecha de pago</h2>
+        <mat-form-field class="col">
+            <mat-label>Fecha inicio*</mat-label>
+            <input readonly matInput [matDatepicker]="fechaInicio" formControlName="fechaInicio"
+												(blur)="validateDates()" (dateInput)="validateDates()" (dateChange)="validateDates()"
+												>
+            <mat-datepicker-toggle matSuffix [for]="fechaInicio"></mat-datepicker-toggle>
+            <mat-datepicker #fechaInicio></mat-datepicker>
+            <mat-error *ngIf="formControl.fechaInicio?.invalid && (formControl.fechaInicio?.dirty || formControl.fechaInicio?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControl.fechaInicio?.errors?.required">Fecha inicio es requerido</span>
+            </mat-error>
+												<mat-error *ngIf="form.get('fechaInicio').errors?.outRange1">{{
+													form.get('fechaInicio').errors?.outRange1 }}
+									</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="col">
+            <mat-label>Fecha fin*</mat-label>
+            <input readonly matInput [matDatepicker]="fechaFin" formControlName="fechaFin"
+												(blur)="validateDates()" (dateInput)="validateDates()" (dateChange)="validateDates()"
+												>
+            <mat-datepicker-toggle matSuffix [for]="fechaFin"></mat-datepicker-toggle>
+            <mat-datepicker #fechaFin></mat-datepicker>
+            <mat-error *ngIf="formControl.fechaFin?.invalid && (formControl.fechaFin?.dirty || formControl.fechaFin?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControl.fechaFin?.errors?.required">Fecha fin es requerido</span>
+            </mat-error>
+												<mat-error *ngIf="form.get('fechaFin').errors?.outRange1">{{form.get('fechaFin').errors?.outRange1
+												}}
+								</mat-error>
+        </mat-form-field>
+    </article>
+
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Clase de placa*</mat-label>
+            <mat-select formControlName="tipoPlaca" multiple>
+                <mat-option *ngFor="let tipo of tiposDePlaca" [value]="tipo.clase">{{ tipo.corto }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="formControl.tipo?.invalid && (formControl.tipo?.dirty || formControl.tipo?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControl.tipo?.errors?.required">Clase de placa requerido</span>
+            </mat-error>
+        </mat-form-field>
+    </article>
+
+    <article class="row">
+        <h2>Asignar placas terminadas en*</h2>
+        <div class="form-group">
+            <ng-container *ngFor="let item of placasArr, let i = index " class="form-check form-check-inline">
+                <mat-checkbox (change)="selectPlaca($event, i)" [checked]="formControl.placas.value.includes(item)">
+                    <!-- <mat-checkbox (change)="selectPlaca($event, item)"> -->
+                    {{ item }}
+                </mat-checkbox>
+            </ng-container>
+        </div>
+    </article>
+
+    <article class="row">
+        <div class="col">
+            <mat-slide-toggle formControlName="estado">Estado</mat-slide-toggle>
+        </div>
+    </article>
+
+    <button (click)="onDelete(calendarioDePago.id)" type="button" style="margin: 0; margin-top: 2em" mat-raised-button color="warn">
+        Eliminar
+    </button>
+
+    <article class="row mt-4">
+        <mat-form-field class="col">
+            <mat-label>Observaciones*</mat-label>
+            <textarea matInput type="text" formControlName="observaciones"></textarea>
+            <mat-error *ngIf="formControl.observaciones?.invalid && (formControl.observaciones?.dirty || formControl.observaciones?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControl.observaciones?.errors?.required">Observaciones es requerido</span>
+                <span *ngIf="formControl.observaciones?.errors?.maxlength">Máximo 200 caracteres</span>
+                <span *ngIf="formControl.observaciones?.errors?.pattern">No puede ser vacío</span>
+            </mat-error>
+        </mat-form-field>
+    </article>
+
+    <footer class="text-center mt-4">
+        <button class="m-3" mat-raised-button color="warn"  (click) = "onCloseDialog()" >Cancelar</button>
+        <button [disabled]=" form.invalid || !form.dirty || disableButton" mat-raised-button type="button"  (click) = "onSubmit()" color="primary">Guardar cambios</button>
+    </footer>
+</form>

@@ -1,0 +1,595 @@
+<app-spinner *ngIf="showSpinner"></app-spinner>
+
+<form [formGroup]="form" autocomplete="off" *ngIf="!showSpinner">
+    <article class="row">
+        <mat-form-field cdkFocusInitial class="col">
+            <mat-label>Nombre de multa *</mat-label>
+            <input matInput type="text" formControlName="nombre">
+            <mat-error *ngIf="formControls.nombre?.invalid && (formControls.nombre?.dirty || formControls.nombre?.touched)">
+                <span *ngIf="formControls.nombre?.errors?.required">Nombre de multa es requerido<br></span>
+                <span *ngIf="formControls.nombre?.errors?.pattern">Nombre de multa incorrecto<br></span>
+                <span *ngIf="formControls.nombre?.errors?.maxlength?.requiredLength">Máximo {{form.controls.nombre.errors.maxlength.requiredLength}} caracteres<br></span>
+            </mat-error>
+        </mat-form-field>    
+
+        <mat-form-field class="col">
+            <mat-label>Normativa</mat-label>
+            <input matInput formControlName="normativa" readonly/>
+        </mat-form-field>
+
+
+    </article>
+
+    <article class="row">
+        <mat-form-field cdkFocusInitial class="col">
+            <mat-label>Descripción</mat-label>
+            <textarea matInput formControlName="descripcion"></textarea>
+            <mat-error *ngIf="formControls.descripcion?.invalid && (formControls.descripcion?.dirty || formControls.descripcion?.touched)">
+                <span *ngIf="formControls.descripcion?.errors?.pattern">Descripción incorrecto<br></span>
+                <span *ngIf="formControls.descripcion?.errors?.maxlength?.requiredLength">Máximo {{form.controls.descripcion.errors.maxlength.requiredLength}} caracteres<br></span>
+            </mat-error>
+        </mat-form-field>  
+
+    </article>
+
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Concepto de débito *</mat-label>
+            <mat-select (selectionChange)="changesConcepto()" formControlName="conceptoCobro">
+                <mat-option *ngFor="let concepto of lstConceptos; let i=index" [value]="concepto.id">
+                    {{ concepto.codigo + '-' + concepto.nombre }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formControls.conceptoCobro?.invalid && (formControls.conceptoCobro?.dirty || formControls.conceptoCobro?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControls.conceptoCobro?.errors?.required">Concepto de débito es requerido<br></span>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="col">
+            <mat-label>Tarifa aplicable</mat-label>
+            <mat-select formControlName="tarifa">
+                <mat-option *ngFor="let tarifa of lstTarifas | async; let i=index" [value]="tarifa.id">
+                    {{ tarifa.nombre }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+
+
+    </article>
+
+    <!--Modo de cobro-->
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Modo de cobro *</mat-label>
+            <mat-select (selectionChange)="changesModoCobro()" formControlName="modoCobro">
+                <mat-option>Seleccione uno...</mat-option>
+                <mat-option *ngFor="let monto of lstModosCobro | async" 
+                 [value]="monto.id">{{monto.label | capitalizar}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formControls.modoCobro?.invalid && (formControls.modoCobro?.dirty || formControls.modoCobro?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControls.modoCobro?.errors?.required">Modo de cobro es requerido<br></span>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="col" *ngIf="formControls.modoCobro.value == 'PORCEN'">
+            <mat-label>Porcentaje</mat-label>
+            <input matInput type="number" formControlName="modoCobroPorcentaje"
+            (keypress)="onlyNumber($event)" 
+            onkeyup="if(this.value > 100) this.value = 100;"/>
+        </mat-form-field>
+    
+    </article>
+
+    <article class="row" *ngIf="formControls.modoCobro.value == 'PORCEN'">
+
+        <mat-form-field class="col">
+            <mat-label>Concepto base</mat-label>
+            <mat-select formControlName="modoCobroConcepto">
+                <mat-option *ngFor="let conceptoBase of lstConceptoBase | async; let i=index" [value]="conceptoBase.id">
+                    {{ conceptoBase.label }}
+                </mat-option>
+                <mat-option *ngFor="let concepto of lstConceptos; let i=index" [value]="concepto.id">
+                    {{ concepto.codigo + '-' + concepto.nombre }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formControls.municipio?.invalid && (formControls.municipio?.dirty || formControls.municipio?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControls.municipio?.errors?.required">{{ formControls.municipio }} es requerido<br></span>
+            </mat-error>
+        </mat-form-field>
+
+        <div class="col" *ngIf="formControls.modoCobroConcepto.value  == 'V_VEHI'">
+            <mat-form-field>
+                <mat-label>Valor del vehículo</mat-label>    
+                <mat-select formControlName="modoCobroVehiculo">
+                    <mat-option>Seleccione uno...</mat-option>
+                    <mat-option *ngFor="let valVehiculo of lstValorVehiculo | async" 
+                     [value]="valVehiculo.id">{{valVehiculo.label}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControls.municipio?.invalid && (formControls.municipio?.dirty || formControls.municipio?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.municipio?.errors?.required">{{ formControls.municipio }} es requerido<br></span>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="valoresFijos.includes(formControls.modoCobroVehiculo.value)">
+                <mat-label>Valor del vehículo</mat-label>
+                <input matInput type="number" formControlName="modoCobroVehiculoFijo"/>
+            </mat-form-field>
+
+            <div class="row" *ngIf="valoresEntre.includes(formControls.modoCobroVehiculo.value)">
+                <div class="col-6">
+                    <mat-form-field>
+                        <mat-label>Mínimo</mat-label>
+                        <input matInput type="number" formControlName="modoCobroVehiculoMenor"/>
+                        <mat-error *ngIf="formControls.modoCobroVehiculoMenor?.invalid && (formControls.modoCobroVehiculoMenor?.dirty || formControls.modoCobroVehiculoMenor?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControls.modoCobroVehiculoMenor?.errors?.rango">El valor mínimo debe ser menor al máximo<br></span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-6">
+                    <mat-form-field >
+                        <mat-label>Máximo</mat-label>
+                        <input matInput type="number" formControlName="modoCobroVehiculoMayor"/>
+                    </mat-form-field>
+                </div>
+            </div>         
+        </div>
+
+        <mat-form-field class="col">
+            <mat-label>Monto mínimo *</mat-label>
+            <input matInput type="number" formControlName="modoCobroMontoMinimo"
+            min="0" (keypress)="onlyNumberMonto($event)" (ngModelChange)="onChangeMontoMin()"/>
+            <mat-error *ngIf="formControls.modoCobroMontoMinimo?.invalid && (formControls.modoCobroMontoMinimo?.dirty || formControls.modoCobroMontoMinimo?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControls.modoCobroMontoMinimo?.errors?.min">Valor total de cuotas excede el valor máximo de la multa<br></span>
+            </mat-error>
+        </mat-form-field>
+
+    </article>
+
+    <!--Valores por cuota-->
+
+    <article class="row">
+
+        <mat-form-field class="col"
+        [matTooltip]="formControls.valorMinimoCuota?.status == 'DISABLED' ? 'Ingresar tipo de vehículo' : ''">
+            <mat-label>Valor mínimo por cuota *</mat-label>
+            <input matInput type="number" formControlName="valorMinimoCuota"
+            min="0" (keypress)="onlyNumberMonto($event)"
+            (ngModelChange)="onChangeValMin()"/>
+            <mat-error *ngIf="formControls.valorMinimoCuota?.invalid && (formControls.valorMinimoCuota?.dirty || formControls.valorMinimoCuota?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControls.valorMinimoCuota?.errors?.required">Valor mínimo es requerido<br></span>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="col"
+            [matTooltip]="formControls.valorMaximoCuota?.status == 'DISABLED' ? 'Ingresar monto mínimo' : ''">
+            <mat-label>Valor máximo de la multa *</mat-label>
+            <input matInput type="number" formControlName="valorMaximoCuota"
+            min="0" (keypress)="onlyNumberMonto($event)"/>
+            <mat-error *ngIf="formControls.valorMaximoCuota?.invalid && (formControls.valorMaximoCuota?.dirty || formControls.valorMaximoCuota?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControls.valorMaximoCuota?.errors?.required">Valor máximo es requerido<br></span>
+                <span *ngIf="formControls.valorMaximoCuota?.errors?.min">Valor total de cuotas excede el valor máximo de la multa<br></span>
+            </mat-error>
+        </mat-form-field>
+    
+    </article>
+
+    <article class="row">
+        <div class="col-4">
+            <mat-form-field >
+                <mat-label>Periodicidad</mat-label>
+                <mat-select formControlName="periodicidad" (selectionChange)="changesPeriodicidad()">
+                    <mat-option >Seleccione uno...</mat-option>
+                    <mat-option *ngFor="let perio of lstPeriodicidad | async; let i=index" [value]="perio.id">
+                        {{ perio.label }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControls.municipio?.invalid && (formControls.municipio?.dirty || formControls.municipio?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.municipio?.errors?.required">{{ formControls.municipio }} es requerido</span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </article>
+
+    <article class="row">
+        <div class="col-4">
+            <mat-form-field>
+                <mat-label>Número de pagos *</mat-label>
+                <input matInput type="number" formControlName="numeroPagos" max="99" min="1" 
+                (ngModelChange)="onAddCuota()" 
+                (keypress)="onlyNumber($event)" 
+                onkeyup="if(this.value > 99) this.value = 99;"/>
+                <mat-error *ngIf="formControls.numeroPagos?.invalid && (formControls.numeroPagos?.dirty || formControls.numeroPagos?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.numeroPagos?.errors?.required">número de pagos es requerido<br></span>
+                    <span *ngIf="formControls.numeroPagos?.errors?.min">Número de pagos no puede ser 0<br></span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </article>
+
+    <div *ngIf="formControls.numeroPagos?.value" formArrayName="cuotasList">
+        <mat-form-field *ngFor="let item of cuotaArray().controls; let i = index">
+            <mat-label>Cuota *</mat-label>
+            <input matInput type="number" [formControlName]="i" 
+                min="0" (keypress)="onlyNumberMonto($event)"
+                (ngModelChange)="updateValMaxMulta()"/>
+            <mat-error *ngIf="formControls.cuotasList?.invalid && (formControls.cuotasList?.dirty || formControls.cuotasList?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControls.cuotasList?.errors?.required">Número de pagos es requerido<br></span>
+                <span *ngIf="formControls.cuotasList?.errors?.min">Valor debe ser mayor a cuota mínima<br></span>
+            </mat-error>
+        </mat-form-field>        
+    </div>
+    
+    <article class = "row">
+        <div class="col-12 col-md-6">
+            <mat-form-field >
+                <mat-label>Inicio de vigencia *</mat-label>
+                <input
+                matInput
+                [matDatepicker]="fechaInicial"
+                [max]="form.controls.fechaFinal.value"
+                type="text"
+                formControlName="fechaInicial"
+                readonly
+                />
+            <mat-datepicker-toggle matSuffix [for]="fechaInicial"></mat-datepicker-toggle>
+            <mat-datepicker #fechaInicial></mat-datepicker>
+                <mat-error *ngIf="form.controls.fechaInicial.errors?.pattern"
+                    >Fecha inválida</mat-error
+                >
+                <mat-error *ngIf="form.controls.fechaInicial.errors?.required"
+                    >Fecha incial es requerida</mat-error
+                >
+            </mat-form-field>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <mat-form-field class="col">
+                <mat-label>Fin de vigencia </mat-label>
+                <input
+                matInput
+                [matDatepicker]="fechaFinal"
+                type="text"
+                formControlName="fechaFinal"
+                [min]="form.controls.fechaInicial.value"
+                readonly
+            />
+            <mat-datepicker-toggle matSuffix [for]="fechaFinal"></mat-datepicker-toggle>
+            <mat-datepicker #fechaFinal></mat-datepicker>
+                <mat-error *ngIf="form.controls.fechaFinal.errors?.pattern"
+                    >Fecha inválida</mat-error
+                >
+            </mat-form-field>
+        </div>
+
+    </article>
+
+
+    
+    <h2>Parámetros de la multa</h2>
+    <article class ="row">
+
+        <div class="col-4">
+            <mat-form-field >
+                <mat-label>Tipo de vehículo *</mat-label>
+                <mat-select formControlName="tipoVehiculo" [compareWith]="compareTipoVehiculo" 
+                (selectionChange)="changesTipoVehiculo()">
+                    <mat-option >Seleccione uno...</mat-option>
+                    <mat-option *ngFor="let tipoVehiculo of lstTiposVehiculo | async" 
+                        [value]="tipoVehiculo">{{tipoVehiculo.label}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControls.tipoVehiculo?.invalid && (formControls.tipoVehiculo?.dirty || formControls.tipoVehiculo?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.tipoVehiculo?.errors?.required">Tipo de vehículo es requerido<br></span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="col-8">
+            <mat-form-field >
+            <mat-label>Clase de placa *</mat-label>
+                <mat-select formControlName="tipoPlaca">
+                    <mat-option >Seleccione uno...</mat-option>
+                    <mat-option *ngFor="let placa of lstTiposPlaca | async"
+                    matTooltip="{{placa.descripcion}}"
+                    [value]="placa.clase">
+                        {{ placa.descripcion }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControls.tipoPlaca?.invalid && (formControls.tipoPlaca?.dirty || formControls.tipoPlaca?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.tipoPlaca?.errors?.required">Clase de placa es requerido<br></span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </article>
+
+    <article class="row">
+
+        <div class="col-4" *ngIf="isCombustibleSelected">
+            <mat-form-field >
+                <mat-label>Tipo de combustible</mat-label>
+                <mat-select formControlName="tipoCombustible">
+                    <mat-option *ngFor="let combustible of lstTiposCombustible | async; let i=index" [value]="combustible.id">
+                        {{ combustible.label }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControls.municipio?.invalid && (formControls.municipio?.dirty || formControls.municipio?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.municipio?.errors?.required">{{ formControls.municipio }} es requerido<br></span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+        
+        <div class="col-4" *ngIf="isCilindrajeSelected">
+            <mat-form-field >
+                <mat-label>Cilindraje</mat-label>
+                <mat-select (selectionChange)="changesCilindraje()" formControlName="cilindraje">
+                    <mat-option *ngFor="let rango of lstRangosEntre | async" 
+                        [value]="rango.id">{{rango.label | capitalizar}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControls.municipio?.invalid && (formControls.municipio?.dirty || formControls.municipio?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.municipio?.errors?.required">{{ formControls.municipio }} es requerido<br></span>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="valoresFijos.includes(formControls.cilindraje.value)">
+                <mat-label>Cilindraje en CC</mat-label>
+                <input matInput type="number" formControlName="cilindrajeFijo"/>
+                <mat-error *ngIf="formControls.cilindrajeFijo?.invalid && (formControls.cilindrajeFijo?.dirty || formControls.cilindrajeFijo?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.cilindrajeFijo?.errors?.pattern">Valor no valido<br></span>
+                </mat-error>
+            </mat-form-field>
+
+            <div class="row" *ngIf="valoresEntre.includes(formControls.cilindraje.value)">
+                <div class="col-6">
+                    <mat-form-field>
+                        <mat-label>Mínimo</mat-label>
+                        <input matInput type="number" formControlName="cilindrajeMenor"/>
+                        <mat-error *ngIf="formControls.cilindrajeMenor?.invalid && (formControls.cilindrajeMenor?.dirty || formControls.cilindrajeMenor?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControls.cilindrajeMenor?.errors?.pattern">Valor no valido<br></span>
+                            <span *ngIf="formControls.cilindrajeMenor?.errors?.rango">El valor mínimo debe ser menor al máximo<br></span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-6">
+                    <mat-form-field >
+                        <mat-label>Máximo</mat-label>
+                        <input matInput type="number" formControlName="cilindrajeMayor"/>
+                        <mat-error *ngIf="formControls.cilindrajeMayor?.invalid && (formControls.cilindrajeMayor?.dirty || formControls.cilindrajeMayor?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControls.cilindrajeMayor?.errors?.pattern">Valor no valido<br></span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+
+    
+        <!--Año del vehiculo-->
+        <div class="col-4" *ngIf="isAnnioVehiculoSelected">
+            <mat-form-field>
+                <mat-label>Año del Vehículo</mat-label>
+                <mat-select (selectionChange)="changesAnioVehiculo()" formControlName="anioVehiculo">
+                    <mat-option *ngFor="let rango of lstRangosPeriodo | async" 
+                        [value]="rango.id">{{rango.label | capitalizar}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControls.municipio?.invalid && (formControls.municipio?.dirty || formControls.municipio?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.municipio?.errors?.required">{{ formControls.municipio }} es requerido<br></span>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="valoresFijos.includes(formControls.anioVehiculo.value)">
+                <mat-label>Año</mat-label>
+                <input matInput type="number" formControlName="anioVehiculoFijo"
+                (ngModelChange)="onChangeValuesAnioCirculaVehi()"/>
+            </mat-form-field>
+
+            <div class="row" *ngIf="valoresEntre.includes(formControls.anioVehiculo.value)">
+                <div class="col-6">
+                    <mat-form-field>
+                        <mat-label>Año mínimo</mat-label>
+                        <input matInput type="number" formControlName="anioVehiculoMenor"
+                        (ngModelChange)="onChangeValuesAnioCirculaVehi()"/>
+                        <mat-error *ngIf="formControls.anioVehiculoMenor?.invalid && (formControls.anioVehiculoMenor?.dirty || formControls.anioVehiculoMenor?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControls.anioVehiculoMenor?.errors?.pattern">Valor no valido<br></span>
+                            <span *ngIf="formControls.anioVehiculoMenor?.errors?.rango">El valor mínimo debe ser menor al máximo<br></span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-6">
+                    <mat-form-field >
+                        <mat-label>Año máximo</mat-label>
+                        <input matInput type="number" formControlName="anioVehiculoMayor"/>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <article class="row">
+         <!--Año de inscripcion-->
+        <div class="col-4" *ngIf="isAnnioInscripSelected">
+            <mat-form-field >
+                <mat-label>Año de inscripción</mat-label>
+                <mat-select (selectionChange)="changesAnioInscripcion()"  formControlName="anioInscripcion">
+                    <mat-option *ngFor="let rango of lstRangosPeriodo | async" 
+                        [value]="rango.id">{{rango.label | capitalizar}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControls.municipio?.invalid && (formControls.municipio?.dirty || formControls.municipio?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.municipio?.errors?.required">{{ formControls.municipio }} es requerido<br></span>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="valoresFijos.includes(formControls.anioInscripcion.value)">
+                <mat-label>Año inscripción</mat-label>
+                <input matInput type="number" formControlName="anioInscripcionFijo"
+                (ngModelChange)="onChangeValuesAnioCirculaVehi()"/>
+                <mat-error *ngIf="formControls.anioInscripcionFijo?.invalid && (formControls.anioInscripcionFijo?.dirty || formControls.anioInscripcionFijo?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.anioInscripcionFijo?.errors?.min">Año de inscripción no puede ser menor al año del vehículo<br></span>
+                </mat-error>
+            </mat-form-field>
+
+            <div class="row" *ngIf="valoresEntre.includes(formControls.anioInscripcion.value)">
+                <div class="col-6">
+                    <mat-form-field>
+                        <mat-label>Mínimo</mat-label>
+                        <input matInput type="number" formControlName="anioInscripcionMenor"/>
+                        <mat-error *ngIf="formControls.anioInscripcionMenor?.invalid && (formControls.anioInscripcionMenor?.dirty || formControls.anioInscripcionMenor?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControls.anioInscripcionMenor?.errors?.pattern">Valor no valido<br></span>
+                            <span *ngIf="formControls.anioInscripcionMenor?.errors?.rango">El valor mínimo debe ser menor al máximo<br></span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-6">
+                    <mat-form-field >
+                        <mat-label>Máximo</mat-label>
+                        <input matInput type="number" formControlName="anioInscripcionMayor"
+                        (ngModelChange)="onChangeValuesAnioCirculaVehi()"/>
+                        <mat-error *ngIf="formControls.anioInscripcionMayor?.invalid && (formControls.anioInscripcionMayor?.dirty || formControls.anioInscripcionMayor?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControls.anioInscripcionMayor?.errors?.min">Año de inscripción no puede ser menor al año del vehículo<br></span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+    
+        <!--Año del circulación-->
+        <div class="col-4" *ngIf="isAnnioCirculaSelected">
+            <mat-form-field>
+                <mat-label>Año de circulación</mat-label>
+                <mat-select (selectionChange)="changesAnioCirculacion()" formControlName="anioCirculacion">
+                    <mat-option *ngFor="let rango of lstRangosPeriodo | async" 
+                        [value]="rango.id">{{rango.label | capitalizar}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControls.municipio?.invalid && (formControls.municipio?.dirty || formControls.municipio?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.municipio?.errors?.required">{{ formControls.municipio }} es requerido<br></span>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="valoresFijos.includes(formControls.anioCirculacion.value)">
+                <mat-label>Año</mat-label>
+                <input matInput type="number" formControlName="anioCirculacionFijo"
+                (ngModelChange)="onChangeValuesAnioCirculaVehi()"/>
+                <mat-error *ngIf="formControls.anioCirculacionFijo?.invalid && (formControls.anioCirculacionFijo?.dirty || formControls.anioCirculacionFijo?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.anioCirculacionFijo?.errors?.min">Año de circulación no puede ser menor al año del vehículo<br></span>
+                    <span *ngIf="formControls.anioCirculacionFijo?.errors?.pattern">Valor no valido<br></span>
+                </mat-error>
+            </mat-form-field>
+
+            <div class="row" *ngIf="valoresEntre.includes(formControls.anioCirculacion.value)">
+                <div class="col-6">
+                    <mat-form-field>
+                        <mat-label>Año mínimo</mat-label>
+                        <input matInput type="number" formControlName="anioCirculacionMenor"/>
+                        <mat-error *ngIf="formControls.anioCirculacionMenor?.invalid && (formControls.anioCirculacionMenor?.dirty || formControls.anioCirculacionMenor?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControls.anioCirculacionMenor?.errors?.pattern">Valor no valido<br></span>
+                            <span *ngIf="formControls.anioCirculacionMenor?.errors?.rango">El valor mínimo debe ser menor al máximo<br></span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-6">
+                    <mat-form-field >
+                        <mat-label>Año máximo</mat-label>
+                        <input matInput type="number" formControlName="anioCirculacionMayor"
+                        (ngModelChange)="onChangeValuesAnioCirculaVehi()"/>
+                        <mat-error *ngIf="formControls.anioCirculacionMayor?.invalid && (formControls.anioCirculacionMayor?.dirty || formControls.anioCirculacionMayor?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControls.anioCirculacionMayor?.errors?.min">Año de circulación no puede ser menor al año del vehículo<br></span>
+                            <span *ngIf="formControls.anioCirculacionMayor?.errors?.pattern">Valor no valido<br></span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+
+        <!--Años del circulacion-->
+        <div class="col-4" *ngIf="isAnniosCirculaSelected">
+            <mat-form-field >
+                <mat-label>Años de circulación</mat-label>
+                <mat-select (selectionChange)="changesAniosCirculacion()" formControlName="aniosCirculacion">
+                    <mat-option *ngFor="let rango of lstRangosPeriodo | async" 
+                        [value]="rango.id">{{rango.label | capitalizar}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="valoresFijos.includes(formControls.aniosCirculacion.value)">
+                <mat-label>Año</mat-label>
+                <input matInput type="number" formControlName="aniosCirculacionFijo"/>
+                <mat-error *ngIf="formControls.aniosCirculacionFijo?.invalid && (formControls.aniosCirculacionFijo?.dirty || formControls.aniosCirculacionFijo?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControls.aniosCirculacionFijo?.errors?.pattern">Valor no valido<br></span>
+                </mat-error>
+            </mat-form-field>
+
+            <div class="row" *ngIf="valoresEntre.includes(formControls.aniosCirculacion.value)">
+                <div class="col-6">
+                    <mat-form-field>
+                        <mat-label>Año mínimo</mat-label>
+                        <input matInput type="number" formControlName="aniosCirculacionMenor"/>
+                        <mat-error *ngIf="formControls.aniosCirculacionMenor?.invalid && (formControls.aniosCirculacionMenor?.dirty || formControls.aniosCirculacionMenor?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControls.aniosCirculacionMenor?.errors?.pattern">Valor no valido<br></span>
+                            <span *ngIf="formControls.aniosCirculacionMenor?.errors?.rango">El valor mínimo debe ser menor al máximo<br></span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-6">
+                    <mat-form-field >
+                        <mat-label>Año máximo</mat-label>
+                        <input matInput type="number" formControlName="aniosCirculacionMayor"/>
+                        <mat-error *ngIf="formControls.aniosCirculacionMayor?.invalid && (formControls.aniosCirculacionMayor?.dirty || formControls.aniosCirculacionMayor?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControls.aniosCirculacionMayor?.errors?.pattern">Valor no valido<br></span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+    </article>
+   
+    <button class="btnParametros" (click)="openParametros()">Agregar parámetros</button>
+
+
+    <article class="row">
+        <div class="form-group col">
+            <mat-label>Estado</mat-label>
+            <mat-slide-toggle formControlName="estado" color ="primary"></mat-slide-toggle>
+        </div>
+    </article>
+
+ 
+    <button mat-raised-button type="submit" color="primary" (click)="openAsociarMunicipios()">Asignar municipios*</button>
+
+    <article class="row">
+        <div class="form-group col">
+             <button mat-raised-button color="warn" (click)="onDelete()">Eliminar</button>
+        </div>
+    </article>
+
+    
+    <article class="row">
+        <div class="form-group col">
+            <mat-form-field cdkFocusInitial>
+                <mat-label>Observaciones*</mat-label>
+                <textarea  matInput formControlName="observaciones" ></textarea>
+                <mat-error *ngIf="formControls.observaciones?.invalid && (formControls.observaciones?.dirty || formControls.observaciones?.touched)">
+                    <span *ngIf="formControls.observaciones?.errors?.required">Observación de la multa es requerido<br></span>
+                    <span *ngIf="formControls.observaciones?.errors?.pattern">Observación de la multa incorrecto<br></span>
+                    <span *ngIf="formControls.observaciones?.errors?.maxlength?.requiredLength">Máximo {{form.controls.observaciones.errors.maxlength.requiredLength}} caracteres<br></span>
+                </mat-error>
+            </mat-form-field>  
+        </div>
+    </article>
+
+    <footer class="text-center mt-4">
+        <button class="m-3" mat-raised-button color="warn" (click)="confirmarSalir()">Cancelar</button>
+        <button [disabled]="form.invalid" mat-raised-button type="submit" color="primary" (click)="onSubmitEdit()">Actualizar</button>
+    </footer>
+</form>

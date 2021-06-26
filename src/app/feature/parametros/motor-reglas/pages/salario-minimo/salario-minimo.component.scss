@@ -1,0 +1,26 @@
+@import "src/assets/scss/colors";
+
+article {
+    .asw-box {
+        padding: 5% 8% 5% 8% !important;
+    }
+}
+
+h2 {
+    span {
+        font-size: 13px;
+        margin-bottom: 0px;
+    }
+}
+
+.text-end {
+    button {
+        margin-right: 10px;
+    }
+}
+
+mat-option {
+    .mat-option.mat-active{
+        background: $azul-400;
+    }
+}

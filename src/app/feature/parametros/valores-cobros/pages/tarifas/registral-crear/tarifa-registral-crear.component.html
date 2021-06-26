@@ -1,0 +1,123 @@
+<section class="modal-content custom-scrollbar">
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
+
+        <article class="row">
+            <mat-form-field cdkFocusInitial class="col">
+                <mat-label>Nombre de tarifa*</mat-label>
+                <input matInput type="text" formControlName="nombre">
+                <mat-error *ngIf="formControl.nombre?.invalid && (formControl.nombre?.dirty || formControl.nombre?.touched)">
+                    <span *ngIf="formControl.nombre?.errors?.required">Nombre de tarifa es requerido</span>
+                    <span *ngIf="formControl.nombre?.errors?.pattern">Nombre de la tarifa incorrecto</span>
+                    <span *ngIf="formControl.nombre?.errors?.maxlength">Máximo 100 caracteres</span>
+                </mat-error>
+            </mat-form-field>    
+
+            <mat-form-field class="col">
+                <mat-label>Concepto de débito*</mat-label>
+                <mat-select formControlName="conceptoDebRegistral" disableRipple>
+                    <mat-option value = "">Seleccione una...</mat-option>
+                    <mat-option *ngFor="let item of conceptoDebito$ | async" [value]="item.id">
+                        {{ item.label }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControl.conceptoDebRegistral?.invalid && (formControl.conceptoDebRegistral?.dirty || formControl.conceptoDebRegistral?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControl.conceptoDebRegistral?.errors?.required">Concepto de débito es requerido</span>
+                </mat-error>
+            </mat-form-field>
+        </article>
+        
+        <article class="row">
+            <mat-form-field class="col">
+                <mat-label>Descripción</mat-label>
+                <textarea matInput rows="3" formControlName="descripcion"></textarea>
+                <mat-error *ngIf="formControl.descripcion?.invalid && (formControl.descripcion?.dirty || formControl.descripcion?.touched)">
+                    <span *ngIf="formControl.descripcion?.errors?.required">Descripción es requerido</span>
+                    <span *ngIf="formControl.descripcion?.errors?.pattern">Observación de la tarifa incorrecta</span>
+                    <span *ngIf="formControl.descripcion?.errors?.maxlength">Máximo 200 caracteres</span>
+                </mat-error>
+            </mat-form-field>    
+        </article>        
+
+        <article class="row">
+            <mat-form-field class="col">
+                <mat-label>Clase de placa*</mat-label>
+                <mat-select formControlName="tipoPlaca" disableRipple>
+                    <mat-option value = "">Seleccione una...</mat-option>
+                    <mat-option value="0">Todos</mat-option>
+                    <mat-option *ngFor="let item of tipoPlaca$ | async" [value]="item.clase">
+                        {{ item?.corto }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControl.tipoPlaca?.invalid && (formControl.tipoPlaca?.dirty || formControl.tipoPlaca?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControl.tipoPlaca?.errors?.required">Clase de placa es requerido</span>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="col">
+                <mat-label>Tipo de vehículo*</mat-label>
+                <mat-select formControlName="tipoVehiculo" disableRipple>
+                    <mat-option value = "">Seleccione una...</mat-option>
+                    <mat-option value="0">Todos</mat-option>
+                    <mat-option *ngFor="let item of tipoVehiculo$ | async" [value]="item.id">
+                        {{ item.label }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControl.tipoVehiculo?.invalid && (formControl.tipoVehiculo?.dirty || formControl.tipoVehiculo?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControl.tipoVehiculo?.errors?.required">Tipo de vehículo es requerido</span>
+                </mat-error>
+            </mat-form-field>
+        </article>       
+    
+        <article class="row">
+            <mat-form-field class="col">
+                <mat-label>Inicio de vigencia*</mat-label>
+                <input matInput 
+                    formControlName="fechaInicioVigencia" 
+                    [max]="formControl?.fechaFinVigencia?.value"
+                    [matDatepicker]="fechaInicioVigencia" readonly>
+                <mat-datepicker-toggle matSuffix [for]="fechaInicioVigencia"></mat-datepicker-toggle>
+                <mat-datepicker #fechaInicioVigencia></mat-datepicker>
+                <mat-error *ngIf="formControl.fechaInicioVigencia?.invalid && (formControl.fechaInicioVigencia?.dirty || formControl.fechaInicioVigencia?.touched)">
+                    <span *ngIf="formControl.fechaInicioVigencia?.errors?.required">Inicio de vigencia es requerido</span>
+                </mat-error>
+            </mat-form-field>
+            
+            <mat-form-field 
+                *ngIf="formControl.fechaInicioVigencia.valid"
+                class="col animate__animated animate__fadeIn animate_faster">
+                <mat-label>Fin de vigencia*</mat-label>
+                <input matInput 
+                formControlName="fechaFinVigencia" 
+                [min]="formControl.fechaInicioVigencia.value"
+                [matDatepicker]="fechaFinVigencia" readonly>
+                <mat-datepicker-toggle matSuffix [for]="fechaFinVigencia"></mat-datepicker-toggle>
+                <mat-datepicker #fechaFinVigencia></mat-datepicker>
+                <mat-error *ngIf="formControl.fechaFinVigencia?.invalid && (formControl.fechaFinVigencia?.dirty || formControl.fechaFinVigencia?.touched)">
+                    <span *ngIf="formControl.fechaFinVigencia?.errors?.required">Fin de vigencia es requerido</span>
+                </mat-error>
+            </mat-form-field>
+
+            <div class="form-group col">
+                <mat-label>Estado*</mat-label>
+                <mat-slide-toggle formControlName="estado"></mat-slide-toggle>
+            </div>  
+        </article>
+
+        <article class="row">
+            <mat-form-field class="col">
+                <mat-label>Valor a cobrar*</mat-label>
+                <input matInput type="number" (keypress)="onlyNumberMonto($event)" formControlName="decimal">
+                <mat-error *ngIf="formControl.decimal?.invalid && (formControl.decimal?.dirty || formControl.decimal?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControl.decimal?.errors?.required">Valor a cobrar es requerido</span>
+                    <span *ngIf="formControl.decimal?.errors?.pattern">Debe ser un número positivo con posibilidad de 2 decimales</span>
+                </mat-error>
+            </mat-form-field>
+        </article>
+
+        <footer class="text-center">
+            <button class="m-3" type="button" mat-raised-button color="warn" (click)="cancel()">Cancelar</button>
+            <button [disabled]="form.invalid" mat-raised-button color="primary" type="submit">Crear tarifa</button>
+        </footer>
+    </form>
+</section>

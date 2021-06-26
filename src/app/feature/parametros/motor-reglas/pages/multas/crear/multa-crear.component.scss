@@ -1,0 +1,19 @@
+@import "src/assets/scss/colors";
+
+.btnParamteros{
+    border-radius:0px !important;
+    outline:none  !important;
+    background-color: none !important;
+}
+
+.btnParametros{
+    color: $azul-200 !important;
+    font-size: 13px;
+    font-weight: bold;
+    outline: none;
+    border-radius: 10px;
+    border: 0;
+    background-color: white;
+}
+
+

@@ -1,0 +1,76 @@
+<app-spinner *ngIf="showSpinner"></app-spinner>
+<form [formGroup]="form" autocomplete="off" *ngIf="!showSpinner">
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Nombre *</mat-label>
+            <input matInput formControlName="variable" />
+            <mat-error 
+            *ngIf="form.get('variable')?.invalid && (form.get('variable')?.dirty || form.get('variable')?.touched)">               
+            
+            <span *ngIf="form.get('variable')?.errors?.required"
+					>Nombre es requerido<br></span
+				>       
+                <span *ngIf="form.get('variable').errors?.pattern"
+				>No permite caracteres especiales<br></span
+			>     
+            <span *ngIf="form.get('variable')?.errors?.maxlength"
+					>El tamaño máximo es 200<br></span
+				>                        
+            </mat-error>
+        </mat-form-field>  
+        <mat-form-field class="col">
+            <mat-label>Fecha evento *</mat-label>
+            <input matInput [matDatepicker]="fechaEvento" 
+                formControlName="fechaEvento"
+                placeholder="AAAA/MM/DD"                
+            />
+            <mat-datepicker-toggle matSuffix [for]="fechaEvento"></mat-datepicker-toggle>
+            <mat-datepicker #fechaEvento></mat-datepicker>
+            <mat-error *ngIf="fechaEvento?.invalid && (fechaEvento?.dirty || fechaEvento?.touched)"
+                class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="fechaEvento?.errors?.required">Fecha de evento es requerido</span>
+            </mat-error>           			
+        </mat-form-field>    
+    </article>
+    <article class="row">
+        <div class="col-md-6 col-sm-12">
+            <mat-form-field class="col">
+                <mat-label>Concepto aplicable *</mat-label>
+                <mat-select formControlName="conceptos" multiple>
+                    <mat-option #allSelected (click)="toggleAllSelection()" [value]="0">TODAS</mat-option>
+                    <mat-option *ngFor="let conceptos of concepts" [value]="conceptos" (click)="tosslePerOne(allSelected.viewValue)">
+                        {{conceptos.label}}
+                    </mat-option>                        
+                </mat-select>
+                <mat-error *ngIf="form.get('conceptos')?.invalid && (form.get('conceptos')?.dirty || form.get('conceptos')?.touched)"
+                    class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="form.get('conceptos')?.errors?.required">Cobro aplicar es requerido</span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </article>
+    <article class="row">        
+        <mat-checkbox (change)="changeEvento($event)" color ="primary" [checked]="form.get('repetir').value">Repite todos los años</mat-checkbox>
+    </article>    
+    <footer class="text-center mt-4">
+        <article class="row">
+        <div class="form-group col">
+            <mat-form-field cdkFocusInitial>
+                <mat-label>Observaciones *</mat-label>
+                <textarea  matInput formControlName="observacion" ></textarea>
+                <mat-error 
+                *ngIf="form.get('observacion')?.invalid && (form.get('observacion')?.dirty || form.get('variable')?.touched)">                               
+                <span *ngIf="form.get('observacion')?.errors?.required"
+                        >Observaciones es requerido<br></span
+                    >                       
+                <span *ngIf="form.get('observacion')?.errors?.maxlength"
+                        >El tamaño máximo es 250<br></span
+                    >                        
+                </mat-error>
+            </mat-form-field>  
+        </div>
+        </article>  
+        <button class="m-3" mat-raised-button color="warn" (click)="onCloseDialog()">Cancelar</button>
+        <button mat-raised-button [disabled]="form.invalid" color="primary" (click)="showConfirmarEditar()">Guardar cambios</button>
+    </footer>
+</form>

@@ -1,0 +1,539 @@
+<section class="modal-content custom-scrollbar">
+
+    <app-spinner *ngIf="mostrarSpinner"></app-spinner>
+    <form *ngIf="!mostrarSpinner" [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
+
+        <article class="row">
+            <mat-form-field cdkFocusInitial class="col">
+                <mat-label>Nombre de tarifa *</mat-label>
+                <input matInput type="text" formControlName="nombre">
+                <mat-error *ngIf="formControl.nombre?.invalid && (submit || formControl.nombre?.dirty || formControl.nombre?.touched)">
+                    <span *ngIf="formControl.nombre?.errors?.required">Nombre de tarifa es requerido</span>
+                    <span *ngIf="formControl.nombre?.errors?.pattern">Nombre no valido</span>
+                    <span *ngIf="formControl.nombre?.errors?.maxlength">Máximo 100 caracteres</span>
+                </mat-error>
+            </mat-form-field>    
+        </article>
+        
+        <article class="row">
+            <mat-form-field class="col">
+                <mat-label>Descripción</mat-label>
+                <textarea matInput rows="3" formControlName="descripcion"></textarea>
+                <mat-error *ngIf="formControl.descripcion?.invalid && (submit || formControl.descripcion?.dirty || formControl.descripcion?.touched)">
+                    <span *ngIf="formControl.descripcion?.errors?.required">Descripción es requerido</span>
+                    <span *ngIf="formControl.descripcion?.errors?.pattern">Descripción no valida</span>
+                    <span *ngIf="formControl.descripcion?.errors?.maxlength">Máximo 200 caracteres</span>
+                </mat-error>
+            </mat-form-field>    
+        </article>        
+        
+        <article class="row">
+            <mat-form-field class="col">
+                <mat-label>Concepto de débito *</mat-label>
+                <mat-select formControlName="concepto" (selectionChange)="onConceptoChange($event.value)" [compareWith]="compareConcepto" disableRipple>
+                    <mat-option *ngFor="let item of conceptosDebitoAct$" [value]="item.id">
+                        {{ item.label }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControl.concepto?.invalid && (submit || formControl.concepto?.dirty || formControl.concepto?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="formControl.concepto?.errors?.required">Concepto de débito es requerido</span>
+                </mat-error>
+            </mat-form-field>
+            
+            <mat-form-field class="col">
+                <mat-label>Normativa</mat-label>
+                <input matInput type="text" formControlName="normativa" readonly>
+            </mat-form-field>
+        </article>       
+
+        <article class="row">
+            <mat-form-field class="col">
+                <mat-label>Calcular impuesto como *</mat-label>
+                <mat-select formControlName="calcularImpuestoComo" (selectionChange)="changesCalcularComo()" disableRipple>
+                    <mat-option value = "">Seleccione una...</mat-option>
+                    <mat-option *ngFor="let item of calcularImpuestoComo$ | async" [value]="item.id">
+                        {{ item.label }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControl.calcularImpuestoComo?.invalid && (submit || formControl.calcularImpuestoComo?.dirty || formControl.calcularImpuestoComo?.touched)">
+                    <span *ngIf="formControl.calcularImpuestoComo?.errors?.required">El como calcular el impuesto es requerido</span>
+                </mat-error>
+            </mat-form-field>
+
+            
+            <div *ngIf="calcularImpuestoPorcentajeArr.includes(formControl.calcularImpuestoComo.value)">
+                <mat-form-field>
+                    <mat-label>Monto mínimo *</mat-label>
+                    <input matInput type="number" min="0" formControlName="calcularImpuestoComoMontoMinimo" (keypress)="onlyNumberMonto($event)" />
+                    <mat-error *ngIf="formControl.calcularImpuestoComoMontoMinimo?.invalid && (submit || formControl.calcularImpuestoComoMontoMinimo?.dirty || formControl.calcularImpuestoComoMontoMinimo?.touched)">
+                        <span *ngIf="formControl.calcularImpuestoComoMontoMinimo?.errors?.required">El monto mínimo es requerido</span>
+                        <span *ngIf="formControl.calcularImpuestoComoMontoMinimo?.errors?.pattern">Debe ser un número positivo con posibilidad de 2 decimales</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                        <mat-label>Porcentaje *</mat-label>
+                        <input matInput type="number" min="0" formControlName="calcularImpuestoComoPorcentaje" (keypress)="onlyNumberMonto($event)" />
+                        <mat-error *ngIf="formControl.calcularImpuestoComoPorcentaje?.invalid && (submit || formControl.calcularImpuestoComoPorcentaje?.dirty || formControl.calcularImpuestoComoPorcentaje?.touched)">
+                            <span *ngIf="formControl.calcularImpuestoComoPorcentaje?.errors?.required">El porcentaje es requerido</span>
+                            <span *ngIf="formControl.calcularImpuestoComoPorcentaje?.errors?.pattern">Debe ser un número positivo con posibilidad de 2 decimales</span>
+                            <span *ngIf="formControl.calcularImpuestoComoPorcentaje?.errors?.min">Valor mínimo 0</span>
+                            <span *ngIf="formControl.calcularImpuestoComoPorcentaje?.errors?.max">Valor máximo 100</span>
+                        </mat-error>
+                </mat-form-field>
+                
+                <mat-form-field>
+                    <mat-label>Concepto base *</mat-label>
+                    <mat-select disableRipple (selectionChange)="changesConceptoBase()" formControlName="conceptosDebitoAct">
+                        <mat-option *ngFor="let item of conceptoBase$ | async" [value]="item.id">
+                            {{ item.label | capitalizar }}
+                        </mat-option>
+                        <mat-option *ngFor="let item of conceptosDebitoAct$" [value]="item.id">
+                            {{ item.label | capitalizar }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="formControl.conceptosDebitoAct?.invalid && (submit || formControl.conceptosDebitoAct?.dirty || formControl.conceptosDebitoAct?.touched)">
+                        <span *ngIf="formControl.conceptosDebitoAct?.errors?.required">El concepto base es requerido</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div *ngIf="formControl.conceptosDebitoAct.value == 'V_VEHI'">
+                <div class="row">
+
+                    <mat-form-field class="col" *ngIf="formControl.conceptosDebitoAct.value == 'V_VEHI'">
+                        <mat-label>Valor del vehículo *</mat-label>    
+                        <mat-select formControlName="modoCobroVehiculo" (selectionChange)="changesValorVehiculo()">
+                            <mat-option>Seleccione uno...</mat-option>
+                            <mat-option *ngFor="let valVehiculo of lstValorVehiculo | async" 
+                             [value]="valVehiculo.id">{{valVehiculo.label}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formControl.modoCobroVehiculo?.invalid && (submit || formControl.modoCobroVehiculo?.dirty || formControl.modoCobroVehiculo?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControl.modoCobroVehiculo?.errors?.required">Valor del vehículo es requerido</span>
+                        </mat-error>
+                    </mat-form-field>
+        
+                    <mat-form-field class="col" *ngIf="valoresFijos.includes(formControl.modoCobroVehiculo.value)">
+                        <mat-label>Valor del vehículo *</mat-label>
+                        <input matInput type="number" min="0" (keypress)="onlyNumberMonto($event)" formControlName="modoCobroVehiculoFijo"/>
+                        <mat-error *ngIf="formControl.modoCobroVehiculoFijo?.invalid && (submit || formControl.modoCobroVehiculoFijo?.dirty || formControl.modoCobroVehiculoFijo?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControl.modoCobroVehiculoFijo?.errors?.required">Valor requerido</span>
+                            <span *ngIf="formControl.modoCobroVehiculoFijo?.errors?.pattern">Debe ser un número positivo con posibilidad de 2 decimales</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                
+                <div class="row" *ngIf="valoresEntre.includes(formControl.modoCobroVehiculo.value)">
+                    <div class="col-6">
+                        <mat-form-field>
+                            <mat-label>Mínimo *</mat-label>
+                            <input matInput type="number" (keypress)="onlyNumberMonto($event)" min="0" formControlName="modoCobroVehiculoMenor"/>
+                            <mat-error *ngIf="formControl.modoCobroVehiculoMenor?.invalid && (submit || formControl.modoCobroVehiculoMenor?.dirty || formControl.modoCobroVehiculoMenor?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                                <span *ngIf="formControl.modoCobroVehiculoMenor?.errors?.required">Valor requerido</span>
+                                <span *ngIf="formControl.modoCobroVehiculoMenor?.errors?.pattern">Debe ser un número positivo con posibilidad de 2 decimales</span>
+                                <span *ngIf="formControl.modoCobroVehiculoMenor?.errors?.rango">El valor mínimo debe ser menor al máximo</span>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+    
+                    <div class="col-6">
+                        <mat-form-field >
+                            <mat-label>Máximo *</mat-label>
+                            <input matInput type="number" (keypress)="onlyNumberMonto($event)" min="0" formControlName="modoCobroVehiculoMayor"/>
+                        </mat-form-field>
+                        <mat-error *ngIf="formControl.modoCobroVehiculoMayor?.invalid && (submit || formControl.modoCobroVehiculoMayor?.dirty || formControl.modoCobroVehiculoMayor?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControl.modoCobroVehiculoMayor?.errors?.required">Valor requerido</span>
+                            <span *ngIf="formControl.modoCobroVehiculoMayor?.errors?.pattern">Debe ser un número positivo con posibilidad de 2 decimales</span>
+                        </mat-error>
+                    </div>
+                </div>         
+            </div>
+        </article>
+    
+        <article class="row">
+            <mat-form-field class="col">
+                <mat-label>Valor a cobrar *</mat-label>
+                <input matInput type="number" min="0" formControlName="valorFijo" (keypress)="onlyNumberMonto($event)">
+                <mat-error *ngIf="formControl.valorFijo?.invalid && (submit || formControl.valorFijo?.dirty || formControl.valorFijo?.touched)">
+                    <span *ngIf="formControl.valorFijo?.errors?.required">El valor a cobrar es requerido</span>
+                    <span *ngIf="formControl.valorFijo?.errors?.pattern">Debe ser un número positivo con posibilidad de 2 decimales</span>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="col">
+                <mat-label>Inicio de vigencia *</mat-label>
+                <input matInput [matDatepicker]="fechaInicial" type="text" formControlName="fechaInicial"
+                    readonly [max]="formControl?.fechaFinal?.value">
+                <mat-datepicker-toggle matSuffix [for]="fechaInicial"></mat-datepicker-toggle>
+                <mat-datepicker #fechaInicial></mat-datepicker>
+                <mat-error *ngIf="formControl.fechaInicial?.invalid && (submit || formControl.fechaInicial?.dirty || formControl.fechaInicial?.touched)">
+                    <span *ngIf="formControl.fechaInicial?.errors?.required">Inicio de vigencia es requerido</span>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="col" *ngIf="formControl.fechaInicial.valid">
+                <mat-label>Fin de vigencia *</mat-label>
+                <input matInput [matDatepicker]="fechaFinal" type="text" formControlName="fechaFinal"
+                    readonly [min]="formControl?.fechaInicial?.value"/>
+                <mat-datepicker-toggle matSuffix [for]="fechaFinal"></mat-datepicker-toggle>
+                <mat-datepicker #fechaFinal></mat-datepicker>
+                <mat-error *ngIf="formControl.fechaFinal?.invalid && (submit || formControl.fechaFinal?.dirty || formControl.fechaFinal?.touched)">
+                    <span *ngIf="formControl.fechaFinal?.errors?.required">Fin de vigencia es requerido</span>
+                </mat-error>
+            </mat-form-field>
+
+            <div class="form-group col">
+                <mat-label>Estado *</mat-label>
+                <mat-slide-toggle formControlName="estado"></mat-slide-toggle>
+            </div>  
+        </article>
+
+        <div formGroupName="parametros">
+            <article class="row parametros mb-4">
+                <div class="col-4">
+                    <h2 style="font-size: 14px; margin-bottom: .5em;">Agregar parámetros</h2>
+                    <mat-form-field appearance="fill" style="margin-bottom: 0;">
+                        <mat-label>Seleccionar</mat-label>
+                        <mat-select formControlName="parametros"  (selectionChange)="onParametrosChange($event.value)" multiple disableRipple>
+                            <mat-option *ngFor="let item of variablesRecaudo$ | async" [value]="item.nombre">
+                                {{ item.descNombre | capitalizar }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button (click)="onAsociarMunicipios()" [disabled]="!form.valid" mat-raised-button color="primary" type="button">Asignar municipios *</button>
+                    <mat-error *ngIf="submit && !(municipiosAsociados?.length > 0)">
+                        <span>Debe asociar almenos un municipio</span>
+                    </mat-error>
+                </div>
+            </article>
+        
+            <article class="row">
+                <mat-form-field 
+                    *ngIf="parametrosAmostrar.includes('CLASE_PLACA')"
+                    class="col animate__animated animate__fadeIn animate_faster">
+                    <mat-label>Tipo de placa *</mat-label>
+                    <mat-select formControlName="tipoPlaca" disableRipple [compareWith]="compareTipoPlaca">
+                        <mat-option *ngFor="let item of tipoPlaca$ | async" [value]="item">
+                            {{ item.descripcion }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.get('parametros').get('tipoPlaca')?.invalid && (submit || form.get('parametros').get('tipoPlaca')?.dirty || form.get('parametros').get('tipoPlaca')?.touched)">
+                        <span *ngIf="form.get('parametros').get('tipoPlaca')?.errors?.required">Tipo de placa es requerido</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field 
+                    *ngIf="parametrosAmostrar.includes('TIPO_VEHICULO')"
+                    class="col animate__animated animate__fadeIn animate_faster">
+                    <mat-label>Tipo de vehículo *</mat-label>
+                    <mat-select formControlName="tipoVehiculo" disableRipple [compareWith]="compareTipoVehiculo">
+                        <mat-option *ngFor="let item of tipoVehiculo$ | async" [value]="item">
+                            {{ item.label }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.get('parametros').get('tipoVehiculo')?.invalid && (submit || form.get('parametros').get('tipoVehiculo')?.dirty || form.get('parametros').get('tipoVehiculo')?.touched)">
+                        <span *ngIf="form.get('parametros').get('tipoVehiculo')?.errors?.required">Tipo de vehículo es requerido</span>
+                    </mat-error>
+                </mat-form-field>
+            </article>
+    
+            <article class="row">
+                <mat-form-field 
+                    *ngIf="parametrosAmostrar.includes('TIPO_COMBUSTIBLE')"
+                    class="col animate__animated animate__fadeIn animate_faster">
+                    <mat-label>Tipo de combustible *</mat-label>
+                    <mat-select formControlName="tipoCombustible" disableRipple [compareWith]="compareTipoCombustible">
+                        <mat-option *ngFor="let item of tipoCombustible$ | async" [value]="item">
+                            {{ item.label }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.get('parametros').get('tipoCombustible')?.invalid && (submit || form.get('parametros').get('tipoCombustible')?.dirty || form.get('parametros').get('tipoCombustible')?.touched)">
+                        <span *ngIf="form.get('parametros').get('tipoCombustible')?.errors?.required">Tipo de combustible es requerido</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <div *ngIf="parametrosAmostrar.includes('CILINDRAJE')">
+
+                    <mat-form-field 
+                        class="col animate__animated animate__fadeIn animate_faster">
+                        <mat-label>Cilindraje *</mat-label>
+                        <mat-select formControlName="cilindraje" (selectionChange)="changesCilindraje()" disableRipple>
+                            <mat-option *ngFor="let item of cilindraje$ | async" [value]="item.id">
+                                {{ item.label }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.get('parametros').get('cilindraje')?.invalid && (submit || form.get('parametros').get('cilindraje')?.dirty || form.get('parametros').get('cilindraje')?.touched)">
+                            <span *ngIf="form.get('parametros').get('cilindraje')?.errors?.required">Cilindraje es requerido</span>
+                        </mat-error>
+                    </mat-form-field>
+    
+                    <mat-form-field *ngIf="valoresFijos.includes(formControl.parametros['controls'].cilindraje.value)">
+                        <mat-label>Cilindraje en CC *</mat-label>
+                        <input matInput type="number" min="0" formControlName="cilindrajeFijo" (keypress)="onlyNumber($event)"/>
+                        <mat-error *ngIf="form.get('parametros').get('cilindrajeFijo')?.invalid && (submit || form.get('parametros').get('cilindrajeFijo')?.dirty || form.get('parametros').get('cilindrajeFijo')?.touched)">
+                            <span *ngIf="form.get('parametros').get('cilindrajeFijo')?.errors?.required">Valor requerido</span>
+                            <span *ngIf="form.get('parametros').get('cilindrajeFijo')?.errors?.pattern">Valor no valido</span>
+                        </mat-error>
+                    </mat-form-field>
+     
+                    <div class="row" *ngIf="valoresEntre.includes(formControl.parametros['controls'].cilindraje.value)">
+                        <div class="col-6">
+                            <mat-form-field>
+                                <mat-label>Mínimo *</mat-label>
+                                <input matInput type="number" min="0" formControlName="cilindrajeMenor" (keypress)="onlyNumber($event)"/>
+                                <mat-error *ngIf="form.get('parametros').get('cilindrajeMenor')?.invalid && (submit || form.get('parametros').get('cilindrajeMenor')?.dirty || form.get('parametros').get('cilindrajeMenor')?.touched)">
+                                    <span *ngIf="form.get('parametros').get('cilindrajeMenor')?.errors?.required">Valor requerido</span>
+                                    <span *ngIf="form.get('parametros').get('cilindrajeMenor')?.errors?.pattern">Valor no valido</span>
+                                    <span *ngIf="form.get('parametros')?.get('cilindrajeMenor')?.errors?.rango">El valor mínimo debe ser menor al máximo</span>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-6">
+                            <mat-form-field >
+                                <mat-label>Máximo *</mat-label>
+                                <input matInput type="number" min="0" formControlName="cilindrajeMayor" (keypress)="onlyNumber($event)"/>
+                                <mat-error *ngIf="form.get('parametros').get('cilindrajeMayor')?.invalid && (submit || form.get('parametros').get('cilindrajeMayor')?.dirty || form.get('parametros').get('cilindrajeMayor')?.touched)">
+                                    <span *ngIf="form.get('parametros').get('cilindrajeMayor')?.errors?.required">Valor requerido</span>
+                                    <span *ngIf="form.get('parametros').get('cilindrajeMayor')?.errors?.pattern">Valor no valido</span>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="row">
+                <mat-form-field 
+                    *ngIf="parametrosAmostrar.includes('ANNIO_VEHICULO')"
+                    class="col animate__animated animate__fadeIn animate_faster">
+                    <mat-label>Año del vehículo *</mat-label>
+                    <mat-select formControlName="anioVehiculo" (selectionChange)="changesAnioVehiculo()" disableRipple>
+                        <mat-option *ngFor="let item of anioVehiculo$ | async" [value]="item.id">
+                            {{ item.label | capitalizar }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.get('parametros').get('anioVehiculo')?.invalid && (submit || form.get('parametros').get('anioVehiculo')?.dirty || form.get('parametros').get('anioVehiculo')?.touched)">
+                        <span *ngIf="form.get('parametros').get('anioVehiculo')?.errors?.required">Cilindraje es requerido</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field *ngIf="valoresFijos.includes(formControl.parametros['controls'].anioVehiculo.value)">
+                    <mat-label>Año *</mat-label>
+                    <input matInput type="number" min="0" formControlName="anioVehiculoFijo" (keypress)="onlyNumber($event)"
+                        (ngModelChange)="onChangeValuesAnioCirculaVehi()"/>
+                    <mat-error *ngIf="form.get('parametros').get('anioVehiculoFijo')?.invalid && (submit || form.get('parametros').get('anioVehiculoFijo')?.dirty || form.get('parametros').get('anioVehiculoFijo')?.touched)">
+                        <span *ngIf="form.get('parametros').get('anioVehiculoFijo')?.errors?.required">Valor requerido</span>
+                        <span *ngIf="form.get('parametros').get('anioVehiculoFijo')?.errors?.pattern">Valor no valido</span>
+                        
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="row" *ngIf="valoresEntre.includes(formControl.parametros['controls'].anioVehiculo.value)">
+                    <div class="col-6">
+                        <mat-form-field>
+                            <mat-label>Año mínimo *</mat-label>
+                            <input matInput type="number" min="0" formControlName="anioVehiculoMenor" (keypress)="onlyNumber($event)"
+                                (ngModelChange)="onChangeValuesAnioCirculaVehi()"/>
+                            <mat-error *ngIf="form.get('parametros').get('anioVehiculoMenor')?.invalid && (submit || form.get('parametros').get('anioVehiculoMenor')?.dirty || form.get('parametros').get('anioVehiculoMenor')?.touched)">
+                                <span *ngIf="form.get('parametros').get('anioVehiculoMenor')?.errors?.required">Valor requerido</span>
+                                <span *ngIf="form.get('parametros').get('anioVehiculoMenor')?.errors?.pattern">Valor no valido</span>
+                                <span *ngIf="form.get('parametros').get('anioVehiculoMenor')?.errors?.rango">El valor mínimo debe ser menor al máximo</span>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-6">
+                        <mat-form-field >
+                            <mat-label>Año máximo *</mat-label>
+                            <input matInput type="number" min="0" formControlName="anioVehiculoMayor" (keypress)="onlyNumber($event)"/>
+                            <mat-error *ngIf="form.get('parametros').get('anioVehiculoMayor')?.invalid && (submit || form.get('parametros').get('anioVehiculoMayor')?.dirty || form.get('parametros').get('anioVehiculoMayor')?.touched)">
+                                <span *ngIf="form.get('parametros').get('anioVehiculoMayor')?.errors?.required">Valor requerido</span>
+                                <span *ngIf="form.get('parametros').get('anioVehiculoMayor')?.errors?.pattern">Valor no valido</span>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </article>
+
+            <article class="row">
+                <mat-form-field 
+                    *ngIf="parametrosAmostrar.includes('ANNIO_INSCRIPCION')"
+                    class="col animate__animated animate__fadeIn animate_faster">
+                    <mat-label>Año de inscripción *</mat-label>
+                    <mat-select formControlName="anioInscripcion" (selectionChange)="changesAnioInscripcion()" disableRipple>
+                        <mat-option *ngFor="let item of anioInscripcion$ | async" [value]="item.id">
+                            {{ item.label }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.get('parametros').get('anioInscripcion')?.invalid && (submit || form.get('parametros').get('anioInscripcion')?.dirty || form.get('parametros').get('anioInscripcion')?.touched)">
+                        <span *ngIf="form.get('parametros').get('anioInscripcion')?.errors?.required">Año de inscripción es requerido</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field *ngIf="valoresFijos.includes(formControl.parametros['controls'].anioInscripcion.value)">
+                    <mat-label>Año *</mat-label>
+                    <input matInput type="number" min="0" formControlName="anioInscripcionFijo" (keypress)="onlyNumber($event)"
+                        (ngModelChange)="onChangeValuesAnioCirculaVehi()"/>
+                    <mat-error *ngIf="form.get('parametros').get('anioInscripcionFijo')?.invalid && (submit || form.get('parametros').get('anioInscripcionFijo')?.dirty || form.get('parametros').get('anioInscripcionFijo')?.touched)">
+                        <span *ngIf="form.get('parametros').get('anioInscripcionFijo')?.errors?.required">Valor requerido</span>
+                        <span *ngIf="form.get('parametros').get('anioInscripcionFijo')?.errors?.pattern">Valor no valido</span>
+                        <span *ngIf="form.get('parametros').get('anioInscripcionFijo')?.errors?.min">Año de inscripción no puede ser menor al año del vehículo</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="row" *ngIf="valoresEntre.includes(formControl.parametros['controls'].anioInscripcion.value)">
+                    <div class="col-6">
+                        <mat-form-field>
+                            <mat-label>Año mínimo *</mat-label>
+                            <input matInput type="number" min="0" formControlName="anioInscripcionMenor" (keypress)="onlyNumber($event)"/>
+                            <mat-error *ngIf="form.get('parametros').get('anioInscripcionMenor')?.invalid && (submit || form.get('parametros').get('anioInscripcionMenor')?.dirty || form.get('parametros').get('anioInscripcionMenor')?.touched)">
+                                <span *ngIf="form.get('parametros').get('anioInscripcionMenor')?.errors?.required">Valor requerido</span>
+                                <span *ngIf="form.get('parametros').get('anioInscripcionMenor')?.errors?.pattern">Valor no valido</span>
+                                <span *ngIf="form.get('parametros').get('anioInscripcionMenor')?.errors?.rango">El valor mínimo debe ser menor al máximo</span>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-6">
+                        <mat-form-field >
+                            <mat-label>Año máximo *</mat-label>
+                            <input matInput type="number" min="0" formControlName="anioInscripcionMayor" (keypress)="onlyNumber($event)"
+                                (ngModelChange)="onChangeValuesAnioCirculaVehi()"/>
+                            <mat-error *ngIf="form.get('parametros').get('anioInscripcionMayor')?.invalid && (submit || form.get('parametros').get('anioInscripcionMayor')?.dirty || form.get('parametros').get('anioInscripcionMayor')?.touched)">
+                                <span *ngIf="form.get('parametros').get('anioInscripcionMayor')?.errors?.required">Valor requerido</span>
+                                <span *ngIf="form.get('parametros').get('anioInscripcionMayor')?.errors?.pattern">Valor no valido</span>
+                                <span *ngIf="form.get('parametros').get('anioInscripcionMayor')?.errors?.min">Año de inscripción no puede ser menor al año del vehículo</span>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </article>
+            
+            <article class="row">
+                <mat-form-field 
+                    *ngIf="parametrosAmostrar.includes('ANNIO_CIRCULACION')"
+                    class="col animate__animated animate__fadeIn animate_faster">
+                    <mat-label>Año de circulación *</mat-label>
+                    <mat-select formControlName="anioCirculacion" (selectionChange)="changesAnioCirculacion()" disableRipple>
+                        <mat-option *ngFor="let item of anioCirculacion$ | async" [value]="item.id">
+                            {{ item.label }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.get('parametros').get('anioCirculacion')?.invalid && (submit || form.get('parametros').get('anioCirculacion')?.dirty || form.get('parametros').get('anioCirculacion')?.touched)">
+                        <span *ngIf="form.get('parametros').get('anioCirculacion')?.errors?.required">Año de circulación es requerido</span>
+                    </mat-error>
+                </mat-form-field>      
+
+                <mat-form-field *ngIf="valoresFijos.includes(formControl.parametros['controls'].anioCirculacion.value)">
+                    <mat-label>Año *</mat-label>
+                    <input matInput type="number" min="0" formControlName="anioCirculacionFijo" (keypress)="onlyNumber($event)"
+                        (ngModelChange)="onChangeValuesAnioCirculaVehi()"/>
+                    <mat-error *ngIf="form.get('parametros').get('anioCirculacionFijo')?.invalid && (submit || form.get('parametros').get('anioCirculacionFijo')?.dirty || form.get('parametros').get('anioCirculacionFijo')?.touched)">
+                        <span *ngIf="form.get('parametros').get('anioCirculacionFijo')?.errors?.required">Valor requerido</span>
+                        <span *ngIf="form.get('parametros').get('anioCirculacionFijo')?.errors?.pattern">Valor no valido</span>
+                        <span *ngIf="form.get('parametros').get('anioCirculacionFijo')?.errors?.min">Año de circulación no puede ser menor al año del vehículo</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="row" *ngIf="valoresEntre.includes(formControl.parametros['controls'].anioCirculacion.value)">
+                    <div class="col-6">
+                        <mat-form-field>
+                            <mat-label>Año mínimo *</mat-label>
+                            <input matInput type="number" min="0" formControlName="anioCirculacionMenor" (keypress)="onlyNumber($event)"/>
+                            <mat-error *ngIf="form.get('parametros').get('anioCirculacionMenor')?.invalid && (submit || form.get('parametros').get('anioCirculacionMenor')?.dirty || form.get('parametros').get('anioCirculacionMenor')?.touched)">
+                                <span *ngIf="form.get('parametros').get('anioCirculacionMenor')?.errors?.required">Valor requerido</span>
+                                <span *ngIf="form.get('parametros').get('anioCirculacionMenor')?.errors?.pattern">Valor no valido</span>
+                                <span *ngIf="form.get('parametros').get('anioCirculacionMenor')?.errors?.rango">El valor mínimo debe ser menor al máximo</span>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-6">
+                        <mat-form-field >
+                            <mat-label>Año máximo *</mat-label>
+                            <input matInput type="number" min="0" formControlName="anioCirculacionMayor" (keypress)="onlyNumber($event)"
+                                (ngModelChange)="onChangeValuesAnioCirculaVehi()"/>
+                            <mat-error *ngIf="form.get('parametros').get('anioCirculacionMayor')?.invalid && (submit || form.get('parametros').get('anioCirculacionMayor')?.dirty || form.get('parametros').get('anioCirculacionMayor')?.touched)">
+                                <span *ngIf="form.get('parametros').get('anioCirculacionMayor')?.errors?.required">Valor requerido</span>
+                                <span *ngIf="form.get('parametros').get('anioCirculacionMayor')?.errors?.pattern">Valor no valido</span>
+                                <span *ngIf="form.get('parametros').get('anioCirculacionMayor')?.errors?.min">Año de circulación no puede ser menor al año del vehículo</span>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </article>
+
+            <article class="row">
+                <mat-form-field 
+                    *ngIf="parametrosAmostrar.includes('ANNIOS_CIRCULACION')"
+                    class="col animate__animated animate__fadeIn animate_faster">
+                    <mat-label>Años de circulación *</mat-label>
+                    <mat-select formControlName="aniosCirculacion" (selectionChange)="changesAniosCirculacion()" disableRipple>
+                        <mat-option *ngFor="let item of aniosCirculacion$ | async" [value]="item.id">
+                            {{ item.label }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.get('parametros').get('aniosCirculacion')?.invalid && (submit || form.get('parametros').get('aniosCirculacion')?.dirty || form.get('parametros').get('aniosCirculacion')?.touched)">
+                        <span *ngIf="form.get('parametros').get('aniosCirculacion')?.errors?.required">Años de circulación es requerido</span>
+                    </mat-error>
+                </mat-form-field>      
+
+                <mat-form-field *ngIf="valoresFijos.includes(formControl.parametros['controls'].aniosCirculacion.value)">
+                    <mat-label>Año *</mat-label>
+                    <input matInput type="number" min="0" formControlName="aniosCirculacionFijo" (keypress)="onlyNumber($event)"/>
+                    <mat-error *ngIf="form.get('parametros').get('aniosCirculacionFijo')?.invalid && (submit || form.get('parametros').get('aniosCirculacionFijo')?.dirty || form.get('parametros').get('aniosCirculacionFijo')?.touched)">
+                        <span *ngIf="form.get('parametros').get('aniosCirculacionFijo')?.errors?.required">Valor requerido</span>
+                        <span *ngIf="form.get('parametros').get('aniosCirculacionFijo')?.errors?.pattern">Valor no valido</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="row" *ngIf="valoresEntre.includes(formControl.parametros['controls'].aniosCirculacion.value)">
+                    <div class="col-6">
+                        <mat-form-field>
+                            <mat-label>Año mínimo *</mat-label>
+                            <input matInput type="number" min="0" formControlName="aniosCirculacionMenor" (keypress)="onlyNumber($event)"/>
+                            <mat-error *ngIf="form.get('parametros').get('aniosCirculacionMenor')?.invalid && (submit || form.get('parametros').get('aniosCirculacionMenor')?.dirty || form.get('parametros').get('aniosCirculacionMenor')?.touched)">
+                                <span *ngIf="form.get('parametros').get('aniosCirculacionMenor')?.errors?.required">Valor requerido</span>
+                                <span *ngIf="form.get('parametros').get('aniosCirculacionMenor')?.errors?.pattern">Valor no valido</span>
+                                <span *ngIf="form.get('parametros').get('aniosCirculacionMenor')?.errors?.rango">El valor mínimo debe ser menor al máximo</span>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-6">
+                        <mat-form-field >
+                            <mat-label>Año máximo *</mat-label>
+                            <input matInput type="number" min="0" formControlName="aniosCirculacionMayor" (keypress)="onlyNumber($event)"/>
+                            <mat-error *ngIf="form.get('parametros').get('aniosCirculacionMayor')?.invalid && (submit || form.get('parametros').get('aniosCirculacionMayor')?.dirty || form.get('parametros').get('aniosCirculacionMayor')?.touched)">
+                                <span *ngIf="form.get('parametros').get('aniosCirculacionMayor')?.errors?.required">Valor requerido</span>
+                                <span *ngIf="form.get('parametros').get('aniosCirculacionMayor')?.errors?.pattern">Valor no valido</span>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <article class="row">
+            <div class="form-group col">
+                <button mat-raised-button color="warn" (click)="onDelete()">Eliminar</button>
+            </div>
+        </article>
+
+        <article class="row">
+            <div class="form-group col">
+                <mat-form-field>
+                    <mat-label>Observaciones*</mat-label>
+                    <textarea  matInput formControlName="observaciones"></textarea>
+                    <mat-error *ngIf="formControl.observaciones?.invalid && (formControl.observaciones?.dirty || formControl.observaciones?.touched)">
+                        <span *ngIf="formControl.observaciones?.errors?.required">Observación de la tarifa es requerida</span>
+                        <span *ngIf="formControl.observaciones?.errors?.pattern">Observación de la tarifa incorrecta</span>
+                        <span *ngIf="formControl.observaciones?.errors?.maxlength?.requiredLength">Máximo {{form.controls.observaciones.errors.maxlength.requiredLength}} caracteres</span>
+                    </mat-error>
+                </mat-form-field>  
+            </div>
+        </article>
+
+        <footer class="text-center mt-5">
+            <button class="m-3" type="button" (click)="cancel()" mat-raised-button color="warn">Cancelar</button>
+            <button mat-raised-button color="primary" type="submit">Guardar cambios</button>
+        </footer>
+    </form>
+</section>

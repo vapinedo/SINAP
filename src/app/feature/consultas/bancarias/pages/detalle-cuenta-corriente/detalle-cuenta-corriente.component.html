@@ -1,0 +1,139 @@
+<div class="asw-box animate__animated animate__fadeIn animate_faster bg-color">
+	<article class="row">
+
+		<div class="col-md-7 col-sm-12 container-heard">
+			<div class="align-heard">
+				
+				<div align="left">
+					<button mat-button class="button-volver" color="primary" (click)="goBack()">
+						<mat-icon>arrow_back_ios</mat-icon>
+						Volver
+					</button>
+				</div>
+
+				<div class="row mb-3">
+					<h2 class="title mb-1">Consulta cuenta corriente</h2>
+				</div>
+
+				<div class="table-search">
+					<div class="input-search size-input">
+						<mat-icon>search</mat-icon>
+						<input matInput #inputSearch [(ngModel)]="search"
+							placeholder="Buscar..." autocomplete="off"
+							(keyup)="applyFilterSearch(inputSearch.value)" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-5">
+			<div class="row container-detail">
+
+				<table class="table-encabezado">
+					<tr>
+						<th>Propietario</th>
+						<td>{{encabezado?.nombrePropuietario}}</td>
+					</tr>
+					<tr>
+						<th>Placa</th>
+						<td>{{encabezado?.numeroPlaca}}</td>
+					</tr>					
+				</table>
+
+			</div>
+		</div>
+	</article>
+
+
+	<div class="example-container custom-scrollbar-css">
+		<table mat-table [dataSource]="dataSource" [hidden]="showSpinner" matSort
+			class="animate__animated animate__fadeIn animate__faster">
+			<ng-container matColumnDef="periodo">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>
+					Periodo
+				</th>
+				<td mat-cell *matCellDef="let item">{{ item.periodo }}</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="debitoTasa">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Débito Tasa</th>
+				<td mat-cell *matCellDef="let item">{{ item.debitoTasa | currency: "L "}}</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="debitoMulta">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Débito Multa</th>
+				<td mat-cell *matCellDef="let item">{{ item.debitoMulta | currency: "L "}}</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+			
+			<ng-container matColumnDef="creditoTasa">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Crédito Tasa</th>
+				<td mat-cell *matCellDef="let item">{{ item.creditoTasa | currency: "L "}}</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="creditoMulta">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Crédito Tasa</th>
+				<td mat-cell *matCellDef="let item">{{ item.creditoMulta | currency: "L "}}</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="excedente">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Excedente</th>
+				<td mat-cell *matCellDef="let item">{{ item.excedente | currency: "L "}}</td>				
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="saldoTasa">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Saldo Tasa</th>
+				<td mat-cell *matCellDef="let item">{{ item.saldoTasa | currency: "L "}}</td>
+				<td mat-footer-cell *matFooterCellDef>{{footer?.totalSaldoTasa | currency: "L "}}</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="saldoMulta">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Saldo Multa</th>
+				<td mat-cell *matCellDef="let item">{{ item.saldoMulta  | currency: "L "}}</td>
+				<td mat-footer-cell *matFooterCellDef>{{footer?.totalSaldoMulta | currency: "L "}}</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="saldo">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Saldo</th>
+				<td mat-cell *matCellDef="let item">{{ item.saldo  | currency: "L "}}</td>
+				<td mat-footer-cell *matFooterCellDef>{{footer?.totalSaldo | currency: "L "}}</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>			
+
+			<ng-container matColumnDef="acciones">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
+				<td mat-cell *matCellDef="let item">
+					<i matTooltip="Detalle" (click)="openDetail(item?.periodo)"
+						class="material-icons-outlined azul-300 cursor">remove_red_eye</i>
+				</td>
+			</ng-container>
+
+			<ng-container matColumnDef="total">
+				<td mat-footer-cell *matFooterCellDef colspan="6" style="text-align: right;">
+					Deuda total:
+				</td>
+			</ng-container>
+
+			<tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+			<tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
+			<tr mat-footer-row *matFooterRowDef="displayColumnsFooter"></tr> 
+
+			<tr class="mat-row" *matNoDataRow>
+				<td class="mat-cell" colspan="4">No se encontraron registros</td>
+			</tr>
+		</table>
+	</div>
+	<mat-paginator showFirstLastButtons [pageSizeOptions]="[5, 10, 25, 100]">
+	</mat-paginator>
+</div>
+<br>
+<div *ngIf="!viewTransation">
+	<app-detalle-transacciones [iduVehiculo]="iduVehiculo" [periodo]="periodo" [tipoTasa]="tipoTasa">
+	</app-detalle-transacciones>
+</div>

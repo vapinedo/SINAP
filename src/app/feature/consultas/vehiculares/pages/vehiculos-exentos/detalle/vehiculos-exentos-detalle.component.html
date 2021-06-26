@@ -1,0 +1,89 @@
+<app-spinner *ngIf="showSpinner"></app-spinner>
+
+<article class="detail" *ngIf="!showSpinner">
+
+    <div class="row">
+        <div class="col tabla col-md-4">
+            <h2 class="title">Propietario</h2>
+            <table>
+                <tr>
+                    <td>Nombre</td>
+                    <td>{{data?.nombrePropietario}}</td>
+                </tr>
+                <tr>
+                    <td>RTN alfabético</td>
+                    <td>{{data?.rtn}}</td>
+                </tr>
+                <tr>
+                    <td>Exentos desde</td>
+                    <td>{{data?.exentoDesde}}</td>
+                </tr>                
+            </table>
+        </div>
+    </div>
+    <h2 class="title">DATOS DEL VEHICULO {{data?.placa}}</h2>
+    <div class="row">
+        <div class="col tabla">            
+            <table>
+                <tr>
+                    <td>Placa</td>
+                    <td>{{data?.placa}}</td>
+                </tr>
+                <tr>
+                    <td>Año</td>
+                    <td>{{data?.annio}}</td>
+                </tr>
+                <tr>
+                    <td>Marca</td>
+                    <td>{{data?.marca}}</td>
+                </tr>         
+                <tr>
+                    <td>Modelo</td>
+                    <td>{{data?.modelo}}</td>
+                </tr>                
+            </table>
+        </div>
+        <div class="col tabla">            
+            <table>
+                <tr>
+                    <td>Color</td>
+                    <td>{{data?.color}}</td>
+                </tr>
+                <tr>
+                    <td>Tipo</td>
+                    <td>{{data?.tipo}}</td>
+                </tr>
+                <tr>
+                    <td>Circulación</td>
+                    <td>{{data?.circulacion?.split('T')[0] | date:'yyyy/MM/dd'}}</td>
+                </tr> 
+                <tr>
+                    <td>Cilindraje</td>
+                    <td>{{data?.cilindraje}}</td>
+                </tr>                                        
+            </table>
+        </div>
+        <div class="col tabla">            
+            <table>
+                <tr>
+                    <td>Motor</td>
+                    <td>{{data?.motor}}</td>
+                </tr>
+                <tr>
+                    <td>Valor</td>
+                    <td>{{data?.valor | currency: "L "}}</td>
+                </tr>
+                <tr>
+                    <td>VIN</td>
+                    <td>{{data?.vin}}</td>
+                </tr>                                        
+            </table>
+        </div>
+        <div align="left">
+            <button class ="button-cuenta" (click)="openEstadoCuenta()">Ver estado de cuenta</button>  
+        </div>        
+    </div>
+    <footer class="d-flex justify-content-end mt-4">
+      <button mat-raised-button color="primary" (click)="closeModalEvent()">Aceptar</button>
+  </footer>
+</article>

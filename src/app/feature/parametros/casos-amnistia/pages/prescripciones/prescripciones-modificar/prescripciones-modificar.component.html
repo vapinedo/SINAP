@@ -1,0 +1,229 @@
+<header mat-dialog-title>
+	<h2>Editar prescripción {{ prescriptionToDetail?.nombre }}</h2>
+	<button mat-button [disabled]="disableButton" (click)="onCloseDialog()">
+		<i class="material-icons-outlined">clear</i>
+	</button>
+</header>
+
+<section class="modal-content custom-scrollbar">
+	<mat-dialog-content *ngIf="!showSpinner">
+		<div class="mb-3">
+			<small class="azul-300">
+				CREADO POR {{ prescriptionToDetail?.usuarioCreacion | uppercase }} EL
+				{{ prescriptionToDetail?.fechaCreacion | date: "yyyy/MM/dd" }}
+			</small>
+		</div>
+		<form [formGroup]="formulario" autocomplete="off">
+			<article class="row">
+				<mat-form-field cdkFocusInitial class="col">
+					<mat-label>Nombre</mat-label>
+					<input matInput formControlName="nombre" required />
+					<mat-error
+						*ngIf="
+							formularioControls.nombre?.invalid &&
+							(formularioControls.nombre?.dirty || formularioControls.nombre?.touched)
+						"
+					>
+						<span *ngIf="formularioControls.nombre?.errors?.required"
+							>Nombre es requerido</span
+						>
+						<span *ngIf="formularioControls.nombre?.errors?.minlength"
+							>Máximo
+							{{ formularioControls.nombre.errors.minlength.requiredLength }}
+							caracteres</span
+						>
+						<span *ngIf="formularioControls.nombre?.errors?.maxlength"
+							>Máximo
+							{{ formularioControls.nombre.errors.maxlength.requiredLength }}
+							caracteres</span
+						>
+						<span *ngIf="formularioControls.nombre.errors?.pattern"
+							>No puede ser vacio</span
+						>
+					</mat-error>
+				</mat-form-field>
+			</article>
+			<article class="row">
+				<mat-form-field class="col remove-line">
+					<mat-label class="negro-500"><b>Descripción</b></mat-label>
+					<textarea matInput formControlName="descripcion" readonly></textarea>
+				</mat-form-field>
+			</article>
+			<article class="row">
+				<mat-form-field class="col remove-line">
+					<mat-label class="negro-500"><b>Tipo de concepto</b></mat-label>
+					<input matInput formControlName="tipoConcepto" readonly />
+				</mat-form-field>
+
+				<mat-form-field class="col remove-line">
+					<mat-label class="negro-500"><b>Concepto</b></mat-label>
+					<input matInput formControlName="nombreConcepto" readonly />
+				</mat-form-field>
+			</article>
+			<article class="row">
+				<h2 class="azul-300">Periodicidad</h2>
+				<mat-form-field class="col remove-line">
+					<mat-label class="negro-500"><b>Periodos vigentes</b></mat-label>
+					<input
+						matInput
+						type="number"
+						formControlName="periodosVigentes"
+						readonly
+					/>
+				</mat-form-field>
+
+				<mat-form-field class="col remove-line">
+					<mat-label class="negro-500"><b>Periodo</b></mat-label>
+					<input matInput formControlName="periodo" readonly />
+				</mat-form-field>
+				<div class="col"></div>
+			</article>
+			<article class="row">
+				<h2 class="azul-300">Vigencia</h2>
+				<mat-form-field class="col remove-line">
+					<mat-label class="negro-500"><b>Inicio de vigencia</b></mat-label>
+					<input
+						matInput
+						type="text"
+						formControlName="inicioVigencia"
+						placeholder="AAAA/MM/DD"
+						readonly
+						[matDatepicker]="inicioVigencia"
+						(dateInput)="eventDates('input', $event)"
+						(dateChange)="eventDates('change', $event)"
+					/>
+					<mat-datepicker-toggle
+						disabled
+						matSuffix
+						[for]="inicioVigencia"
+					></mat-datepicker-toggle>
+					<mat-datepicker #inicioVigencia></mat-datepicker>
+					<mat-error *ngIf="formularioControls.inicioVigencia.errors?.pattern"
+						>Fecha inválida</mat-error
+					>
+					<mat-error *ngIf="formularioControls.inicioVigencia.errors?.required"
+						>El campo está incompleto</mat-error
+					>
+					<mat-error *ngIf="formularioControls.inicioVigencia.errors?.outRange1">{{
+						formularioControls.inicioVigencia.errors?.outRange1
+					}}</mat-error>
+				</mat-form-field>
+				<mat-form-field class="col">
+					<mat-label>Fin de vigencia</mat-label>
+					<input
+						matInput
+						type="text"
+						formControlName="finVigencia"
+						placeholder="AAAA/MM/DD"
+						[matDatepicker]="finVigencia"
+						(dateInput)="eventDates('input', $event)"
+						(dateChange)="eventDates('change', $event)"
+					/>
+					<mat-datepicker-toggle
+						matSuffix
+						[for]="finVigencia"
+					></mat-datepicker-toggle>
+					<mat-datepicker #finVigencia></mat-datepicker>
+
+					<mat-error
+						*ngIf="
+							formularioControls.finVigencia?.invalid &&
+							(formularioControls.finVigencia?.dirty ||
+								formularioControls.finVigencia?.touched)
+						"
+					>
+						<span *ngIf="formularioControls.finVigencia?.errors?.pattern"
+							>Fecha inválida</span
+						>
+						<span *ngIf="formularioControls.finVigencia?.errors?.outRange1">{{
+							formularioControls.finVigencia.errors?.outRange1
+						}}</span>
+						<span *ngIf="formularioControls.finVigencia.errors?.validatePeriodos">{{
+							formularioControls.finVigencia.errors?.validatePeriodos
+						}}</span>
+					</mat-error>
+				</mat-form-field>
+				<mat-form-field class="col">
+					<mat-label>Fecha de aplicación</mat-label>
+					<input
+						matInput
+						type="text"
+						formControlName="fechaAplicacion"
+						placeholder="MM/DD"
+						required
+					/>
+					<mat-error
+						*ngIf="
+							formularioControls.fechaAplicacion?.invalid &&
+							(formularioControls.fechaAplicacion?.dirty ||
+								formularioControls.fechaAplicacion?.touched)
+						"
+					>
+						<span *ngIf="formularioControls.fechaAplicacion?.errors?.pattern"
+							>Fecha inválida</span
+						>
+						<span *ngIf="formularioControls.fechaAplicacion.errors?.required"
+							>Fecha de aplicación es requerido</span
+						>
+					</mat-error>
+				</mat-form-field>
+			</article>
+
+			<article class="row">
+				<div class="col">
+					<mat-slide-toggle formControlName="estado">Estado</mat-slide-toggle>
+				</div>
+			</article>
+			<br />
+			<button mat-raised-button color="warn" (click)="openDialogEliminar()">
+				Eliminar
+			</button>
+			<br />
+			<br />
+			<article>
+				<mat-form-field cdkFocusInitial class="col">
+					<mat-label>Observación</mat-label>
+					<textarea matInput formControlName="observacion" required></textarea>
+					<mat-error
+						*ngIf="
+							formularioControls.observacion?.invalid &&
+							(formularioControls.observacion?.dirty ||
+								formularioControls.observacion?.touched)
+						"
+					>
+						<span *ngIf="formularioControls.observacion?.errors?.required"
+							>El campo está incompleto</span
+						>
+						<span *ngIf="formularioControls.observacion?.errors?.minlength"
+							>Máximo
+							{{ formularioControls.observacion.errors.minlength.requiredLength }}
+							caracteres</span
+						>
+						<span *ngIf="formularioControls.observacion?.errors?.maxlength"
+							>Máximo
+							{{ formularioControls.observacion.errors.maxlength.requiredLength }}
+							caracteres</span
+						>
+						<span *ngIf="formularioControls.observacion.errors?.pattern"
+							>No puede ser vacio</span
+						>
+					</mat-error>
+				</mat-form-field>
+			</article>
+		</form>
+	</mat-dialog-content>
+	<app-spinner *ngIf="showSpinner"></app-spinner>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="warn" (click)="onCloseDialog()" [disabled]="disableButton">
+			Cancelar
+		</button>
+		<button
+			mat-raised-button
+			color="primary"
+			[disabled]=" formulario.invalid || !formulario.dirty || disableButton"
+			(click)="editar()"
+		>
+			Editar prescripción
+		</button>
+	</mat-dialog-actions>
+</section>

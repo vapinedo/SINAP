@@ -1,0 +1,43 @@
+
+    <article class="row asw-box animate__animated animate__fadeIn animate_faster">
+        <div *ngIf="!showSpinner" class="table-search">
+            <div class="input-search">
+                <mat-icon>search</mat-icon>
+                <input matInput 
+                    #inputSearch
+                    placeholder="Buscar ..." 
+                    autocomplete="off" 
+                    (keyup)="applyFilter($event)">
+            </div>
+        </div>
+
+        <app-progressbar *ngIf="showProgressBar"></app-progressbar>
+        <app-spinner *ngIf="showSpinner"></app-spinner>
+
+        <table mat-table [dataSource]="dataSource"  [hidden]="showSpinner" matSort class="animate__animated animate__fadeIn animate__faster">
+            <ng-container matColumnDef="mes">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Multa</th>
+                <td mat-cell *matCellDef="let item">{{ item.mes }}</td>
+            </ng-container>
+    
+            <ng-container matColumnDef="valor">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Valor</th>
+                <td mat-cell *matCellDef="let item">{{ item.valor |currency:'L ' }}</td>
+            </ng-container>
+    
+
+            <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No se encontraron registros</td>
+            </tr>
+        </table>
+
+        <mat-paginator
+        showFirstLastButtons
+        [pageSizeOptions]="[5, 10, 25, 100]">
+        </mat-paginator>
+
+       
+    </article>

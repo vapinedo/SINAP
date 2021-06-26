@@ -1,0 +1,67 @@
+<section class="row asw-box animate__animated animate__fadeIn animate_faster">
+    <h2>Tasas</h2>
+
+    <div *ngIf="!showSpinner" class="table-search">
+        <div class="input-search">
+            <mat-icon>search</mat-icon>
+            <input matInput 
+                #inputSearch
+                placeholder="Buscar ..." 
+                autocomplete="off" 
+                (keyup)="applyFilter($event)">
+        </div>
+        <button routerLink="/" mat-raised-button color="primary">Crear</button>
+    </div>
+
+    <app-progressbar *ngIf="showProgressBar"></app-progressbar>
+
+    <table mat-table [dataSource]="dataSource" *ngIf="!showSpinner" class="animate__animated animate__fadeIn animate__faster">
+        <ng-container matColumnDef="campo1">
+            <th mat-header-cell *matHeaderCellDef>Campo 1</th>
+            <td mat-cell *matCellDef="let item">{{ item.campo1 }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="campo2">
+            <th mat-header-cell *matHeaderCellDef>Campo 2</th>
+            <td mat-cell *matCellDef="let item">{{ item.campo2 }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="campo3">
+            <th mat-header-cell *matHeaderCellDef>Campo 3</th>
+            <td mat-cell *matCellDef="let item">{{ item.campo3 }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="campo4">
+            <th mat-header-cell *matHeaderCellDef>Campo 4</th>
+            <td mat-cell *matCellDef="let item">{{ item.campo4 }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="campo5">
+            <th mat-header-cell *matHeaderCellDef>Campo 5</th>
+            <td mat-cell *matCellDef="let item">{{ item.campo5 }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Acciones</th>
+            <td mat-cell *matCellDef="let item" class="tools text-center">
+                <i matTooltip="Actualizar" class="material-icons-outlined azul-300">edit</i>
+                <i matTooltip="Archivar" class="material-icons-outlined azul-300">remove_red_eye</i>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No se encontraron registros</td>
+        </tr>
+    </table>
+
+    <mat-paginator 
+        *ngIf="!showSpinner" 
+        showFirstLastButtons
+        [pageSizeOptions]="[10, 20, 50, 100]">
+    </mat-paginator>
+
+    <app-spinner *ngIf="showSpinner"></app-spinner>
+</section>

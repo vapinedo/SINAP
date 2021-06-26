@@ -1,0 +1,154 @@
+@import "src/assets/scss/colors";
+@import "src/assets/scss/typography";
+
+.arrow {
+  font-size: 22px;
+  color: $azul-300;
+}
+
+table {
+  td {
+    padding: 0 1em;
+  }
+
+  tr.example-detail-row {
+    height: 0;
+  }
+
+  tr.example-expanded-row {
+    background-color: $azul-100;
+  }
+
+  .detail {
+    overflow: hidden;
+
+    .body {
+      h3 {
+        font-size: 14px;
+        color: $negro-500;
+        margin-bottom: .7em;
+        font-family: 'keep_calm_medregular';
+      }
+      .description {
+        font-size: 12px;
+        color: $gris-500;
+        line-height: 20px;
+        margin-bottom: 2.5em;
+      }
+
+      .tabla {
+        table {
+          width: 100%;
+          margin: 2em auto;
+          margin-top: 0;
+  
+          .first-col { margin-right: 3em !important; }
+
+          tr {
+              &:nth-child(odd) { background: $azul-100 }
+              &:nth-child(even) { background: $blanco-500 }
+      
+              td {
+                  padding: .7em;
+      
+                  &:first-child {
+                      color: $azul-400;
+                  }
+                  &:last-child {
+                      font-size: 14px;
+                      color: $gris-500;
+                      text-align: right;
+                      font-family: 'keep_calmlight', sans-serif;
+                  }
+              }
+          }
+        }      
+      }
+
+      .mat-chip-list {
+        h3 {
+          color: $azul-400;
+          margin: 0px !important;
+        }
+      }
+    }
+
+    .footer {
+      padding: .7em;
+      background-color: $azul-100;
+
+      .last-change { color: $azul-300; }
+      .change-detail { color: $azul-500; }
+      .created {
+          label { color: $gris-500; }
+          span {
+              margin: 0 .5em;
+              color: $azul-300;
+          }
+      }
+  }
+  }
+}
+
+.title-container {
+  font-size: 18px;
+  color: $azul-500;
+  font-family: 'keep_calm_medregular';
+  font-weight: 100;
+}
+.description-registral {
+  padding: .7em;
+  background-color: $azul-100;
+
+  .title { color: $azul-300; }
+  .content {
+      label { color: $gris-500; }
+  }
+}
+
+.filtro {
+  padding: 1em;
+  min-width: 280px;
+  max-width: 400px;
+
+  header {
+      padding: 0 2px;
+      display: flex;
+      margin-bottom: 2em;
+      align-items: center;
+      justify-content: space-between;
+
+      h2 {  
+          margin: 0;;
+          font-size: 1em; 
+      }
+
+      i {
+          font-size: 2.2em;
+          cursor: pointer;
+          color: $gris-400;
+
+          &:hover {
+              color: $azul-300;
+          }
+      }
+  }
+
+  .mat-form-field {
+      margin: 0;
+      padding: 0;
+
+      ::ng-deep .mat-form-field-underline { display: none; }
+  }
+  ::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+      border-radius: 7px;
+      padding: 4px 1.5em;
+      background-color: $gris-100; 
+  }
+  ::ng-deep .mat-form-field-infix { padding-bottom: 0; }
+
+  #limpiar {
+    text-align: end;
+  }
+}
+  

@@ -1,0 +1,25 @@
+@import "src/assets/scss/colors";
+@import "src/assets/scss/custom_material";
+
+/* Custom Scrollbar using CSS */
+.custom-scrollbar-css {
+  scrollbar-color: none;
+  scrollbar-width: thin;
+}
+
+/* scrollbar width */
+.custom-scrollbar-css::-webkit-scrollbar {
+  height: 5px;
+}
+
+/* scrollbar track */
+.custom-scrollbar-css::-webkit-scrollbar-track {
+  background: none;
+  border-radius: 15px;
+}
+
+/* scrollbar handle */
+.custom-scrollbar-css::-webkit-scrollbar-thumb {
+  border-radius: 15px;
+  background-color: $azul-500;
+}

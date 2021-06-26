@@ -1,0 +1,56 @@
+<mat-accordion>
+	<mat-expansion-panel [expanded]="selected === 'consulta-tasa'" hideToggle (opened)="onClick('consulta-tasa')">
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				<h2>Consulta de tasa</h2>
+			</mat-panel-title>
+		</mat-expansion-panel-header>
+	</mat-expansion-panel>
+
+	<mat-expansion-panel [expanded]="selected === 'matricula-ip' || selected === 'matricula-banco'">
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				<h2>Información de matrícula</h2>
+			</mat-panel-title>
+		</mat-expansion-panel-header>
+
+		<mat-radio-group>
+			<ul>
+				<li class="mb-2">
+					<mat-radio-button color="primary"  [checked] = "selected == 'matricula-ip'" value="matricula-ip" (change) = "onClick($event.value)"
+						>Información de matricula en el IP</mat-radio-button
+					>
+				</li>
+				<li class="mb-2">
+					<mat-radio-button color="primary" [checked] = "selected == 'matricula-banco'" value="matricula-banco" (change) = "onClick($event.value)"
+						>Información de matricula en el banco</mat-radio-button
+					>
+				</li>
+			</ul>
+		</mat-radio-group>
+	</mat-expansion-panel>
+
+	<mat-expansion-panel [expanded]="selected === 'novedades-ip' || selected === 'novedades-banco'">
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				<h2>Detalle trámites registrales</h2>
+			</mat-panel-title>
+		</mat-expansion-panel-header>
+
+		<mat-radio-group>
+			<ul>
+				<li class="mb-2">
+					<mat-radio-button color="primary" [checked] = "selected == 'novedades-ip'" value="novedades-ip" (change) = "onClick($event.value)"
+						>Detalle novedades en el IP</mat-radio-button
+					>
+				</li>
+				<li class="mb-2">
+					<mat-radio-button color="primary"  [checked] = "selected == 'novedades-banco'" value="novedades-banco" (change) = "onClick($event.value)"
+						>Detalle novedades en el banco</mat-radio-button
+					>
+				</li>
+			</ul>
+		</mat-radio-group>
+	</mat-expansion-panel>
+</mat-accordion>
+

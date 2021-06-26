@@ -1,0 +1,103 @@
+<section class="tabla-con-filtro">
+    <div class="col-lg-3 col-spacing">
+
+        <div class="row mb-3" routerLink="/parametros/valores-cobros/tarifas" style="cursor: pointer;">
+            <section class="filtro asw-box animate__animated animate__fadeIn animate_faster">
+                <h2 class="title">Tarifas por concepto de débito</h2>
+            </section>
+        </div>
+    
+        <div class="row mb-3">
+          <section class="filtro row asw-box animate__animated animate__fadeIn animate_faster">
+    
+            <h2 class="title">Concepto de débitos</h2>
+    
+            <span class="subtitle-filter">Filtros</span>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Multa</mat-label>
+                <mat-select [(ngModel)]="selectMulta" (selectionChange)="filter()">
+                    <mat-option value="Si">Si</mat-option>
+                    <mat-option value="No">No</mat-option>
+                </mat-select>
+            </mat-form-field>
+        
+            <mat-form-field appearance="fill">
+                <mat-label>Estado</mat-label>
+                <mat-select [(ngModel)]="selectEstado" (selectionChange)="filter()">
+                    <mat-option value="Activo">Activo</mat-option>
+                    <mat-option value="Inactivo">Inactivo</mat-option>
+                </mat-select>
+            </mat-form-field>
+            
+            <div class="text-align-rigth">
+              <button type="button" (click)="cleanFilters()" mat-raised-button color="primary">Limpiar</button>
+            </div>
+          </section>
+        </div>
+    </div>
+
+
+    <article class="row asw-box animate__animated animate__fadeIn animate_faster">
+        <h2>Concepto de débitos</h2>
+
+        <div *ngIf="!showSpinner" class="table-search">
+            <div class="input-search">
+                <mat-icon>search</mat-icon>
+                <input matInput 
+                    #inputSearch
+                    placeholder="Buscar ..." 
+                    autocomplete="off" 
+                    (keyup)="applyFilter($event)">
+            </div>
+            <button (click)="onCreate()" mat-raised-button color="primary">Crear</button>
+        </div>
+
+        <app-progressbar *ngIf="showProgressBar"></app-progressbar>
+        <app-spinner *ngIf="showSpinner"></app-spinner>
+
+        <table mat-table [dataSource]="dataSource"  [hidden]="showSpinner" matSort class="animate__animated animate__fadeIn animate__faster">
+            <ng-container matColumnDef="nombre">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+                <td mat-cell *matCellDef="let item">{{ item.nombre }}</td>
+            </ng-container>
+    
+            <ng-container matColumnDef="nombreNormativa">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Normativa</th>
+                <td mat-cell *matCellDef="let item">{{ item.nombreNormativa }}</td>
+            </ng-container>
+    
+            <ng-container matColumnDef="cobraMultaDesc">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Multa</th>
+                <td mat-cell *matCellDef="let item">{{ item.cobraMultaDesc }}</td>
+            </ng-container>
+    
+            <ng-container matColumnDef="estadoDesc">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+                <td mat-cell *matCellDef="let item">{{ item.estadoDesc }}</td>
+            </ng-container>
+    
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Acciones</th>
+                <td mat-cell *matCellDef="let item" class="tools text-center">
+                    <i (click)="onEdit(item)" matTooltip="Modificar" class="material-icons-outlined azul-300">edit</i>
+                    <i (click)="onViewDetail(item)" matTooltip="Ver detalle" class="material-icons-outlined azul-300">remove_red_eye</i>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No se encontraron registros</td>
+            </tr>
+        </table>
+
+        <mat-paginator
+        showFirstLastButtons
+        [pageSizeOptions]="[5, 10, 25, 100]">
+        </mat-paginator>
+
+       
+    </article>
+</section>

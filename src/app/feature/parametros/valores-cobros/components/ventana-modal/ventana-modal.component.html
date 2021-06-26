@@ -1,0 +1,10 @@
+<header mat-dialog-title>
+    <h2>{{ modalTitle }}</h2>
+    <button mat-button (click)="close()">
+        <i class="material-icons-outlined">clear</i>
+    </button>
+</header>
+
+<mat-dialog-content class="mat-typography custom-scrollbar">
+    <ng-template #target></ng-template>
+</mat-dialog-content>

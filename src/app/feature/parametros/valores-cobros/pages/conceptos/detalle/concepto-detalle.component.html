@@ -1,0 +1,64 @@
+<app-spinner *ngIf="showSpinner"></app-spinner>
+
+<article class="detail" *ngIf="!showSpinner">
+    <div class="title">
+        <label>Nombre concepto:</label> 
+        <span>{{ dataSource.nombre }}</span>
+    </div>
+
+    <table>
+        <tr>
+            <td>Normativa</td>
+            <td>{{ dataSource.normativa?.nombre }}</td>
+        </tr>
+        <tr>
+            <td>Descripción</td>
+            <td>{{ dataSource.descripcion }}</td>
+        </tr>
+        <tr>
+            <td>Multa</td>
+            <td>{{ dataSource.cobraMulta == 1 ? 'Si' : 'No'  }}</td>
+        </tr>
+        <tr>
+            <td>Código de concepto</td>
+            <td>{{ dataSource.codigo }}</td>
+        </tr>
+        <tr>
+            <td>Es débito registral</td>
+            <td>{{ dataSource.registral == 1 ? 'Si' : 'No'  }}</td>
+        </tr>
+        <tr>
+            <td>Estado</td>
+            <td>{{ dataSource.estado == true ? 'Activo' : 'Inactivo'  }}</td>
+        </tr>
+        <tr>
+            <td>Fecha inicio de vigencia</td>
+            <td>{{dataSource?.fechaInicioVigencia | date:'yyyy/MM/dd'}}</td>
+         </tr>
+        <tr>
+            <td>Fecha fin de vigencia</td>
+            <td>{{dataSource?.fechaFinVigencia | date:'yyyy/MM/dd'}}</td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        <p class="created"> 
+            <label>Creado por</label>
+            <span>{{ dataSource.usuarioCreacion == null ? 'usuario SINAP' : dataSource.usuarioCreacion  }}</span>
+            <label>el</label>
+            <span>{{ dataSource.fechaCreacion | date: 'yyyy/MM/dd' }}</span>
+        </p>
+        <p class="last-change">Último cambio</p>
+        <p *ngIf="dataSource?.fechaActualiza" class="created">
+        <label>Modificado por</label>
+            <span>{{ dataSource.usuarioActualiza == null ? 'usuario SINAP' : dataSource.usuarioActualiza }}</span>
+            <label>el</label>
+            <span>{{ dataSource.fechaActualiza | date: 'yyyy/MM/dd' }}</span>
+        </p>
+        <p class="change-detail">{{ dataSource.observaciones }}</p>
+    </div>
+
+    <footer class="d-flex justify-content-end mt-4">
+        <button mat-raised-button color="primary" (click)="closeModalEvent()">Editar</button>
+    </footer>
+</article>

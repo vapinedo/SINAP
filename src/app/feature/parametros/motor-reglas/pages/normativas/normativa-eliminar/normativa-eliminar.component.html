@@ -1,0 +1,33 @@
+<section class="modal-content custom-scrollbar">
+	<mat-dialog-content *ngIf="!showSpinner">
+<form [formGroup]="form"  autocomplete="off">
+
+    <p class="text-muted text-center">¿Está seguro que desea eliminar esta normativa?</p>
+
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Observaciones</mat-label>
+            <textarea matInput formControlName="observaciones"></textarea>
+            <mat-error *ngIf="observaciones?.invalid && (observaciones?.dirty || observaciones?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="observaciones?.errors?.required">Observaciones es requerido</span>
+                <span *ngIf="observaciones?.errors?.maxlength"
+                >Máximo
+                {{
+                    observaciones.errors.maxlength.requiredLength
+                }}
+                caracteres</span>  
+            </mat-error>
+        </mat-form-field>
+    </article>
+
+       
+</form>
+</mat-dialog-content>
+<app-spinner *ngIf="showSpinner"></app-spinner>
+<mat-dialog-actions align="end">
+    <button mat-raised-button color="warn" mat-dialog-close>
+        Cancelar
+    </button>
+<button [disabled]="form.invalid" mat-raised-button  (click) = "onSubmit()" color="primary">Aceptar</button>
+</mat-dialog-actions>
+</section>

@@ -1,0 +1,196 @@
+<div class="row">
+	<div [class]="class1"></div>
+	<div [class]="class2">
+		<app-spinner *ngIf="showSpinner"></app-spinner>
+		<section class="filtro margin-filtro asw-box animate__animated animate__fadeIn animate_faster" [hidden]="data.length == 0">
+			<h2 class="title mb-1">Filtros</h2>
+			<mat-form-field appearance="fill">
+				<mat-label>Número de placa</mat-label>
+				<mat-select [(ngModel)]="selectPlaca" (selectionChange)="applyFilter()"> 
+					<mat-option *ngFor="let placa of filterPlaca" [value]="placa">{{placa}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field appearance="fill">
+				<mat-label>Comprobante</mat-label>
+				<mat-select [(ngModel)]="selectCompro" (selectionChange)="applyFilter()"> 
+					<mat-option *ngFor="let compro of filterComprobante" [value]="compro">{{compro}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field appearance="fill">
+				<mat-label>Tipo de vehículo</mat-label>
+				<mat-select [(ngModel)]="selectTipo" (selectionChange)="applyFilter()"> 
+					<mat-option *ngFor="let tipo of filterTipo" [value]="tipo">{{tipo}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<div align="center" [hidden]="cleanFilterValidator()">
+				<button type="button" (click)="cleanFilters()" mat-raised-button color="primary">Limpiar</button>
+			</div>
+
+		</section>
+
+		<section *ngIf="!showSpinner" class="filtro asw-box animate__animated animate__fadeIn animate_faster">
+			<form [formGroup]="formulario" autocomplete="off">
+				<article class="row">
+					<mat-form-field cdkFocusInitial class="col">
+						<mat-label>RTN NUMÉRICO</mat-label>
+						<input matInput formControlName="RTNNumerico" />
+						<mat-error *ngIf="
+								formularioControls.RTNNumerico?.invalid &&
+								(formularioControls.RTNNumerico?.dirty ||
+									formularioControls.RTNNumerico?.touched)
+							">
+							<span *ngIf="formularioControls.RTNNumerico?.errors?.minlength">El número de caracteres debe
+								ser de
+								{{ formularioControls.RTNNumerico.errors.minlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.RTNNumerico?.errors?.maxlength">El número de caracteres debe
+								ser de
+								{{ formularioControls.RTNNumerico.errors.maxlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.RTNNumerico.errors?.pattern">Solo se permite números</span>
+						</mat-error>
+					</mat-form-field>
+				</article>
+				<article class="row">
+					<mat-form-field class="col">
+						<mat-label>RTN ALFANUMÉRICO</mat-label>
+						<input matInput formControlName="RTNAlfanumerico" />
+						<mat-error *ngIf="
+								formularioControls.RTNAlfanumerico?.invalid &&
+								(formularioControls.RTNAlfanumerico?.dirty ||
+									formularioControls.RTNAlfanumerico?.touched)
+							">
+							<span *ngIf="formularioControls.RTNAlfanumerico?.errors?.minlength">El número de caracteres
+								debe ser de
+								{{ formularioControls.RTNAlfanumerico.errors.minlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.RTNAlfanumerico?.errors?.maxlength">El número de caracteres
+								debe ser de
+								{{ formularioControls.RTNAlfanumerico.errors.maxlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.RTNAlfanumerico.errors?.pattern">Solo se permite números y
+								letras</span>
+						</mat-error>
+					</mat-form-field>
+				</article>
+
+				<article class="row">
+					<mat-form-field cdkFocusInitial class="col">
+						<mat-label>Placa</mat-label>
+						<input matInput formControlName="placa" />
+						<mat-error *ngIf="
+								formularioControls.placa?.invalid &&
+								(formularioControls.placa?.dirty || formularioControls.placa?.touched)
+							">
+							<span *ngIf="formularioControls.placa?.errors?.minlength">El número de caracteres mínimo debe ser
+								de
+								{{ formularioControls.placa.errors.minlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.placa?.errors?.maxlength">El número de caracteres máximo debe ser
+								de
+								{{ formularioControls.placa.errors.maxlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.placa.errors?.pattern">Solo se permite números y
+								letras</span>
+						</mat-error>
+					</mat-form-field>
+
+				</article>
+
+				<div align="center">
+					<button mat-raised-button color="primary" (click)="consultar()">
+						Continuar
+					</button>
+				</div>
+			</form>
+		</section>
+	</div>
+	<div [class]="class3">
+		<div class="asw-box animate__animated animate__fadeIn animate_faster bg-color" [hidden]="data.length == 0">
+			<article class="row">
+
+				<div class="col-md-7 col-sm-12 container-heard">
+					<div class="align-heard">
+						<div class="row mb-3">
+							<h2 class="title mb-1">Lista de vehículos</h2>
+						</div>
+
+						<div class="table-search">
+							<div class="input-search size-input">
+								<mat-icon>search</mat-icon>
+								<input matInput #inputSearch [(ngModel)]="search"
+									placeholder="Buscar por placa, comprobante o tipo de vehículo" autocomplete="off"
+									(keyup)="applyFilterSearch(inputSearch.value)" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-5">
+					<div class="row container-detail">
+
+						<table class="table-encabezado">
+							<tr>
+								<th>Propietario</th>
+								<td>{{encabezado?.propietario}}</td>
+							</tr>
+							<tr>
+								<th>RTN alfabético</th>
+								<td>{{encabezado?.rtn}}</td>
+							</tr>
+							<tr>
+								<th>Tipo de propietario</th>
+								<td>{{encabezado?.tipoPropietario}}</td>
+							</tr>
+							<tr>
+								<th>Exento desde</th>
+								<td>{{encabezado?.exentoDesde}}</td>
+							</tr>
+						</table>
+
+					</div>
+				</div>
+			</article>
+
+
+			<div class="example-container custom-scrollbar-css">
+				<table mat-table [dataSource]="dataSource" [hidden]="showSpinner" matSort
+					class="animate__animated animate__fadeIn animate__faster">
+					<ng-container matColumnDef="numeroPlaca">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>
+							Número de placa
+						</th>
+						<td mat-cell *matCellDef="let item">{{ item.numeroPlaca }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="comprobante">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Comprobante</th>
+						<td mat-cell *matCellDef="let item">{{ item.comprobante }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="tipoVehiculo">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo de vehículo</th>
+						<td mat-cell *matCellDef="let item">{{ item.tipoVehiculo }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="acciones">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
+						<td mat-cell *matCellDef="let item">
+							<i matTooltip="Detalle" (click)="openDetail(item?.iduVehiculo)"
+								class="material-icons-outlined azul-300">remove_red_eye</i>
+						</td>
+					</ng-container>
+
+					<tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
+
+					<tr class="mat-row" *matNoDataRow>
+						<td class="mat-cell" colspan="4">No se encontraron registros</td>
+					</tr>
+				</table>
+			</div>
+			<mat-paginator showFirstLastButtons [pageSizeOptions]="[5, 10, 25, 100]">
+			</mat-paginator>
+		</div>
+	</div>
+</div>

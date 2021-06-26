@@ -1,0 +1,25 @@
+<header mat-dialog-title>
+	<h2>{{data?.titulo}}</h2>
+	<button mat-button mat-dialog-close (click)="cerrarDialogo()">
+		<i class="material-icons-outlined">clear</i>
+	</button>
+</header>
+<section class="modal-content custom-scrollbar">
+	<mat-dialog-content >
+		<article >
+
+			{{ data?.mensaje }}
+
+		</article>
+	</mat-dialog-content>
+	<mat-dialog-actions align="center">
+
+		<button class="cancel" mat-raised-button color="warn" (click)="cerrarDialogo()">
+			{{ data.textBtnNo ? data.textBtnNo : 'Cancelar' }}
+		</button>
+	
+		<button mat-raised-button color="primary" (click) = "confirmado()">
+			{{ data.textBtnSi ? data.textBtnSi : 'Aceptar' }}
+		</button>
+	</mat-dialog-actions>
+</section>

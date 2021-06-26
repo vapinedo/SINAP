@@ -1,0 +1,11 @@
+@import "src/assets/scss/colors";
+
+#contenedor-filtro {
+    height: 450px !important;
+    overflow: auto !important;
+}
+
+.estado {
+    color:$azul-200;
+}
+

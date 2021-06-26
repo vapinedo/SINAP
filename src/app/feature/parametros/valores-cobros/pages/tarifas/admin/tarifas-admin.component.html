@@ -1,0 +1,230 @@
+
+<section class="tabla-con-filtro animate__animated animate__fadeIn animate_faster">
+
+    
+    <div class="">
+        <div class="mb-3" routerLink="/parametros/valores-cobros/conceptos" style="cursor: pointer;">
+            <section class="filtro asw-box animate__animated animate__fadeIn animate_faster">
+                <h2 class="title">Concepto de débito</h2>
+            </section>
+        </div>
+        <app-tarifas-filtros [tarifas]="backup" 
+                [lstConceptos]="lstConceptos"
+                [lstTiposPlaca]="lstTiposPlaca"
+                [lstTiposVehiculo]="lstTiposVehiculo"
+                [lstNormativas]="lstNormativas"
+                [lstTiposCombustible]="lstTiposCombustible"
+                [lstPeriodicidad]="lstPeriodicidad"
+                [clearFilters]="clearFilters.asObservable()"
+
+            (tarifasFiltradas)="applyCustomFilter($event)"></app-tarifas-filtros>
+    </div>
+    
+    <!-- <div class=""> -->
+
+        <article class="row asw-box animate__animated animate__fadeIn animate_faster">
+            <h2>Tarifas por concepto de débito</h2>
+            
+            <div class="table-search mt-4">
+                <div class="input-search">
+                    <mat-icon>search</mat-icon>
+                    <input matInput 
+                        [(ngModel)]="search"
+                        #inputSearch
+                        placeholder="Buscar ..." 
+                        autocomplete="off" 
+                        (keyup)="filtroGeneral($event)">
+                </div>
+                <button (click)="onCreateRegistral()" mat-raised-button color="accent">Crear Registral</button>
+                <button (click)="onCreate()" mat-raised-button color="primary">Crear Normal</button>
+            </div>
+    
+            <table mat-table [dataSource]="dataSource" [hidden]="mostrarSpinner" matSort multiTemplateDataRows id="tabla-principal" 
+                class="animate__animated animate__fadeIn animate__faster">
+                <ng-container matColumnDef="{{ column }}" *ngFor="let column of displayColumns">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="title-container">{{ element?.nombre }}</span>
+                            <div>
+                                <i matTooltip="Editar" (click)="onEdit(element?.id, element?.registral)" class="material-icons-outlined azul-300">edit</i>
+                                <i class="material-icons-outlined arrow">
+                                    {{ expandedElement !==element ? 'expand_more' : 'expand_less'}}</i>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+    
+                <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell class="column-expanded" *matCellDef="let element" [attr.colspan]="displayColumns.length">
+                        <article class="detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                            <div class="body row" *ngIf="!element.registral">
+                                <h3>Descripción</h3>
+                                <div class="description">{{ element?.descripcion }}</div>
+    
+                                <div class="col tabla" style="margin-right: 3em;">
+                                    <h3>Detalle</h3>
+                                    <table>
+                                        <tr>
+                                            <td>Concepto débito</td>
+                                            <td>{{ element?.idParConcepto?.nombre }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Vigencia</td>
+                                            <td>
+                                                {{ element?.fechaInicial |date:'yyyy/MM/dd'}}
+                                                -
+                                                {{ element?.fechaFinal |date:'yyyy/MM/dd'}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Normativa</td>
+                                            <td>{{ element?.idParConcepto?.normativa?.nombre }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Calcular impuesto como</td>
+                                            <td>{{ element?.desCalcularImpuestoComo }}</td>
+                                        </tr>
+                                        <tr *ngIf="element?.valorFijo">
+                                            <td>Valor fijo</td>
+                                            <td>{{ element?.valorFijo |currency:'L ' }}</td>
+                                        </tr>
+                                        <tr *ngIf="element?.montoMinimo">
+                                            <td>Valor mínimo</td>
+                                            <td>{{ element?.montoMinimo |currency:'L ' }}</td>
+                                        </tr>
+                                        <tr *ngIf="element?.valorPorcentaje">
+                                            <td>Valor porcentaje</td>
+                                            <td>{{ element?.valorPorcentaje / 100  |percent:'.2' }}</td>
+                                        </tr>
+                                        <tr *ngIf="element?.descRefenciaPorcentaje">
+                                            <td>Concepto base</td>
+                                            <td>{{ element?.descRefenciaPorcentaje }}</td>
+                                        </tr>
+                                        <tr *ngIf="element?.refenciaPorcentaje === 'V_VEHI' && element?.operValVehiculo !== 'NO_APL'">
+                                            <td>Valor vehículo</td>
+                                            <td>{{ element?.descOperValVehiculo === 'Entre' ? 
+                                                ((element?.valMinVehiculo |currency:'L ') + ' - ' + (element?.valMaxVehiculo |currency:'L ')) : 
+                                                (element?.descOperValVehiculo + ' ' + (element?.valMinVehiculo |currency:'L ')) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Estado</td>
+                                            <td>{{ element?.estado === 'A' ? 'Activo' : 'Inactivo' }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                
+                                <div class="col tabla">
+                                    <h3>Parámetros</h3>
+                                    <table>
+                                        <tr *ngFor="let parametro of element?.idCondTarifa?.parametrosList">
+                                            <td *ngIf="parametro?.operadorMin !== 'NO_APL'">{{ parametro?.nombre | capitalizar }}</td>
+                                            <td *ngIf="parametro?.valorDominio">
+                                                <span>{{ parametro?.valorDominio }}</span>
+                                            </td>
+                                            <td *ngIf="!parametro?.valorDominio && parametro?.operadorMin !== 'NO_APL'">
+                                                <span>{{ parametro?.operadorMin +' '+ parametro?.valorMin }}</span>
+                                                <span *ngIf="parametro?.valorMax">
+                                                     - {{ parametro?.operadorMax +' '+ parametro?.valorMax }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+    
+                                <div *ngIf="element?.municipiosList else noHayMunicipios">
+                                    <h3>Municipios</h3>
+                                    <br>
+                                    <div class="row">
+                                        <mat-chip-list aria-label="Fish selection">
+                                            <mat-chip *ngFor="let muni of element?.municipiosList | slice:0:4; let i=index"
+                                                       color="primary" selected>{{muni.nombreMunicipio}}</mat-chip>
+                                            <h3 *ngIf="element?.municipiosList.length >= 5">
+                                                <span (click)="verDetalleMunicipios(element)">Ver más</span>
+                                            </h3>
+                                        </mat-chip-list>
+                                    </div>
+                                </div>
+                                
+                                <ng-template #noHayMunicipios>
+                                    <p class="text-muted">No hay municipios asignados</p>
+                                </ng-template>
+                            </div>
+    
+                            <!-- Registrales -->
+                            <div class="body row" *ngIf="element.registral">
+                                <div class="description-registral">
+                                    <p class="title">Descripción</p>
+                                    <p class="content"> 
+                                        <label>{{ element?.descripcion }}</label>
+                                    </p>
+                                </div>
+    
+                                <h3>Detalles</h3>
+                                <div class="col tabla" style="margin-right: 3em;">
+                                    <table>
+                                        <tr>
+                                            <td>Concepto débito registral</td>
+                                            <td>{{ element?.conceptoDebito }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Clase de placa</td>
+                                            <td>{{ element?.clasePlaca |titlecase }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tipo de vehículo</td>
+                                            <td>{{ element?.tipoVehiculo }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                
+                                <div class="col tabla">
+                                    <table>
+                                        <tr>
+                                            <td>Vigencia</td>
+                                            <td>{{ element?.fechaInicial |date:'yyyy/MM/dd' }} - {{ element?.fechaFinal |date:'yyyy/MM/dd' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Valor</td>
+                                            <td>{{ element?.valorFijo |currency:'L ' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Estado</td>
+                                            <td>{{ element?.estado === 'A' ? 'Activo' : 'Inactivo' }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>          
+                            <div class="footer mt-4">
+                                <p class="last-change">Último cambio</p>
+                                <p class="created"> 
+                                    <label *ngIf="element?.fechaActualiza == null">Creado por</label>
+                                    <label *ngIf="element?.fechaActualiza != null">Modificado por</label>
+                                    <span>{{ element?.usuarioActualiza == null ? element?.usuarioCreacion == null ? ' usuario SINAP' : element?.usuarioCreacion : element?.usuarioActualiza }}</span>
+                                    <label>el</label>
+                                    <span>{{ element?.fechaActualiza == null ? (element?.fechaCreacion | date: 'yyyy/MM/dd') : (element?.fechaActualiza | date: 'yyyy/MM/dd') }}</span>
+                                </p>
+                                <p class="change-detail">{{ element?.observaciones }}</p>
+                            </div>              
+                        </article>
+                    </td>
+                </ng-container>
+     
+                <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+                <tr mat-row class="row-expanded"
+                    *matRowDef="let element; columns: displayColumns;" 
+                    [class.example-expanded-row]="expandedElement === element"
+                    (click)="expandedElement = expandedElement === element ? null : element">
+                </tr>
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="4">No se encontraron registros</td>
+                </tr>
+            </table>
+    
+            <mat-paginator [hidden]="mostrarSpinner" showFirstLastButtons [pageSizeOptions]="[5, 10, 25, 50, 100]"></mat-paginator>
+    
+            <app-spinner *ngIf="mostrarSpinner"></app-spinner> 
+        </article>
+    <!-- </div> -->
+</section>

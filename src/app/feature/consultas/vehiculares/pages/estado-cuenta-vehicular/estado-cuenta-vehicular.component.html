@@ -1,0 +1,287 @@
+<div class="row">
+	<div [class]="class1"></div>
+	<div [class]="class2">
+		<app-spinner *ngIf="showSpinner"></app-spinner>
+		<section
+			*ngIf="!showSpinner"
+			class="filtro asw-box animate__animated animate__fadeIn animate_faster"
+		>
+			<span class="subtitle-filter"><b>Consulta matrículas</b></span>
+			<form [formGroup]="formulario" autocomplete="off">
+				<article class="row">
+					<mat-form-field cdkFocusInitial class="col">
+						<mat-label>RTN Numérico</mat-label>
+						<input
+							matInput
+							formControlName="rtnNumerico"
+							(blur)="getClasePlacaAfectaciones()"
+						/>
+						<mat-error
+							*ngIf="
+								formularioControls.rtnNumerico?.invalid &&
+								(formularioControls.rtnNumerico?.dirty ||
+									formularioControls.rtnNumerico?.touched)
+							"
+						>
+							<span *ngIf="formularioControls.rtnNumerico?.errors?.minlength"
+								>El número de caracteres debe ser de
+								{{ formularioControls.rtnNumerico.errors.minlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.rtnNumerico?.errors?.maxlength"
+								>El número de caracteres debe ser de
+								{{ formularioControls.rtnNumerico.errors.maxlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.rtnNumerico.errors?.pattern"
+								>Solo se permite números</span
+							>
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field class="col">
+						<mat-label>RTN Alfanumérico</mat-label>
+						<input
+							matInput
+							formControlName="rtnAlfanumerico"
+							(blur)="getClasePlacaAfectaciones()"
+						/>
+						<mat-error
+							*ngIf="
+								formularioControls.rtnAlfanumerico?.invalid &&
+								(formularioControls.rtnAlfanumerico?.dirty ||
+									formularioControls.rtnAlfanumerico?.touched)
+							"
+						>
+							<span *ngIf="formularioControls.rtnAlfanumerico?.errors?.minlength"
+								>El número de caracteres debe ser de
+								{{ formularioControls.rtnAlfanumerico.errors.minlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.rtnAlfanumerico?.errors?.maxlength"
+								>El número de caracteres debe ser de
+								{{ formularioControls.rtnAlfanumerico.errors.maxlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.rtnAlfanumerico.errors?.pattern"
+								>Solo se permite números y letras</span
+							>
+						</mat-error>
+					</mat-form-field>
+				</article>
+
+				<article class="row">
+					<mat-form-field cdkFocusInitial class="col">
+						<mat-label>Placa</mat-label>
+						<input matInput formControlName="placa" />
+						<mat-error
+							*ngIf="
+								formularioControls.placa?.invalid &&
+								(formularioControls.placa?.dirty || formularioControls.placa?.touched)
+							"
+						>
+							<span *ngIf="formularioControls.placa?.errors?.minlength"
+								>El número de caracteres debe ser de
+								{{ formularioControls.placa.errors.minlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.placa?.errors?.maxlength"
+								>El número de caracteres debe ser de
+								{{ formularioControls.placa.errors.maxlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.placa.errors?.pattern"
+								>Solo se permite números y letras</span
+							>
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field class="col">
+						<mat-label>No. de comprobante</mat-label>
+						<input matInput formControlName="nroComprobante" />
+						<mat-error
+							*ngIf="
+								formularioControls.nroComprobante?.invalid &&
+								(formularioControls.nroComprobante?.dirty ||
+									formularioControls.nroComprobante?.touched)
+							"
+						>
+							<span *ngIf="formularioControls.nroComprobante?.errors?.minlength"
+								>El número de caracteres debe ser de
+								{{ formularioControls.nroComprobante.errors.minlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.nroComprobante?.errors?.maxlength"
+								>El número de caracteres debe ser de
+								{{ formularioControls.nroComprobante.errors.maxlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.nroComprobante.errors?.pattern"
+								>Solo se permite números</span
+							>
+						</mat-error>
+					</mat-form-field>
+				</article>
+
+				<article class="row">
+					<mat-form-field class="col">
+						<mat-label>Clase de placa</mat-label>
+						<mat-select formControlName="clasePlaca">
+							<mat-option value="">{{ textSelect }}</mat-option>
+							<mat-option *ngFor="let item of clasePlacas" [value]="item.id">{{
+								item.label
+							}}</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<mat-form-field class="col">
+						<mat-label>Afectación</mat-label>
+						<mat-select formControlName="afectacion">
+							<mat-option value="">{{ textSelect }}</mat-option>
+							<mat-option *ngFor="let item of afectaciones" [value]="item.id">{{
+								item.label
+							}}</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</article>
+				<div class = "row " >
+						<div [class] = "data.length > 0 ? '' : 'm-1 col'"></div>
+						<button mat-raised-button color="warn" (click)="limpiar()"  [class] = "data.length > 0 ? 'm-1 col' : 'col-md-3 m-1'">
+							Limpiar
+						</button>
+						<button mat-raised-button color="primary" (click)="consultar()" [class] = "data.length > 0 ? 'm-1 col' : 'col-md-3  m-1'">
+							Consultar
+						</button>
+				</div>
+			</form>
+		</section>
+	</div>
+	<div [class]="class3">
+		<div
+			class="asw-box animate__animated animate__fadeIn animate_faster bg-color"
+			[hidden]="data.length == 0"
+		>
+			<div class="row mb-3">
+				<h2 class="title mb-1">Estado de cuenta</h2>
+			</div>
+
+			<div class="table-search">
+				<div class="input-search">
+					<mat-icon>search</mat-icon>
+					<input
+						matInput
+						#inputSearch
+						placeholder="Buscar ..."
+						autocomplete="off"
+						(keyup)="applyFilter(inputSearch.value)"
+					/>
+				</div>
+			</div>
+
+			<div class="example-container custom-scrollbar-css">
+				<table
+					mat-table
+					[dataSource]="dataSource"
+					[hidden]="showSpinner"
+					matSort
+					class="animate__animated animate__fadeIn animate__faster"
+				>
+					<ng-container matColumnDef="nroComprobante">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>
+							No de comprobante
+						</th>
+						<td mat-cell *matCellDef="let item">{{ item.nroComprobante }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="placa">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Placa</th>
+						<td mat-cell *matCellDef="let item">{{ item.placa }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="periodo">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Periodo</th>
+						<td mat-cell *matCellDef="let item">{{ item.periodo }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="saldoTUAV">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Saldo TUAV</th>
+						<td mat-cell *matCellDef="let item">
+							{{ item?.saldoTUAV | currency: "L " }}
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="saldoTVM">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Saldo TVM</th>
+						<td mat-cell *matCellDef="let item">
+							{{ item.saldoTVM | currency: "L " }}
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="saldoSXXI">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>
+							Saldo contribución SXXI
+						</th>
+						<td mat-cell *matCellDef="let item">
+							{{ item.saldoSXXI | currency: "L " }}
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="valorPlaca">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Valor placa</th>
+						<td mat-cell *matCellDef="let item">
+							{{
+								item.valorPlaca
+									? item.valorPlaca
+									: (0 | currency: "L ")
+							}}
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="saldoTotal">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Saldo total</th>
+						<td mat-cell *matCellDef="let item">
+							{{ item.saldoTotal | currency: "L " }}
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="excento">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Exento</th>
+						<td mat-cell *matCellDef="let item">
+
+							<i *ngIf="item.excento == 'S'" matTooltip="Si" class="material-icons verde-600"
+								>circle</i
+							>
+
+							<i *ngIf="item.excento == 'N'" matTooltip="No" class="material-icons rojo-500"
+								>circle</i
+							>
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="bloqueo">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Afectación</th>
+						<td mat-cell *matCellDef="let item">
+							{{ item.bloqueo }}
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="planPlago">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Plan de pago</th>
+						<td mat-cell *matCellDef="let item">
+							{{ item.planPlago ? item.planPlago : "Inactivo" }}
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="iduVehiculo">
+						<th mat-header-cell *matHeaderCellDef class="text-center">Consultar</th>
+						<td mat-cell *matCellDef="let item" class="tools text-center">
+
+							<i matTooltip="Consultar" class="material-icons-outlined azul-300"
+							(click) = "consultarTasa(item)"
+								>remove_red_eye</i
+							>
+						</td>
+					</ng-container>
+
+					<tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
+
+					<tr class="mat-row" *matNoDataRow>
+						<td class="mat-cell" colspan="4">No se encontraron registros</td>
+					</tr>
+				</table>
+			</div>
+			<mat-paginator showFirstLastButtons [pageSizeOptions]="[5, 10, 25, 100]">
+			</mat-paginator>
+		</div>
+	</div>
+</div>

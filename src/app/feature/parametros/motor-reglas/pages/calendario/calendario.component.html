@@ -1,0 +1,81 @@
+<section class="tabla-con-filtro">
+  <div class="col-lg-3 col-spacing">   
+    <div class="row mb-2">
+      <mat-accordion>
+        <mat-expansion-panel [expanded]="panelOpenView === 'dias-no-habiles' || panelOpenView === 'calendario'" 
+          (opened)="validateNonBusinessDays(calendarTypeSelected?.valor)">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <h2>Tipo de Calendario</h2>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <span>
+            <ul>
+              <li *ngFor="let tipo of calendarType" class="mb-2">
+                <mat-checkbox [checked]="tipo.id === calendarTypeSelected?.valor"
+                  labelPosition="before"
+                  color="primary"
+                  (click)="openDialog($event, tipo.id)">
+                  <span>{{tipo.label |titlecase}}</span>
+                </mat-checkbox>
+              </li>
+            </ul>
+          </span>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel hideToggle [expanded]="panelOpenView === 'dias-adicionales'" 
+          (opened)="panelOpen('dias-adicionales')">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <h2>Días adicionales</h2>
+            </mat-panel-title>
+            
+          </mat-expansion-panel-header>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel hideToggle [expanded]="panelOpenView === 'salario-minimo'" 
+          (opened)="panelOpen('salario-minimo')">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <h2>Valor salario mínimo</h2>
+            </mat-panel-title>
+            
+          </mat-expansion-panel-header>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel hideToggle [expanded]="panelOpenView === 'vigencias'" 
+          (opened)="panelOpen('vigencias')">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <h2>Vigencias</h2>
+            </mat-panel-title>
+            
+          </mat-expansion-panel-header>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+
+  <div class="col">
+    <div *ngIf="panelOpenView === 'vigencias'" >
+      <app-vigencias-admin></app-vigencias-admin>
+    </div>
+  
+    <div *ngIf="panelOpenView === 'dias-no-habiles'" >
+      <app-dias-no-habiles></app-dias-no-habiles>
+    </div>
+  
+    <div *ngIf="panelOpenView === 'dias-adicionales'" >
+      <app-dias-adicionales (redirectTypeCalendar)="redirectTypeCalendar()"></app-dias-adicionales>
+    </div>
+
+    <div *ngIf="panelOpenView === 'dias-no-habiles' || panelOpenView === 'calendario'" >
+      <app-dias-habiles></app-dias-habiles>      
+    </div>
+
+    <div *ngIf="panelOpenView === 'salario-minimo'" >
+      <app-salario-minimo (redirectTypeCalendar)="redirectTypeCalendar()"></app-salario-minimo>
+    </div>
+  </div>  
+
+</section>

@@ -1,0 +1,27 @@
+@import "src/assets/scss/colors";
+
+ol#breadcrumb {
+    margin: 0;
+    width: 100%;
+    font-size: 13px;
+    list-style: none;
+    padding: 1em 2.3em;
+    background-color: $gris-100;
+    display: flex;
+    gap: 1em;
+
+    li {
+        color: $azul-300;
+        display: flex;
+        align-items: center;
+        gap: 1em;
+
+        a { 
+            color: $gris-400;
+            text-decoration: none; 
+        }
+
+        i { opacity: .2; }
+        &.active, i { color: $azul-500; }
+    }
+}

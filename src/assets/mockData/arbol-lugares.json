@@ -1,0 +1,45 @@
+[
+    {
+        "nombre": "Todos",
+        "idDepartamento": null,
+        "idMunicipio": null,
+        "codBanco": null,
+        "idEntidad": null,
+        "numeroEventos": 7,
+        "children": [
+            {
+                "nombre": "dep1",
+                "idDepartamento": 13,
+                "idMunicipio": 0,
+                "codBanco": null,
+                "idEntidad": null,         
+                "numeroEventos": 5,               
+                "children":  [{
+                    "idDepartamento": 13,
+                    "idMunicipio": 2,
+                    "codBanco": null,
+                    "idEntidad": null,
+                    "nombre": "mun1",
+                    "numeroEventos": 2
+                },
+                {
+                    "idDepartamento": 13,
+                    "idMunicipio": 4,
+                    "codBanco": null,
+                    "idEntidad": null,
+                    "nombre": "mun2",
+                    "numeroEventos": 5               
+                }]
+            }              
+        ]
+    },
+    {
+            "nombre": "Banco Azteca",
+            "idDepartamento": null,
+            "idMunicipio": null,
+            "codBanco": 123,
+            "idEntidad": null,     
+            "numeroEventos": 1,
+            "children":[]
+    }
+]

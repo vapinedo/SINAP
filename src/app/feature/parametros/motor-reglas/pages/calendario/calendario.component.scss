@@ -1,0 +1,55 @@
+@import "src/assets/scss/colors";
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    
+    mat-checkbox {
+        display: flex;
+        font-family: 'keep_calmlight', sans-serif;
+        font-weight: 600;
+        ::ng-deep .mat-checkbox-layout {
+            display: flex !important;
+            justify-content: space-between !important;
+            width: 100% !important;
+
+            span {
+                margin: 0 !important;
+            }
+        }
+    }
+  }
+
+h2 {
+    margin-bottom: 5px;
+}
+
+mat-expansion-panel {
+    h2 {
+        font-size: 16px !important;
+    }
+}
+
+::ng-deep .mat-checkbox.mat-primary.mat-checkbox-label-before.mat-checkbox-checked {
+    color: $azul-200;
+}
+
+mat-checkbox {
+    ::ng-deep .mat-checkbox-inner-container {
+
+        .mat-checkbox-frame {
+            border-color: $azul-200;
+        }
+
+        .mat-checkbox-background {
+            border-color: $azul-200;
+        }
+    }
+}
+.mat-expansion-panel.mat-expanded.mat-expansion-panel-spacing {
+        border-width: 3px;
+        border-color: $azul-200 !important;
+        border-style: solid;
+        border-radius: 0px;
+}

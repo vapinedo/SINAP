@@ -1,0 +1,156 @@
+<app-spinner *ngIf="showSpinner"></app-spinner>
+
+<form [formGroup]="form" autocomplete="off" *ngIf="!showSpinner">
+    <article class="row">
+        <mat-form-field cdkFocusInitial class="col">
+            <mat-label>Nombre del concepto</mat-label>
+            <input matInput type="text" formControlName="nombre" readonly>
+            <mat-error *ngIf="nombre?.invalid && (nombre?.dirty || nombre?.touched)" >
+                <span *ngIf="nombre?.errors?.required">Nombre del concepto es requerido</span>
+                <span *ngIf="nombre?.errors?.pattern">Nombre del concepto incorrecto</span>
+                <span *ngIf="nombre?.errors?.maxlength?.requiredLength">Máximo {{form.controls.nombre.errors.maxlength.requiredLength}} caracteres</span>
+
+            </mat-error>
+        </mat-form-field>    
+
+        <mat-form-field class="col">
+            <mat-label>Normativa</mat-label>
+            <mat-select formControlName="idNormativa">
+                <mat-option value="">Seleccione una..</mat-option>
+                <mat-option *ngFor="let item of normatives" [value]="item.idNormativa">
+                    {{item.nombre}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="idNormativa?.invalid && (idNormativa?.dirty || idNormativa?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="idNormativa?.errors?.required">Normativa es requerido</span>
+            </mat-error>
+        </mat-form-field>
+    </article>
+
+    <article class="row">
+        <mat-form-field cdkFocusInitial class="col">
+            <mat-label>Descripción</mat-label>
+            <textarea matInput formControlName="descripcion"></textarea>
+            <mat-error *ngIf="descripcion?.invalid && (descripcion?.dirty || descripcion?.touched)">
+                <span *ngIf="descripcion?.errors?.required">Descripción es requerido</span>
+                <span *ngIf="descripcion?.errors?.pattern">Descripción incorrecto</span>
+                <span *ngIf="descripcion?.errors?.maxlength?.requiredLength">Máximo {{form.controls.descripcion.errors.maxlength.requiredLength}} caracteres</span>
+            </mat-error>
+        </mat-form-field>    
+    </article>
+
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Multa</mat-label>
+            <mat-select formControlName="cobraMulta" required>
+                <mat-option *ngFor="let cobroMulta of lstCobroMulta.opciones" [value]="cobroMulta.valor">{{cobroMulta.etiqueta}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="cobraMulta?.invalid && (cobraMulta?.dirty || cobraMulta?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="cobraMulta?.errors?.required">Cobro multa es requerido</span>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field cdkFocusInitial class="col">
+            <mat-label>Código concepto</mat-label>
+            <input matInput type="text" formControlName="codigo" required readonly>
+            <mat-error *ngIf="codigo?.invalid && (codigo?.dirty || codigo?.touched)">
+                <span *ngIf="codigo?.errors?.required">Código concepto es requerido</span>
+                <span *ngIf="codigo?.errors?.pattern">Código concepto incorrecto</span>
+                <span *ngIf="codigo?.errors?.maxlength?.requiredLength">Máximo {{form.controls.codigoConcepto.errors.maxlength.requiredLength}} caracteres</span>
+            </mat-error>
+        </mat-form-field>
+    </article>
+    
+
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Es débito registral</mat-label>
+            <mat-select formControlName="registral" required [disabled]="true">
+                <mat-option *ngFor="let item of lstRegistral.opciones" [value]="item.valor">{{item.etiqueta}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="registral?.invalid && (registral?.dirty || registral?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="registral?.errors?.required">Es débito registral es requerido</span>
+            </mat-error>
+        </mat-form-field>
+        <div class="form-group col">
+            <mat-label>Estado</mat-label>
+            <mat-slide-toggle formControlName="estado" color ="primary"></mat-slide-toggle>
+        </div>
+    </article>
+
+    <article class="row">
+        <h2>Vigencia</h2>
+        <mat-form-field class="col">
+            <mat-label>Fecha inicio de vigencia</mat-label>
+            <input matInput readonly [matDatepicker]="inicioVigencia" 
+                formControlName="inicioVigencia"
+                placeholder="AAAA/MM/DD" 
+                (blur)="validateDates()"
+                (dateInput)="eventDates('input', $event)"
+                (dateChange)="eventDates('input', $event)"
+                
+             />
+            <mat-datepicker-toggle disabled matSuffix [for]="inicioVigencia"></mat-datepicker-toggle>
+            <mat-datepicker #inicioVigencia ></mat-datepicker>
+            <mat-error *ngIf="inicioVigencia?.invalid && (inicioVigencia?.dirty || inicioVigencia?.touched)"
+                class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="inicioVigencia?.errors?.required">Fecha inicio de vigencia es requerido</span>
+            </mat-error>
+            <mat-error *ngIf="form.get('inicioVigencia').errors?.outRange1">{{ form.get('inicioVigencia').errors?.outRange1 }}
+            </mat-error>
+        
+        </mat-form-field>
+            <mat-form-field class="col">
+                <mat-label>Fecha fin de vigencia</mat-label>
+                <input matInput
+                    type="text"
+                    formControlName="finVigencia" 
+                    placeholder="AAAA/MM/DD" 
+                    [matDatepicker]="finVigencia" 
+                    [min]="form.controls.inicioVigencia.value"
+                    readonly
+                    (blur)="validateDates()"
+                    (dateInput)="eventDates('input', $event)"
+                   (dateChange)="eventDates('input', $event)"
+                     />
+                <mat-datepicker-toggle disabled matSuffix [for]="finVigencia"></mat-datepicker-toggle>
+                <mat-datepicker #finVigencia></mat-datepicker>
+                <mat-error *ngIf="finVigencia?.invalid && (finVigencia?.dirty || finVigencia?.touched)"
+                    class="animate__animated animate__fadeIn animate_faster">
+                    <span *ngIf="finVigencia?.errors?.required">Fecha fin de vigencia es requerido</span>
+                </mat-error>
+                <mat-error *ngIf="finVigencia?.errors?.pattern"
+						>Fecha inválida</mat-error
+					>
+                <mat-error *ngIf="finVigencia?.errors?.outRange1">{{ finVigencia?.errors?.outRange1 }}
+                </mat-error>
+            </mat-form-field>
+            
+
+    </article>
+    
+    <article class="row">
+        <div class="form-group col">
+             <button class="m-3" mat-raised-button color="warn" (click)="onDelete()">Eliminar</button>
+        </div>
+    </article>
+    
+    <article class="row">
+        <div class="form-group col">
+            <mat-form-field cdkFocusInitial>
+                <mat-label>Observaciones</mat-label>
+                <textarea  matInput formControlName="observaciones" required></textarea>
+                <mat-error *ngIf="observaciones?.invalid && (observaciones?.dirty || observaciones?.touched)">
+                    <span *ngIf="observaciones?.errors?.required">Observación del concepto es requerido</span>
+                    <span *ngIf="observaciones?.errors?.pattern">Observación del concepto incorrecto</span>
+                    <span *ngIf="observaciones?.errors?.maxlength?.requiredLength">Máximo {{form.controls.observaciones.errors.maxlength.requiredLength}} caracteres</span>
+                </mat-error>
+            </mat-form-field>  
+        </div>
+    </article>
+
+    <footer align="end" color="primary"> 
+        <button class="m-4" mat-raised-button color="warn" mat-dialog-close>Cancelar</button>
+        <button [disabled]="form.invalid || !changeForm" mat-raised-button type="submit" color="primary"
+            (click)="onSubmit()">Guardar cambios</button>
+    </footer>
+</form>

@@ -1,0 +1,21 @@
+<form [formGroup]="form"  autocomplete="off">
+
+    <p class="text-muted text-center">¿Está seguro que quiere eliminar este calendario de pago?</p>
+
+    <article class="row">
+        <mat-form-field class="col">
+            <mat-label>Observaciones</mat-label>
+            <textarea matInput rows="4" formControlName="observaciones"></textarea>
+            <mat-error *ngIf="formControl.observaciones?.invalid && (formControl.observaciones?.dirty || formControl.observaciones?.touched)"
+                class="animate__animated animate__fadeIn animate_faster">
+                <span *ngIf="formControl.observaciones?.errors?.required">Nombre es requerido</span>
+                <span *ngIf="formControl.observaciones?.errors?.maxlength">Máximo 200 caracteres</span>
+            </mat-error>
+        </mat-form-field>
+    </article>
+
+        <footer class="text-center mt-4">
+        <button class="m-3" mat-raised-button color="warn" (click) = "onCloseDialog(false)" >Cancelar</button>
+        <button [disabled]="form.invalid" mat-raised-button type="button" (click) = "onSubmit()" color="primary">Aceptar</button>
+    </footer>
+</form>

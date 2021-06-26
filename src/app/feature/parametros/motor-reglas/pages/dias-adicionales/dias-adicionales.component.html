@@ -1,0 +1,68 @@
+<article class="row justify-content-center animate__animated animate__fadeIn animate_faster">
+    <div class="col-8 asw-box">
+        <h2>Días adicionales</h2>
+    
+        <form [formGroup]="form" autocomplete="off" *ngIf="getDone">
+            <section class="row row-cols-1 row-cols-md-2">
+                <div clase="col">
+                    <mat-form-field>
+                        <mat-label>Fecha inicial</mat-label>
+                        <input matInput [matDatepicker]="fechaInicial" type="text" formControlName="fechaInicial"
+                            readonly [max]="formControl?.fechaFinal?.value" (ngModelChange)="validatorDates()"/>
+                        <mat-datepicker-toggle matSuffix [for]="fechaInicial" (click)="clearDate(formControl?.fechaInicial)"></mat-datepicker-toggle>
+                        <mat-datepicker #fechaInicial></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+                <div clase="col">
+                    <mat-form-field>
+                        <mat-label>Fecha final</mat-label>
+                        <input matInput [matDatepicker]="fechaFinal" type="text" formControlName="fechaFinal" (ngModelChange)="validatorDates()"
+                            readonly [max]="formControl?.fechaInicioConteo?.value" [min]="formControl?.fechaInicial?.value"/>
+                        <mat-datepicker-toggle matSuffix [for]="fechaFinal" (click)="clearDate(formControl?.fechaFinal)"></mat-datepicker-toggle>
+                        <mat-datepicker #fechaFinal></mat-datepicker>
+                        <mat-error *ngIf="formControl.value?.invalid && (formControl.value?.dirty || formControl.value?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControl.value?.errors">La fecha final debe ser mayor a la fecha inicial <br></span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div clase="col">
+                    <mat-form-field>
+                        <mat-label>Inicio de conteo</mat-label>
+                        <input matInput [matDatepicker]="fechaInicioConteo" type="text" formControlName="fechaInicioConteo"
+                            readonly [min]="minDate"/>
+                        <mat-datepicker-toggle matSuffix [for]="fechaInicioConteo" (click)="clearDate(formControl?.fechaInicioConteo)"></mat-datepicker-toggle>
+                        <mat-datepicker #fechaInicioConteo></mat-datepicker>
+                        <mat-error *ngIf="!formControl.fechaInicioConteo?.disabled || (formControl.fechaInicioConteo?.invalid 
+                            && (formControl.fechaInicioConteo?.dirty || formControl.fechaInicioConteo?.touched))" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControl.fechaInicioConteo?.errors?.required">La fecha de inicio de conteo es obligatoria<br></span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div clase="col">
+                    <mat-form-field>
+                        <mat-label>Días adicionales</mat-label>
+                        <input matInput type="number" min="0" (keypress)="onlyNumber($event)" 
+                            formControlName="diasAdicionales"/>
+                        <mat-error *ngIf="formControl.diasAdicionales?.invalid && (formControl.diasAdicionales?.dirty || formControl.diasAdicionales?.touched)" class="animate__animated animate__fadeIn animate_faster">
+                            <span *ngIf="formControl.diasAdicionales?.errors?.required">El valor de días adicionales es requerido<br></span>
+                            <span *ngIf="formControl.diasAdicionales?.errors?.min">El valor debe ser un número entero mayor a 0<br></span>
+                            <span *ngIf="formControl.diasAdicionales?.errors?.max">El valor no debe superar los 5 digitos<br></span>
+                            <span *ngIf="formControl.diasAdicionales?.errors?.pattern">El valor debe ser un número entero<br></span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+            </section>
+            <div class="text-end">
+                <button mat-raised-button class="mr-5" (click)="cancel()" color="warn">Cancelar</button>
+                <button mat-raised-button (click)="openDialog()" 
+                    [disabled]="!validForm()" color="primary">Actualizar</button>
+            </div>
+        </form>
+
+    </div>
+
+</article>

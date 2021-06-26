@@ -1,0 +1,161 @@
+<div class="row">
+	<div [class]="class1"></div>
+	<div [class]="class2">
+		<app-spinner *ngIf="showSpinner"></app-spinner>
+		<section *ngIf="!showSpinner" class="filtro asw-box animate__animated animate__fadeIn animate_faster">
+			<form [formGroup]="formulario" autocomplete="off">
+				<article class="row">
+					<mat-form-field cdkFocusInitial class="col">
+						<mat-label>RTN númerico</mat-label>
+						<input matInput formControlName="rtnNumerico" />
+						<mat-error *ngIf="
+								formularioControls.rtnNumerico?.invalid &&
+								(formularioControls.rtnNumerico?.dirty ||
+									formularioControls.rtnNumerico?.touched)
+							">
+							<span *ngIf="formularioControls.rtnNumerico?.errors?.minlength">El número de caracteres debe
+								ser de
+								{{ formularioControls.rtnNumerico.errors.minlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.rtnNumerico?.errors?.maxlength">El número de caracteres debe
+								ser de
+								{{ formularioControls.rtnNumerico.errors.maxlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.rtnNumerico.errors?.pattern">Solo se permite números</span>
+						</mat-error>
+					</mat-form-field>
+                    <mat-form-field class="col">
+						<mat-label>RTN Alfanumérico</mat-label>
+						<input matInput formControlName="rtnAlfanumerico" />
+						<mat-error *ngIf="
+								formularioControls.rtnAlfanumerico?.invalid &&
+								(formularioControls.rtnAlfanumerico?.dirty ||
+									formularioControls.rtnAlfanumerico?.touched)
+							">
+							<span *ngIf="formularioControls.rtnAlfanumerico?.errors?.minlength">El número de caracteres
+								debe ser de
+								{{ formularioControls.rtnAlfanumerico.errors.minlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.rtnAlfanumerico?.errors?.maxlength">El número de caracteres
+								debe ser de
+								{{ formularioControls.rtnAlfanumerico.errors.maxlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.rtnAlfanumerico.errors?.pattern">Solo se permite números y
+								letras</span>
+						</mat-error>
+					</mat-form-field>
+				</article>				
+				<article class="row">
+					<mat-form-field cdkFocusInitial class="col">
+						<mat-label>Placa</mat-label>
+						<input matInput formControlName="placa" />
+						<mat-error *ngIf="
+								formularioControls.placa?.invalid &&
+								(formularioControls.placa?.dirty || formularioControls.placa?.touched)
+							">
+							<span *ngIf="formularioControls.placa?.errors?.minlength">El número de caracteres mínimo debe ser
+								de
+								{{ formularioControls.placa.errors.minlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.placa?.errors?.maxlength">El número de caracteres máximo debe ser
+								de
+								{{ formularioControls.placa.errors.maxlength.requiredLength }}
+							</span>
+							<span *ngIf="formularioControls.placa.errors?.pattern">Solo se permite números y
+								letras</span>
+						</mat-error>
+					</mat-form-field>
+                    <mat-form-field class="col">
+						<mat-label>Clase de cuenta *</mat-label>
+						<mat-select formControlName="idConcepto">		                            		
+							<mat-option *ngFor="let item of claseCuentas" [value]="item.id">{{
+								item?.nombre
+							}}</mat-option>
+						</mat-select>
+						<mat-error *ngIf="
+								formularioControls.idConcepto?.invalid &&
+								(formularioControls.idConcepto?.dirty || formularioControls.idConcepto?.touched)
+							">
+							<span *ngIf="formularioControls.idConcepto?.errors?.required">La clase de cuenta es obligatorio
+							</span>							
+						</mat-error>
+					</mat-form-field>
+					
+				</article>
+
+				<div align="right">
+					<button mat-raised-button color="primary" (click)="consultar()">
+						Consultar
+					</button>
+				</div>
+			</form>
+		</section>	
+    </div>
+
+    <div [class]="class3">
+		<div class="asw-box animate__animated animate__fadeIn animate_faster bg-color" [hidden]="data.length == 0">
+			<article class="row">
+
+				<div class="col-md-7 col-sm-12 container-heard">
+					<div class="align-heard">
+						<div class="row mb-3">
+							<h2 class="title mb-1">Consulta cuenta corriente</h2>
+						</div>
+
+						<div class="table-search">
+							<div class="input-search size-input">
+								<mat-icon>search</mat-icon>
+								<input matInput #inputSearch [(ngModel)]="search"
+									placeholder="Buscar..." autocomplete="off"
+									(keyup)="applyFilterSearch(inputSearch.value)" />
+							</div>
+						</div>
+					</div>
+				</div>				
+			</article>
+			<div class="example-container custom-scrollbar-css">
+				<table mat-table [dataSource]="dataSource" [hidden]="showSpinner" matSort
+					class="animate__animated animate__fadeIn animate__faster">
+					<ng-container matColumnDef="placa">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>
+							Placa
+						</th>
+						<td mat-cell *matCellDef="let item">{{ item.placa }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="rtnNumerico">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>RTN numérico</th>
+						<td mat-cell *matCellDef="let item">{{ item.rtnNumerico }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="rtnAlfanumerico">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>RTN alfanumérico</th>
+						<td mat-cell *matCellDef="let item">{{ item.rtnAlfanumerico }}</td>
+					</ng-container>
+
+                    <ng-container matColumnDef="propietario">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Propietario</th>
+						<td mat-cell *matCellDef="let item">{{ item.propietario }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="acciones">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
+						<td mat-cell *matCellDef="let item">
+							<i matTooltip="Detalle" (click)="openDetail(item?.iduVehiculo,item?.concepto)"
+								class="material-icons-outlined azul-300 cursor">remove_red_eye</i>
+						</td>
+					</ng-container>
+
+					<tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
+
+					<tr class="mat-row" *matNoDataRow>
+						<td class="mat-cell" colspan="4">No se encontraron registros</td>
+					</tr>
+				</table>
+			</div>
+			<mat-paginator showFirstLastButtons [pageSizeOptions]="[5, 10, 25, 100]">
+			</mat-paginator>
+		</div>
+	</div>
+</div>

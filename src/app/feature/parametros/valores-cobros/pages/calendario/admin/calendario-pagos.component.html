@@ -1,0 +1,133 @@
+<section class="row mw-100" >
+  <app-spinner *ngIf="showSpinner"></app-spinner>
+
+  <div class="col-lg-3 col-spacing">
+    <div class="row mb-3">
+      <section class="filtro row asw-box animate__animated animate__fadeIn animate_faster">
+
+        <h2>Filtros</h2>
+        
+        <mat-form-field appearance="fill">
+          <mat-label>Concepto de débito</mat-label>
+          <mat-select [(ngModel)]="selectConcept" (selectionChange)="applyFilter()">
+              <mat-option *ngFor="let concept of concepts" [value]="concept.label">{{concept.label}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="fill">
+          <mat-label>Mes</mat-label>
+          <mat-select [(ngModel)]="selectMonth" (selectionChange)="applyFilter()">
+              <mat-option *ngFor="let month of months" [value]="month">{{month |titlecase}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="fill">
+          <mat-label>Placa</mat-label>
+          <mat-select [(ngModel)]="selectPlate" (selectionChange)="applyFilter()">
+              <mat-option *ngFor="let plate of plates" [value]="plate">{{plate}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="fill">
+          <mat-label>Clase de placa</mat-label>
+          <mat-select [(ngModel)]="selectClassPlate" (selectionChange)="applyFilter()">
+              <mat-option *ngFor="let class of classPlates" [value]="class?.clase+': '+class?.corto">{{class?.clase+': '+class?.corto}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <div class="text-align-rigth" [hidden]="cleanFilterValidator()">
+          <button type="button" (click)="cleanFilters()" mat-raised-button color="primary">Limpiar</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <article class="col-lg-9 asw-box animate__animated animate__fadeIn animate_faster bg-color">
+    <h2>Calendarios de pago</h2>
+
+    <div *ngIf="!showSpinner" class="table-search">
+        <div class="input-search">
+            <mat-icon>search</mat-icon>
+            <input matInput 
+                #inputSearch
+                [(ngModel)]="search"
+                placeholder="Buscar ..." 
+                autocomplete="off" 
+                (keyup)="applyFilterTable($event)">
+        </div>
+        <button (click)="openCreateForm()" mat-raised-button color="primary">Crear calendario</button>
+    </div>
+  
+    <div class="example-container custom-scrollbar-css">
+      <table mat-table [dataSource]="dataSource" [hidden]="showSpinner" matSort
+        class="animate__animated animate__fadeIn animate__faster">
+          
+          <ng-container matColumnDef="nombre" sticky>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+              <td mat-cell *matCellDef="let item">{{ item?.nombre |titlecase}}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="conceptoCobro">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Concepto de débito</th>
+              <td mat-cell *matCellDef="let item">{{ item?.conceptoCobro }}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="mes">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Mes</th>
+              <td mat-cell *matCellDef="let item">{{ item?.mes |titlecase}}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="placas">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Placa</th>
+              <td mat-cell *matCellDef="let item">
+                  <span *ngFor="let placa of item?.placas; let last = last">
+                    {{ placa }}{{ last ? '' : ', '}}
+                  </span>
+              </td>
+          </ng-container>
+
+          <ng-container matColumnDef="clasePlaca">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Clase de placa</th>
+              <td mat-cell *matCellDef="let item">
+                  <span *ngFor="let clase of item?.clasePlaca; let last = last">
+                    {{ clase.trim() |titlecase }}{{ last ? '' : ', '}}
+                  </span>
+              </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fechaPago">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de pago</th>
+              <td mat-cell *matCellDef="let item">{{ item?.fechaPago.split('T')[0] |date:'yyyy/MM/dd' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="estado">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+              <td mat-cell *matCellDef="let item">{{ item?.estado }}</td>
+          </ng-container>
+              
+          <ng-container matColumnDef="acciones" stickyEnd>
+              <th mat-header-cell *matHeaderCellDef class="text-center">Acciones</th>
+              <td mat-cell *matCellDef="let item" class="tools text-center">
+                <i matTooltip="Editar" (click)="onEdit(item.id)" class="material-icons-outlined azul-300">edit</i>
+                <i matTooltip="Detalle" (click)="openDetail(item?.id)" class="material-icons-outlined azul-300">remove_red_eye</i>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+    
+          <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="4">No se encontraron registros</td>
+          </tr>
+      </table>
+    </div>
+  
+    <mat-paginator 
+        showFirstLastButtons
+        [pageSizeOptions]="[5, 10, 25, 50, 100]">
+    </mat-paginator>
+  </article>
+
+
+  
+</section>

@@ -1,0 +1,85 @@
+<header mat-dialog-title>
+	<h2>{{ prescriptionToDetail?.nombre }}</h2>
+	<button mat-button mat-dialog-close (click)="onCloseDialog()">
+		<i class="material-icons-outlined">clear</i>
+	</button>
+</header>
+<section class="modal-content custom-scrollbar">
+	<mat-dialog-content *ngIf="!showSpinner">
+		<app-spinner *ngIf="showSpinner"></app-spinner>
+
+		<article class="multa-detalle" *ngIf="!showSpinner">
+			<table>
+				<tr>
+					<td colspan="2"  style="text-align: left;"> <b>Descripción</b>
+						<p class="negro-500">{{ prescriptionToDetail?.descripcion }}</p>
+					</td>
+
+				</tr>
+				<tr>
+					<td>Concepto de {{ prescriptionToDetail?.tipoConcepto | lowercase}}</td>
+					<td>{{ prescriptionToDetail?.nombreConcepto }}</td>
+				</tr>
+				<tr>
+					<td>Periodicidad</td>
+					<td>
+						{{
+							prescriptionToDetail?.periodosVigentes +
+								" " +
+								prescriptionToDetail?.periodo
+						}}
+					</td>
+				</tr>
+				<tr>
+					<td>Fecha de aplicación</td>
+					<td>
+						{{ prescriptionToDetail?.fechaAplicacion }}
+
+					</td>
+				</tr>
+				<tr>
+					<td>Inicio de vigencia</td>
+					<td>
+						{{ prescriptionToDetail?.inicioVigencia?.slice(0,10) | date: "yyyy/MM/dd" }}
+
+					</td>
+				</tr>
+				<tr>
+					<td>Fin de vigencia</td>
+					<td>
+						{{ prescriptionToDetail?.finVigencia?.slice(0,10) | date: "yyyy/MM/dd" }}
+					</td>
+				</tr>
+
+				<tr>
+					<td>Estado</td>
+					<td>{{ prescriptionToDetail?.estado == "A" ? "Activo" : "Inactivo" }}</td>
+				</tr>
+
+			</table>
+
+			<div class="footer">
+				<p class="created">
+					<label>Creado por</label>
+					<span>{{ prescriptionToDetail?.usuarioCreacion }} </span>
+					<label>el</label>
+					<span>{{ prescriptionToDetail?.fechaCreacion?.slice(0,10) | date: "yyyy/MM/dd" }}</span>
+				</p>
+				<p class="last-change">Último cambio</p>
+				<p *ngIf="prescriptionToDetail?.fechaModificacion" class="created">
+					<label>Modificado por</label>
+					<span>{{ prescriptionToDetail?.usuarioModificacion }} </span>
+					<label>el</label>
+					<span>{{ prescriptionToDetail?.fechaModificacion?.slice(0,10) | date: "yyyy/MM/dd" }}</span>
+				</p>
+				<p class="change-detail">{{ prescriptionToDetail?.observacion }}</p>
+			</div>
+		</article>
+	</mat-dialog-content>
+	<app-spinner *ngIf="showSpinner"></app-spinner>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" (click)="onCloseDialog()">
+			Aceptar
+		</button>
+	</mat-dialog-actions>
+</section>

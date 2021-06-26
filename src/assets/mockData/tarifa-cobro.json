@@ -1,0 +1,182 @@
+[
+    {
+        "conceptoACobrar" : "concepto 1",
+        "anioCobro" : 2022,
+        "cilindraje" : "300-400",
+        "tipoPlaca" : "publica",
+        "tipovehiculo" : "moto",
+        "tipoCombustible" : "gas",
+        "anioCirculacion" : "2018-2020",
+        "calculoImpuesto" : "porcentaje",
+        "impuestoACobrar" : 30,
+        "baseImpuesto" : "valor registro vehiculo",
+        "tipoPago" : "semestral",
+        "pagoMinimo" : 30000,
+        "pagoProporcional" : "NO",
+        "municipios" : [
+            "municipio1", "municipio2", "municipio3"
+        ]
+    },
+    {
+        "conceptoACobrar" : "concepto 2",
+        "anioCobro" : 2021,
+        "cilindraje" : "300-400",
+        "tipoPlaca" : "privada",
+        "tipovehiculo" : "camión",
+        "tipoCombustible" : "gasolina",
+        "anioCirculacion" : "Fecha importación",
+        "calculoImpuesto": "monto fijo",
+        "impuestoACobrar" : 55000,
+        "baseImpuesto" : "valor registro vehiculo",
+        "tipoPago" : "anual",
+        "pagoMinimo" : 15000,
+        "pagoProporcional" : "SI",
+        "municipios" : [
+            "municipio3", "municipio4", "municipio5"
+        ]
+    },
+    {
+        "conceptoACobrar" : "concepto 3",
+        "anioCobro" : 2021,
+        "cilindraje" : "300-400",
+        "tipoPlaca" : "privada",
+        "tipovehiculo" : "camión",
+        "tipoCombustible" : "gasolina",
+        "anioCirculacion" : "Fecha importación",
+        "calculoImpuesto": "monto fijo",
+        "impuestoACobrar" : 55000,
+        "baseImpuesto" : "valor registro vehiculo",
+        "tipoPago" : "anual",
+        "pagoMinimo" : 15000,
+        "pagoProporcional" : "SI",
+        "municipios" : [
+            "municipio3", "municipio4", "municipio5"
+        ]
+    },
+    {
+        "conceptoACobrar" : "concepto 4",
+        "anioCobro" : 2021,
+        "cilindraje" : "300-400",
+        "tipoPlaca" : "privada",
+        "tipovehiculo" : "camión",
+        "tipoCombustible" : "gasolina",
+        "anioCirculacion" : "Fecha importación",
+        "calculoImpuesto": "monto fijo",
+        "impuestoACobrar" : 55000,
+        "baseImpuesto" : "valor registro vehiculo",
+        "tipoPago" : "anual",
+        "pagoMinimo" : 15000,
+        "pagoProporcional" : "SI",
+        "municipios" : [
+            "municipio3", "municipio4", "municipio5"
+        ]
+    },
+    {
+        "conceptoACobrar" : "concepto 5",
+        "anioCobro" : 2021,
+        "cilindraje" : "300-400",
+        "tipoPlaca" : "privada",
+        "tipovehiculo" : "camión",
+        "tipoCombustible" : "gasolina",
+        "anioCirculacion" : "Fecha importación",
+        "calculoImpuesto": "monto fijo",
+        "impuestoACobrar" : 55000,
+        "baseImpuesto" : "valor registro vehiculo",
+        "tipoPago" : "anual",
+        "pagoMinimo" : 15000,
+        "pagoProporcional" : "SI",
+        "municipios" : [
+            "municipio3", "municipio4", "municipio5"
+        ]
+    },
+    {
+        "conceptoACobrar" : "concepto 6",
+        "anioCobro" : 2021,
+        "cilindraje" : "300-400",
+        "tipoPlaca" : "privada",
+        "tipovehiculo" : "camión",
+        "tipoCombustible" : "gasolina",
+        "anioCirculacion" : "Fecha importación",
+        "calculoImpuesto": "monto fijo",
+        "impuestoACobrar" : 55000,
+        "baseImpuesto" : "valor registro vehiculo",
+        "tipoPago" : "anual",
+        "pagoMinimo" : 15000,
+        "pagoProporcional" : "SI",
+        "municipios" : [
+            "municipio3", "municipio4", "municipio5"
+        ]
+    },
+    {
+        "conceptoACobrar" : "concepto 7",
+        "anioCobro" : 2021,
+        "cilindraje" : "300-400",
+        "tipoPlaca" : "privada",
+        "tipovehiculo" : "camión",
+        "tipoCombustible" : "gasolina",
+        "anioCirculacion" : "Fecha importación",
+        "calculoImpuesto": "monto fijo",
+        "impuestoACobrar" : 55000,
+        "baseImpuesto" : "valor registro vehiculo",
+        "tipoPago" : "anual",
+        "pagoMinimo" : 15000,
+        "pagoProporcional" : "SI",
+        "municipios" : [
+            "municipio3", "municipio4", "municipio5"
+        ]
+    },
+    {
+        "conceptoACobrar" : "concepto 8",
+        "anioCobro" : 2021,
+        "cilindraje" : "300-400",
+        "tipoPlaca" : "privada",
+        "tipovehiculo" : "camión",
+        "tipoCombustible" : "gasolina",
+        "anioCirculacion" : "Fecha importación",
+        "calculoImpuesto": "monto fijo",
+        "impuestoACobrar" : 55000,
+        "baseImpuesto" : "valor registro vehiculo",
+        "tipoPago" : "anual",
+        "pagoMinimo" : 15000,
+        "pagoProporcional" : "SI",
+        "municipios" : [
+            "municipio3", "municipio4", "municipio5"
+        ]
+    },
+    {
+        "conceptoACobrar" : "concepto 9",
+        "anioCobro" : 2021,
+        "cilindraje" : "300-400",
+        "tipoPlaca" : "privada",
+        "tipovehiculo" : "camión",
+        "tipoCombustible" : "gasolina",
+        "anioCirculacion" : "Fecha importación",
+        "calculoImpuesto": "monto fijo",
+        "impuestoACobrar" : 55000,
+        "baseImpuesto" : "valor registro vehiculo",
+        "tipoPago" : "anual",
+        "pagoMinimo" : 15000,
+        "pagoProporcional" : "SI",
+        "municipios" : [
+            "municipio3", "municipio4", "municipio5"
+        ]
+    },
+    {
+        "conceptoACobrar" : "concepto 10",
+        "anioCobro" : 2021,
+        "cilindraje" : "300-400",
+        "tipoPlaca" : "privada",
+        "tipovehiculo" : "camión",
+        "tipoCombustible" : "gasolina",
+        "anioCirculacion" : "Fecha importación",
+        "calculoImpuesto": "monto fijo",
+        "impuestoACobrar" : 55000,
+        "baseImpuesto" : "valor registro vehiculo",
+        "tipoPago" : "anual",
+        "pagoMinimo" : 15000,
+        "pagoProporcional" : "SI",
+        "municipios" : [
+            "municipio3", "municipio4", "municipio5"
+        ]
+    }
+]

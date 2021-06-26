@@ -1,0 +1,122 @@
+@import "src/assets/scss/colors";
+@import "src/assets/scss/custom_material";
+
+.subtitle-filter {
+  font-size: 13px;
+  color: $azul-500;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  font-style: normal;
+  font-family: 'keep_calmbook', sans-serif;
+}
+
+.filtro {
+  padding: 1em;
+  margin-left: 0px !important;
+
+  .title {
+      font-size: 1em;
+  }
+
+  .mat-form-field {
+      margin: 0;
+      padding: 0;
+
+      ::ng-deep .mat-form-field-underline { display: none; }
+  }
+  ::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+      border-radius: 7px;
+      background-color: $gris-100;
+      padding: 4px 1.5em;
+  }
+  ::ng-deep .mat-form-field-infix { padding-bottom: 0; }
+
+
+}
+
+::ng-deep .mat-paginator-container {
+  justify-content: space-between !important;
+}
+
+.text-align-rigth {
+  text-align: right;
+}
+
+.card-title-form {
+    // width: 257px;
+    height: 56px;
+    text-align: center;
+    align-self: center;
+}
+
+.select-size {
+  width: -webkit-fill-available;
+}
+
+.mat-table-sticky-border-elem-right {
+    border-left: 1px solid #e0e0e0;
+  }
+
+  .mat-table-sticky-border-elem-left {
+    border-right: 1px solid #e0e0e0;
+  }
+
+  .example-container {
+    width: 70vw;
+    max-width: 100%;
+    overflow: auto;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  td.mat-column-star {
+    width: 20px;
+    padding-right: 8px;
+  }
+
+.bg-color {
+    background-color: $blanco-500;
+}
+
+.col-spacing {
+    padding-right: 50px;
+}
+
+.card-title-label {
+    width: 166px;
+    height: 19px;
+    font-family: KeepCalm;
+    font-size: 16px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.19;
+    letter-spacing: normal;
+    text-align: center;
+    color: #001a5a;
+}
+
+/* Custom Scrollbar using CSS */
+.custom-scrollbar-css {
+  scrollbar-color: none;
+  scrollbar-width: thin;
+}
+
+/* scrollbar width */
+.custom-scrollbar-css::-webkit-scrollbar {
+  height: 5px;
+}
+
+/* scrollbar track */
+.custom-scrollbar-css::-webkit-scrollbar-track {
+  background: none;
+  border-radius: 15px;
+}
+
+/* scrollbar handle */
+.custom-scrollbar-css::-webkit-scrollbar-thumb {
+  border-radius: 15px;
+  background-color: $azul-500;
+}

@@ -1,0 +1,14 @@
+<nav class="submenu" *ngIf="submenuIsReady">
+    <header>
+        <h3>{{ submenu.title }}</h3>
+    </header>
+
+    <ul *ngFor="let module of submenu.modules">
+        <h4>{{ module.title }}</h4>
+        <li *ngFor="let item of module.items" routerLinkActive="active">
+            <a [routerLink]="item.path">
+                <span>{{ item.title }}</span>
+            </a>
+        </li>
+    </ul>
+</nav>

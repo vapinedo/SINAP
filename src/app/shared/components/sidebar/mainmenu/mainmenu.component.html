@@ -1,0 +1,20 @@
+<aside id="sidebar" [ngClass]="{'expanded': sidedarIsOpen}" class="animate__animated animate__fadeInLeft animate_faster">
+
+    <nav class="main-menu">
+        <header (click)="onCloseSidebar()"> 
+            <img [src]="logo" width="80" matTooltipPosition="right">
+            <mat-icon *ngIf="sidedarIsOpen">chevron_right</mat-icon>
+            <mat-icon *ngIf="!sidedarIsOpen">chevron_left</mat-icon>
+        </header>
+
+        <a *ngFor="let section of menu" 
+            [matTooltip]="section.title" 
+            matTooltipPosition="right"
+            (click)="onOpenSidebar(section)">
+            <i class="material-icons-outlined">{{ section.icon }}</i>
+            <span>{{ section.title }} </span>
+        </a>
+    </nav>
+
+    <app-submenu *ngIf="sidedarIsOpen" [submenu]="submenuActive" class="submenu"></app-submenu>
+</aside>

@@ -1,0 +1,25 @@
+<article class="row asw-box animate__animated animate__fadeIn animate_faster">
+    <h2>Días Hábiles</h2>
+
+    <h2><span>Días no hábiles</span></h2>
+
+
+    <div *ngIf="nonBusinessDays.length > 0" class="row row-cols-2 row-cols-md-4 days-container">
+        <div class="col p-2" *ngFor="let dia of nonBusinessDays; let i = index">
+            <mat-checkbox color="primary"
+                [(checked)]="dia.estado"
+                [(value)]="dia.estado"
+                (change)="changeCheckbox($event, i)">
+                {{dia.nombre |titlecase}}
+            </mat-checkbox>
+        </div>
+    </div>
+
+    <div class="text-end" *ngIf="nonBusinessDays.length > 0">
+        <button mat-raised-button (click)="cancel()" color="warn">Cancelar</button>
+        <button mat-raised-button (click)="openDialog()" 
+            [disabled]="!validForm()" color="primary">Actualizar</button>
+    </div>
+    
+
+</article>

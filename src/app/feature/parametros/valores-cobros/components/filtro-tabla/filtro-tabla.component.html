@@ -1,0 +1,29 @@
+<section class="filtro asw-box">
+    <header>
+        <h2>Filtros</h2>
+        <i (click)="clearFilter()" 
+            matTooltip="Reestablecer" 
+            matTooltipPosition="right"
+            class="material-icons-outlined">search_off</i>
+    </header>
+    
+    <mat-form-field appearance="fill">
+        <mat-label>Concepto de cobro</mat-label>
+        <mat-select [formControl]="conceptoCobroFilter">
+            <mat-option value="">Seleccionar</mat-option>
+            <mat-option value="Inscripción tardía">Inscripción tardía</mat-option>
+            <mat-option value="Tasa única anual">Tasa única anual</mat-option>
+            <mat-option value="Tasa vial municipal">Tasa vial municipal</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Municipio</mat-label>
+        <mat-select [formControl]="municipioFilter">
+            <mat-option value="">Seleccionar</mat-option>
+            <mat-option value="Arizona">Arizona</mat-option>
+            <mat-option value="Trujillo">Trujillo</mat-option>
+            <mat-option value="Santa Rosa">Santa Rosa</mat-option>
+        </mat-select>
+    </mat-form-field>
+</section>

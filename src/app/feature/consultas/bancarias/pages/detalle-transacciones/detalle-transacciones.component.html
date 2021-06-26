@@ -1,0 +1,139 @@
+<div class="asw-box animate__animated animate__fadeIn animate_faster bg-color">
+	<div class="row mb-3">
+		<div class="col-md-2">
+			<span class="subtitle-filter"
+				><b>Detalle transacción {{ periodo }} </b></span
+			>
+		</div> |
+		<div class="col-md-6" *ngIf="tipoTasa !== 'CCS21'">
+			<span class="subtitle-filter"
+				><b>
+					Departamento: {{ detalleTransacciones.departamento | uppercase }},
+					Municipio: {{ detalleTransacciones.municipio | uppercase }}
+				</b></span
+			>
+		</div>
+	</div>
+	<app-spinner *ngIf="showSpinner"></app-spinner>
+	<div class="example-container custom-scrollbar-css">
+		<table
+			mat-table
+			[dataSource]="dataSource"
+			[hidden]="showSpinner"
+			matSort
+			class="animate__animated animate__fadeIn animate__faster"
+		>
+			<ng-container matColumnDef="noComprobante">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Documento</th>
+				<td mat-cell *matCellDef="let item">{{ item.noComprobante }}</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="fechaPago">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de pago</th>
+				<td mat-cell *matCellDef="let item">
+					{{ item.fechaPago | date: "yyyy/MM/dd" }}
+				</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="fechaVencimiento">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>
+					Fecha de vencimiento
+				</th>
+				<td mat-cell *matCellDef="let item">
+					{{ item.fechaVencimiento | date: "yyyy/MM/dd" }}
+				</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="naturaleza">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Naturaleza</th>
+				<td mat-cell *matCellDef="let item">
+					{{ item?.naturaleza }}
+				</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="motivo">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Motivo</th>
+				<td mat-cell *matCellDef="let item">
+					{{ item?.motivo }}
+				</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="valorImpuesto">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Contribución</th>
+				<td mat-cell *matCellDef="let item">
+					{{ item.valorImpuesto | currency: "L " }}
+				</td>
+				<td mat-footer-cell *matFooterCellDef>
+					{{ detalleTransacciones?.totalImpuesto | currency: "L " }}
+				</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="valorMulta">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Multa</th>
+				<td mat-cell *matCellDef="let item">
+					{{ item.valorMulta | currency: "L " }}
+				</td>
+				<td mat-footer-cell *matFooterCellDef>
+					{{ detalleTransacciones?.totalMulta | currency: "L " }}
+				</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="periodosAnteriores">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>P. Anteriores</th>
+				<td mat-cell *matCellDef="let item">
+					{{ item.periodosAnteriores | currency: "L " }}
+				</td>
+				<td mat-footer-cell *matFooterCellDef>
+					{{ detalleTransacciones?.totalPeriodo | currency: "L " }}
+				</td>
+				<td mat-footer-cell *matFooterCellDef></td>
+			</ng-container>
+
+			<ng-container matColumnDef="excedente">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Excedente</th>
+				<td mat-cell *matCellDef="let item">
+					{{ item.excedente | currency: "L " }}
+				</td>
+				<td mat-footer-cell *matFooterCellDef>
+					{{ detalleTransacciones?.totalExcedente | currency: "L " }}
+				</td>
+			</ng-container>
+
+			<ng-container matColumnDef="total">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Total</th>
+				<td mat-cell *matCellDef="let item">
+					{{ item.total | currency: "L " }}
+				</td>
+				<td mat-footer-cell *matFooterCellDef>
+					{{ detalleTransacciones?.total | currency: "L " }}
+				</td>
+			</ng-container>
+
+			<ng-container matColumnDef="detalles">
+				<td mat-footer-cell *matFooterCellDef colspan="5" style="text-align: right">
+					<div class="ver-detalle">
+						<span>Ver detalle</span>
+						<i matTooltip="Consultar" class="material-icons-outlined azul-300"
+							>remove_red_eye</i
+						>
+					</div>
+				</td>
+			</ng-container>
+
+			<tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+			<tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
+			<tr mat-footer-row *matFooterRowDef="displayColumnsFooter"></tr>
+
+			<tr class="mat-row" *matNoDataRow>
+				<td class="mat-cell" colspan="4">No se encontraron registros</td>
+			</tr>
+		</table>
+	</div>
+</div>
